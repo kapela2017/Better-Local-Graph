@@ -1,0 +1,10 @@
+{
+  "id": "better-local-graph",
+  "name": "Better Local Graph",
+  "version": "3.2.0",
+  "minAppVersion": "1.4.0",
+  "description": "Local graph view of the active note's neighborhood with Lucide icons and link direction. Tag overview mode (fcose): filter the whole vault by a tag or subtag, age-based node coloring and subtle pulse, then sew notes together. Secondary feature: sew parent-child relationships between notes through a visual sewing session. AI tooltip summaries (BYOK). English & Spanish. Embedded MCP server (Streamable HTTP on localhost) so external agents (Claude Code, OpenCode, Gemini, OpenClaw) can query tag graphs and sew notes.",
+  "author": "Pablo Zambrano",
+  "authorUrl": "",
+  "isDesktopOnly": false
+}

@@ -1,0 +1,4 @@
+node_modules/
+blg-mcp-v3.2.0.zip
+*.log
+.DS_Store
