@@ -1052,7 +1052,116 @@ cytoscape/dist/cytoscape.esm.mjs:
             .map(function (f) { return { path: f.path, basename: f.basename }; });
           return { count: hits.length, results: hits };
         }
-      }
+      },
+      /* ===== NUEVA HERRAMIENTA: nota activa (vista estándar/local) + relaciones salientes ===== */
+      blg_get_active_note_relations: {
+        description: "Detecta la nota ACTIVA en la vista estándar (local) de Obsidian — la misma que muestra el grafo local del plugin — y devuelve sus relaciones SALIENTES: wikilinks resueltos y costuras (sewing). Las costuras se priorizan y se marcan con kind='sewing'. Si una relación es a la vez wikilink y costura, se marca sewn=true. Úsalo cuando el usuario diga 'la nota que tengo abierta', 'esta nota', 'la nota activa' o pida trabajar con lo que está viendo en pantalla, sin tener que nombrar el archivo.",
+        inputSchema: { type: "object", properties: {
+          includeBacklinks: { type: "boolean", description: "Si true, incluye también las relaciones ENTRANTES (backlinks y costuras que apuntan a esta nota). Default false." },
+          includeContent:   { type: "boolean", description: "Si true, incluye el markdown completo de la nota activa. Default false." },
+          sewingOnly:       { type: "boolean", description: "Si true, devuelve únicamente las relaciones de tipo sewing (ignora wikilinks puros). Default false." }
+        } },
+        handler: async function (args) {
+          args = args || {};
+          var Oe = require("obsidian");
+
+          // --- 1) resolver la nota activa igual que la vista local del plugin ---
+          // preferimos el MarkdownView activo (la nota que el usuario está editando/viendo);
+          // si no hay, caemos a getActiveFile() — idéntico patrón al de renderMode() del bundle.
+          var active = null;
+          var mv = app.workspace.getActiveViewOfType(Oe.MarkdownView);
+          if (mv && mv.file) active = mv.file;
+          if (!active) active = app.workspace.getActiveFile();
+
+          if (!(active instanceof Oe.TFile) || active.extension !== "md") {
+            throw { code: -32603, message: "No hay ninguna nota markdown activa en la vista estándar." };
+          }
+
+          var sewingOnly = !!args.sewingOnly;
+
+          // --- 2) relaciones SALIENTES ---
+          var sewOut = sewingTargets(app, active);           // Set<path> de costuras salientes
+          var RL = app.metadataCache.resolvedLinks || {};
+          var linkOut = RL[active.path] || {};
+
+          var outMap = new Map(); // path -> edge
+          function put(path, kind) {
+            if (!path || path === active.path) return;
+            var ex = outMap.get(path);
+            if (ex) { if (kind === "sewing") ex.sewn = true; return; }
+            var tf = app.vault.getAbstractFileByPath(path);
+            outMap.set(path, {
+              path: path,
+              basename: tf ? tf.basename : path.replace(/\.md$/, "").split("/").pop(),
+              kind: kind,
+              sewn: kind === "sewing"
+            });
+          }
+          // costuras primero (prioridad), luego wikilinks
+          sewOut.forEach(function (p) { put(p, "sewing"); });
+          if (!sewingOnly) {
+            for (var dst in linkOut) if (linkOut.hasOwnProperty(dst)) put(dst, "wikilink");
+          } else {
+            // en modo sewingOnly, marcamos sewn en los que además son wikilink
+            for (var d2 in linkOut) if (outMap.has(d2)) outMap.get(d2).sewn = true;
+          }
+          var outgoing = Array.from(outMap.values());
+
+          var result = {
+            active: {
+              path: active.path,
+              basename: active.basename,
+              ctime: active.stat && active.stat.ctime,
+              mtime: active.stat && active.stat.mtime,
+              tags: fileTags(app, active)
+            },
+            outgoing: outgoing,
+            sewingOutCount: outgoing.filter(function (e) { return e.kind === "sewing"; }).length,
+            outgoingCount: outgoing.length
+          };
+
+          // --- 3) relaciones ENTRANTES (opcional) ---
+          if (args.includeBacklinks) {
+            var inMap = new Map();
+            function putIn(srcPath, kind) {
+              if (!srcPath || srcPath === active.path) return;
+              var ex = inMap.get(srcPath);
+              if (ex) { if (kind === "sewing") ex.sewn = true; return; }
+              var sf = app.vault.getAbstractFileByPath(srcPath);
+              inMap.set(srcPath, {
+                path: srcPath,
+                basename: sf ? sf.basename : srcPath.replace(/\.md$/, "").split("/").pop(),
+                kind: kind,
+                sewn: kind === "sewing"
+              });
+            }
+            // costuras entrantes: notas cuyo sewing apunta a la activa
+            var all = app.vault.getMarkdownFiles();
+            for (var i = 0; i < all.length; i++) {
+              var f = all[i];
+              if (f.path === active.path) continue;
+              if (sewingTargets(app, f).has(active.path)) putIn(f.path, "sewing");
+            }
+            // backlinks por wikilink
+            if (!sewingOnly) {
+              for (var src in RL) {
+                if (RL[src] && RL[src][active.path]) putIn(src, "wikilink");
+              }
+            } else {
+              for (var src2 in RL) {
+                if (RL[src2] && RL[src2][active.path] && inMap.has(src2)) inMap.get(src2).sewn = true;
+              }
+            }
+            var incoming = Array.from(inMap.values());
+            result.incoming = incoming;
+            result.sewingInCount = incoming.filter(function (e) { return e.kind === "sewing"; }).length;
+            result.incomingCount = incoming.length;
+          }
+
+          if (args.includeContent) result.content = await app.vault.cachedRead(active);
+          return result;
+        }
+      },
     };
   }
 
