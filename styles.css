@@ -83,3 +83,22 @@
   font-size: var(--font-ui-medium);
   color: var(--text-normal);
 }
+
+/* ===== Animated backgrounds (programmable) ===== */
+.blg-bg-canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.blg-bg-section h2 {
+  margin: 8px 0 4px;
+}
+
+.blg-bg-section button {
+  cursor: pointer;
+}
