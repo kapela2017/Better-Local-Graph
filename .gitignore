@@ -7,3 +7,6 @@ data.json
 AGENTS.md
 backgrounds/
 main.js.bak-bg-*
+
+# Backups previos a Sharingan
+*.bak-pre-sharingan-*

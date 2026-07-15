@@ -1499,6 +1499,7 @@ cytoscape/dist/cytoscape.esm.mjs:
   function bgDir(plugin) {
     var dir = plugin.manifest && plugin.manifest.dir;
     if (!dir) { try { dir = path.join(plugin.app.vault.adapter.getBasePath(), ".obsidian/plugins", plugin.manifest.id); } catch (e) { dir = path.join(process.cwd(), plugin.manifest.id); } }
+    if (!path.isAbsolute(dir)) { try { dir = path.join(plugin.app.vault.adapter.getBasePath(), dir); } catch (e) { dir = path.resolve(dir); } }
     return path.join(dir, "backgrounds");
   }
   function listSnippets(plugin) {
@@ -1511,8 +1512,18 @@ cytoscape/dist/cytoscape.esm.mjs:
   function writeSnippetFile(p, src) { fs.writeFileSync(p, src, "utf8"); }
   function deleteSnippetFile(p) { try { fs.unlinkSync(p); } catch (e) {} }
 
+  /* ---------- limpiar fuente pegada ---------- */
+  function cleanSource(src) {
+    if (!src) return "";
+    src = String(src).replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
+    var m = src.match(/```(?:js|javascript|node|JS)?\s*\n([\s\S]*?)\n```/i);
+    if (m) src = m[1];
+    return src.trim();
+  }
+
   /* ---------- evaluar snippet (CommonJS) ---------- */
   function evalSnippet(src) {
+    src = cleanSource(src);
     var module = { exports: {} };
     var fn = new Function("module", "exports", "require", "console", "Math", "Date", "performance", "setTimeout", "setInterval", "clearTimeout", "clearInterval", src + "\n;return module.exports;");
     var exp = fn(module, module.exports, require, console, Math, Date, performance, setTimeout, setInterval, clearTimeout, clearInterval);
@@ -1804,10 +1815,22 @@ cytoscape/dist/cytoscape.esm.mjs:
     var ft = m.contentEl.createDiv(); ft.style.cssText = "display:flex;gap:8px;justify-content:flex-end;margin-top:8px";
     var save = ft.createEl("button", { text: loc("Guardar", "Save"), cls: "mod-cta" });
     save.onclick = function () {
-      var nm = (ni.value || "").trim().replace(/^\/+/, "").replace(/\.js$/i, "");
+      var nm = (ni.value || "").trim().replace(/^\/+/, "").replace(/\.js$/i, "").replace(/\s+/g, " ").trim();
       if (!nm) { new Oe.Notice(loc("Nombre vacio", "Empty name")); return; }
       if (!/^[A-Za-z0-9 _\-]+$/.test(nm)) { new Oe.Notice(loc("Solo letras, numeros, _ o -", "Only letters, numbers, _ or -")); return; }
-      writeSnippetFile(path.join(bgDir(plugin), nm + ".js"), curSrc);
+      var dest = path.join(bgDir(plugin), nm + ".js");
+      var cleaned = cleanSource(curSrc);
+      try { new Function(cleaned); } catch (e) {
+        new Oe.Notice(loc("Sintaxis invalida: ", "Invalid syntax: ") + (e && e.message ? e.message : e));
+        return;
+      }
+      try {
+        writeSnippetFile(dest, cleaned);
+        if (!fs.existsSync(dest)) { throw new Error(loc("el archivo no se creo", "file was not created")); }
+      } catch (e) {
+        new Oe.Notice(loc("No se pudo guardar: ", "Could not save: ") + (e && e.message ? e.message : e));
+        return;
+      }
       new Oe.Notice(loc("Fondo guardado", "Background saved"));
       m.close(); onSaved && onSaved(nm);
     };
@@ -1877,6 +1900,8 @@ cytoscape/dist/cytoscape.esm.mjs:
       var nm = plugin.settings.activeBackgroundSnippet; if (!nm) { new Oe.Notice(loc("Selecciona un fondo", "Select a background")); return; }
       var src = ""; try { src = readSnippetFile(path.join(bgDir(plugin), nm + ".js")); } catch (e) {}
       EditorModal(plugin, nm, src, function (nm2) {
+        var newPath = path.join(bgDir(plugin), nm2 + ".js");
+        if (!fs.existsSync(newPath)) { new Oe.Notice(loc("El nuevo fondo no se guardo; se conserva el original", "New background not saved; keeping original")); refreshList(); return; }
         if (nm2 !== nm) { deleteSnippetFile(path.join(bgDir(plugin), nm + ".js")); }
         plugin.settings.activeBackgroundSnippet = nm2; plugin.saveSettings(); refreshList(); reloadLive(plugin); refreshPreview();
       });
