@@ -905,13 +905,21 @@ cytoscape/dist/cytoscape.esm.mjs:
       },
 
       blg_get_tag_graph: {
-        description: "Devuelve el grafo de la vista tag: todas las notas que tienen el tag (o subtag) indicado, con metadatos de edad, más las aristas entre ellas (wikilinks resueltos y costuras/sewing). Es la misma lógica que la vista visual del plugin.",
-        inputSchema: { type: "object", required: ["tag"], properties: {
-          tag: { type: "string", description: "Tag sin #, p. ej. 'herreria' o 'dev/obsidian'" }
+        description: "Devuelve el grafo de la vista tag: todas las notas que tienen el tag (o subtag) indicado, con metadatos de edad, más las aristas entre ellas (wikilinks resueltos y costuras/sewing). Es la misma lógica que la vista visual del plugin. Si el usuario está viendo una Tag View y quieres traer ESE grafo, usa current:true (sin parámetro tag) para leer el tag activo automáticamente. Si pasas tag explícitamente, se usa ese.",
+        inputSchema: { type: "object", properties: {
+          tag: { type: "string", description: "Tag sin #, p. ej. 'herreria' o 'dev/obsidian'. Omitir si se usa current:true." },
+          current: { type: "boolean", description: "Si true, usa el tag de la Tag View actualmente abierta en pantalla. Requiere que el usuario esté en vista de tag." }
         } },
         handler: function (args) {
-          var wanted = String(args.tag || "").replace(/^#/, "").trim();
-          if (!wanted) throw { code: -32602, message: "Falta el parámetro 'tag'" };
+          var wanted;
+          if (args && args.current === true) {
+            var tv = plugin.tagView;
+            if (!tv || !tv.tag) throw { code: -32603, message: "No hay una Tag View activa. Pide al usuario que abra una o usa el parámetro 'tag'." };
+            wanted = String(tv.tag).replace(/^#/, "").trim();
+          } else {
+            wanted = String((args && args.tag) || "").replace(/^#/, "").trim();
+          }
+          if (!wanted) throw { code: -32602, message: "Falta el parámetro 'tag' o 'current:true'" };
           var files = app.vault.getMarkdownFiles().filter(function (f) {
             var tags = fileTags(app, f);
             for (var i = 0; i < tags.length; i++) if (tagMatches(tags[i], wanted)) return true;
@@ -1078,9 +1086,61 @@ cytoscape/dist/cytoscape.esm.mjs:
           return { count: hits.length, results: hits };
         }
       },
-      /* ===== NUEVA HERRAMIENTA: nota activa (vista estándar/local) + relaciones salientes ===== */
+      /* ===== NUEVA HERRAMIENTA: estado de la vista actual del plugin ===== */
+      blg_get_current_view: {
+        description: "Detecta qué está viendo el usuario en el plugin Better Local Graph AHORA MISMO: vista local (nota central), vista de tag (Tag View con un tag concreto y selección) o sesión de costura (sewing). Úsalo PRIMERO cuando el usuario diga 'la vista actual', 'lo que estoy viendo', 'trae lo que tengo en pantalla', 'esta vista' o pida trabajar con lo que ve sin nombrar un archivo. No modifica nada; solo lee el estado. Después, según el modo devuelto, usa la herramienta adecuada: mode='local' → blg_get_active_note_relations; mode='tag' → blg_get_tag_graph con current:true o con el tag devuelto; mode='sewing' → usa los datos de sewing de la respuesta.",
+        inputSchema: { type: "object", properties: {} },
+        handler: function () {
+          var view = plugin.getView && plugin.getView();
+          var result = { mode: "unknown" };
+
+          // --- sesión de costura ---
+          if (plugin.session) {
+            var s = plugin.session;
+            result.mode = "sewing";
+            result.sewing = {
+              parentPath: s.parentPath || null,
+              parentName: s.parentName || null,
+              children: (s.children || []).map(function (c) {
+                return { path: c.path, basename: c.name };
+              })
+            };
+            return result;
+          }
+
+          // --- Tag View ---
+          if (plugin.tagView && plugin.tagView.tag) {
+            result.mode = "tag";
+            result.tag = plugin.tagView.tag;
+            var sel = (view && view._sel) ? view._sel : [];
+            result.selectedNotes = (sel || []).map(function (p) {
+              var f = app.vault.getAbstractFileByPath(p);
+              return { path: p, basename: f ? f.basename : p.replace(/\.md$/, "").split("/").pop() };
+            });
+            result.selectionCount = result.selectedNotes.length;
+            return result;
+          }
+
+          // --- vista local ---
+          if (view && view.currentPath) {
+            result.mode = "local";
+            var f = app.vault.getAbstractFileByPath(view.currentPath);
+            result.localNote = {
+              path: view.currentPath,
+              basename: f ? f.basename : view.currentPath.replace(/\.md$/, "").split("/").pop()
+            };
+            return result;
+          }
+
+          // --- no se detectó nada ---
+          result.message = "No se detectó ninguna vista activa del plugin. Abre una nota o una Tag View.";
+          return result;
+        }
+      },
+
+      /* ===== nota activa (vista estándar/local) + relaciones salientes ===== */
       blg_get_active_note_relations: {
-        description: "Detecta la nota ACTIVA en la vista estándar (local) de Obsidian — la misma que muestra el grafo local del plugin — y devuelve sus relaciones SALIENTES: wikilinks resueltos y costuras (sewing). Las costuras se priorizan y se marcan con kind='sewing'. Si una relación es a la vez wikilink y costura, se marca sewn=true. Úsalo cuando el usuario diga 'la nota que tengo abierta', 'esta nota', 'la nota activa' o pida trabajar con lo que está viendo en pantalla, sin tener que nombrar el archivo.",
+        description: "Detecta la nota ACTIVA en la vista estándar (local) de Obsidian — la misma que muestra el grafo local del plugin — y devuelve sus relaciones SALIENTES: wikilinks resueltos y costuras (sewing). IMPORTANTE: esta herramienta solo aplica cuando el usuario está en la VISTA LOCAL (no en Tag View ni en sesión de costura). Si el usuario dice 'la vista actual' o 'lo que estoy viendo', llama PRIMERO a blg_get_current_view para saber el modo. Las costuras se priorizan y se marcan con kind='sewing'. Si una relación es a la vez wikilink y costura, se marca sewn=true.",
         inputSchema: { type: "object", properties: {
           includeBacklinks: { type: "boolean", description: "Si true, incluye también las relaciones ENTRANTES (backlinks y costuras que apuntan a esta nota). Default false." },
           includeContent:   { type: "boolean", description: "Si true, incluye el markdown completo de la nota activa. Default false." },

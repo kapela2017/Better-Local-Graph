@@ -5,3 +5,6 @@ blg-mcp-v3.2.0.zip
 ai-cache.json
 data.json
 AGENTS.md
+*.bak
+*.bak-*
+main.js.bak*
