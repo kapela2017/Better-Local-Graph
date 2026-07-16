@@ -6,7 +6,13 @@ ai-cache.json
 data.json
 AGENTS.md
 backgrounds/
-main.js.bak-bg-*
 
-# Backups previos a Sharingan
-*.bak-pre-sharingan-*
+# Backups — no archivos .bak en el repo
+*.bak
+*.bak-*
+*.bak_*
+main.js.bak*
+styles.css.bak*
+manifest.json.bak*
+data.json.bak*
+blg-backgrounds.js.bak*
