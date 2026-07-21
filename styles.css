@@ -102,3 +102,179 @@
 .blg-bg-section button {
   cursor: pointer;
 }
+
+/* ===== Mapa mental de tags (modal markmap) ===== */
+.blg-mm-modal {
+  background: #ffffff;
+  color: #1a1a1a;
+  width: min(1100px, 92vw);
+  max-width: 92vw;
+}
+
+.blg-mm-modal .modal-title {
+  color: #1a1a1a;
+}
+
+.blg-mm-modal .modal-close-button {
+  color: #666;
+}
+
+.blg-mm-content {
+  display: flex;
+  flex-direction: column;
+  height: 74vh;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+
+/* zona scrollable con los "patines" nativos */
+.blg-mm-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #c9c9d4 transparent;
+}
+
+.blg-mm-scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.blg-mm-scroll::-webkit-scrollbar-track,
+.blg-mm-scroll::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.blg-mm-scroll::-webkit-scrollbar-thumb {
+  background: #c9c9d4;
+  border-radius: 6px;
+  border: 2px solid #ffffff;
+  background-clip: padding-box;
+}
+
+.blg-mm-scroll::-webkit-scrollbar-thumb:hover {
+  background: #6c5ce7;
+  border: 2px solid #ffffff;
+  background-clip: padding-box;
+}
+
+/* el tamaño lo fija el JS según el contenido y el zoom */
+.blg-mm-svg {
+  display: block;
+  background: #ffffff;
+  cursor: grab;
+  touch-action: none;
+}
+
+.blg-mm-svg.blg-mm-panning {
+  cursor: grabbing;
+}
+
+/* botones de zoom flotantes (lupas + encajar) */
+.blg-mm-zoom {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.blg-mm-zoom button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid #e0e0e8;
+  background: #ffffff;
+  color: #555555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+.blg-mm-zoom button:hover {
+  background: #f2effe;
+  color: #6c5ce7;
+  border-color: #d9d0fa;
+}
+
+.blg-mm-zoom button svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* nodo raíz: círculo */
+.blg-mm-modal .blg-mm-root-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: #6c5ce7;
+  color: #ffffff;
+  padding: 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.blg-mm-modal .blg-mm-root-name {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.blg-mm-modal .blg-mm-root-count {
+  font-size: 10px;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+
+/* nodos hijos: labels tipo pill */
+.blg-mm-modal .blg-mm-label {
+  display: inline-block;
+  padding: 3px 10px;
+  border: 1px solid #d8d8d8;
+  border-radius: 12px;
+  background: #f7f7f9;
+  color: #222222;
+  font-size: 12px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.blg-mm-modal .blg-mm-badge {
+  display: inline-block;
+  min-width: 16px;
+  padding: 0 4px;
+  margin-left: 6px;
+  border-radius: 8px;
+  background: #6c5ce7;
+  color: #ffffff;
+  font-size: 10px;
+  line-height: 16px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* nodos sin notas directas: atenuados */
+.blg-mm-modal .blg-mm-zero {
+  opacity: 0.45;
+}
+
+.blg-mm-modal .blg-mm-zero .blg-mm-badge {
+  background: #bbbbbb;
+}

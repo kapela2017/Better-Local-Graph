@@ -29,7 +29,9 @@ $files = @(
     "styles.css",
     "versions.json",
     "blg-backgrounds.js",
-    "blg-mcp-server.js"
+    "blg-mcp-server.js",
+    "blg-tag-mindmap.js",
+    "blg-vendor-markmap.js"
 )
 
 foreach ($f in $files) {
