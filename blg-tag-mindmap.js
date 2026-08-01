@@ -21,7 +21,15 @@
     - Click en nodo con 1 nota → la abre directo (típico en las colas).
     - Click en nodo con N notas → selector (FuzzySuggestModal) para
       elegir cuál abrir.
+    - Al abrir, la vista queda posicionada en la LÍNEA EXACTA del tag
+      del nodo: 1ª aparición inline en el cuerpo; si solo está en
+      frontmatter, su línea dentro del YAML (eState.line + refuerzo
+      con setCursor/scrollIntoView en modo edición).
     - Click en nodo con 0 notas → Notice "sin notas directas".
+    - Buscador (textbox flotante): al escribir, resalta la RAMA COMPLETA
+      bajo los nodos cuyo label coincide (substring case-insensitive),
+      atenúa el resto y muestra un contador; Enter centra el primer
+      match, Esc limpia el filtro.
     - El circulito de plegado de markmap se conserva (no choca con el
       click de label, que markmap deja libre); en las ramas izquierdas
       se mueve al borde exterior.
@@ -55,36 +63,99 @@
     return out;
   }
 
-  // Map(subruta -> Set(path)) usando el MISMO criterio que la Tag View del
-  // plugin (tagMatches: secuencia de segmentos en cualquier posición).
-  // subruta = lo que cuelga DEBAJO de rootTag en ese tag; "" = el tag termina
-  // exactamente en la raíz (notas "directas"). Una nota cuenta solo donde
-  // termina su tag (decisión A+A); primera aparición de la raíz por tag.
+  // ¿el label del nodo coincide con el query? substring case-insensitive
+  // sobre el nombre visible (último segmento). Query vacío = todo coincide.
+  function matchLabel(name, query) {
+    var q = String(query || "").trim().toLowerCase();
+    if (!q) return true;
+    return String(name || "").toLowerCase().indexOf(q) !== -1;
+  }
+
+  // subruta que cuelga DEBAJO de la raíz si segs la contiene (secuencia de
+  // segmentos en cualquier posición, primera aparición de la raíz); "" = el
+  // tag termina exactamente en la raíz; null si no matchea.
+  function matchSub(segs, rsegs) {
+    var rl = rsegs.length;
+    if (segs.length < rl) return null;
+    for (var k = 0; k + rl <= segs.length; k++) {
+      var ok = true;
+      for (var m = 0; m < rl; m++) { if (segs[k + m] !== rsegs[m]) { ok = false; break; } }
+      if (ok) return segs.slice(k + rl).join("/");
+    }
+    return null;
+  }
+
+  // Map(subruta -> Map(path -> tagLiteral)) usando el MISMO criterio que la
+  // Tag View del plugin (tagMatches). subruta = lo que cuelga DEBAJO de
+  // rootTag en ese tag; "" = notas "directas". Una nota cuenta solo donde
+  // termina su tag (decisión A+A). tagLiteral = el tag completo tal como
+  // está escrito en la nota (sin '#'), necesario para localizar su línea al
+  // abrirla: con matcheo por segmento puede diferir del subpath del nodo
+  // (p.ej. "ia/agentes/hermes/recursos/mcp" para la raíz "hermes").
   function collectTagMap(app, rootTag) {
     var map = new Map();
-    var rsegs = splitSegs(rootTag), rl = rsegs.length;
+    var rsegs = splitSegs(rootTag);
     var files = app.vault.getMarkdownFiles();
+    function eat(seen, path, tag) {
+      var sub = matchSub(splitSegs(tag), rsegs);
+      if (sub == null || seen[sub]) return;
+      seen[sub] = true;
+      if (!map.has(sub)) map.set(sub, new Map());
+      map.get(sub).set(path, tag);
+    }
     for (var i = 0; i < files.length; i++) {
-      var tags = fileTags(app, files[i]);
+      var c = app.metadataCache.getFileCache(files[i]);
+      if (!c) continue;
       var seen = {};
-      for (var j = 0; j < tags.length; j++) {
-        var segs = splitSegs(tags[j]);
-        if (segs.length < rl) continue;
-        for (var k = 0; k + rl <= segs.length; k++) {
-          var ok = true;
-          for (var m = 0; m < rl; m++) { if (segs[k + m] !== rsegs[m]) { ok = false; break; } }
-          if (!ok) continue;
-          var sub = segs.slice(k + rl).join("/");
-          if (!seen[sub]) {
-            seen[sub] = true;
-            if (!map.has(sub)) map.set(sub, new Set());
-            map.get(sub).add(files[i].path);
-          }
-          break; // solo la primera aparición de la raíz dentro del tag
+      if (c.tags) for (var j = 0; j < c.tags.length; j++) {
+        eat(seen, files[i].path, String(c.tags[j].tag).replace(/^#/, ""));
+      }
+      if (c.frontmatter && c.frontmatter.tags != null) {
+        var arr = Array.isArray(c.frontmatter.tags) ? c.frontmatter.tags : [c.frontmatter.tags];
+        for (var k = 0; k < arr.length; k++) {
+          if (arr[k] == null) continue;
+          eat(seen, files[i].path, String(arr[k]).replace(/^#/, "").trim());
         }
       }
     }
     return map;
+  }
+
+  // línea (0-based) de la primera línea del frontmatter que contiene el tag
+  // literal; null si no aparece. fmStart/fmEnd = rango inclusive según
+  // frontmatterPosition del caché.
+  function findTagLineInText(content, fmStart, fmEnd, tag) {
+    if (content == null || !tag) return null;
+    var lines = String(content).split("\n");
+    var from = Math.max(0, fmStart | 0);
+    var to = Math.min(lines.length - 1, fmEnd | 0);
+    for (var i = from; i <= to; i++) {
+      if (lines[i].indexOf(tag) !== -1) return i;
+    }
+    return null;
+  }
+
+  // Línea 0-based donde está el tag en la nota: 1ª aparición INLINE (caché,
+  // posición exacta); si solo está en frontmatter, su línea dentro del YAML
+  // (fallback: inicio del frontmatter). null si no se localiza → abrir sin
+  // posicionar.
+  async function resolveTagLine(app, file, tag) {
+    if (!tag) return null;
+    var c = app.metadataCache.getFileCache(file);
+    if (c && c.tags) {
+      for (var i = 0; i < c.tags.length; i++) {
+        if (String(c.tags[i].tag).replace(/^#/, "") === tag && c.tags[i].position) {
+          return c.tags[i].position.start.line;
+        }
+      }
+    }
+    var fm = c && c.frontmatterPosition;
+    if (!fm) return null;
+    try {
+      var content = await app.vault.cachedRead(file);
+      var line = findTagLineInText(content, fm.start.line, fm.end.line, tag);
+      return line != null ? line : fm.start.line;
+    } catch (e) { return fm.start.line; }
   }
 
   function labelHtml(name, count) {
@@ -99,7 +170,8 @@
 
   // Árbol markmap {content, payload:{tag,files}, children} via trie sobre las
   // subrutas. payload.tag = rootTag + "/" + subruta (solo informativo);
-  // files = notas cuyo tag TERMINA exactamente en esa subruta.
+  // files = [{path, tag}] de las notas cuyo tag TERMINA exactamente en esa
+  // subruta; tag = tag literal en la nota (para saltar a su línea al abrir).
   function buildTree(rootTag, subMap) {
     var rootName = splitSegs(rootTag).pop() || rootTag;
     var trie = { __sub: "", __name: rootName, __kids: {} };
@@ -115,8 +187,10 @@
       }
     }
     function toNode(t, isRoot) {
-      var filesSet = subMap.get(t.__sub);
-      var files = filesSet ? Array.from(filesSet).sort() : [];
+      var filesMap = subMap.get(t.__sub);
+      var files = [];
+      if (filesMap) filesMap.forEach(function (tag, path) { files.push({ path: path, tag: tag }); });
+      files.sort(function (a, b) { return a.path < b.path ? -1 : a.path > b.path ? 1 : 0; });
       var keys = Object.keys(t.__kids).sort();
       var children = [];
       for (var i = 0; i < keys.length; i++) children.push(toNode(t.__kids[keys[i]], false));
@@ -226,9 +300,12 @@
   // hook de test en node (fuera de Obsidian no hay module.exports.default)
   if (typeof globalThis !== "undefined") {
     globalThis.__BLG_MM_TEST = {
-      fileTags: fileTags, splitSegs: splitSegs, collectTagMap: collectTagMap,
-      buildTree: buildTree, subtreeSpan: subtreeSpan, assignSides: assignSides,
-      applySides: applySides
+      fileTags: fileTags, splitSegs: splitSegs, matchSub: matchSub,
+      collectTagMap: collectTagMap, buildTree: buildTree,
+      findTagLineInText: findTagLineInText, resolveTagLine: resolveTagLine,
+      subtreeSpan: subtreeSpan, assignSides: assignSides,
+      applySides: applySides,
+      matchLabel: matchLabel
     };
   }
 
@@ -261,7 +338,11 @@
       pickNotePlaceholder: "Elige la nota a abrir…",
       zoomIn: "Acercar",
       zoomOut: "Alejar",
-      fit: "Encajar todo el mapa"
+      fit: "Encajar todo el mapa",
+      searchPlaceholder: "Buscar en el mapa…",
+      noMatches: "Sin coincidencias",
+      oneMatch: "1 coincidencia",
+      nMatches: "%d coincidencias"
     },
     en: {
       cmdName: "Better Local Graph: tag mindmap",
@@ -273,7 +354,11 @@
       pickNotePlaceholder: "Choose the note to open…",
       zoomIn: "Zoom in",
       zoomOut: "Zoom out",
-      fit: "Fit the whole map"
+      fit: "Fit the whole map",
+      searchPlaceholder: "Search the map…",
+      noMatches: "No matches",
+      oneMatch: "1 match",
+      nMatches: "%d matches"
     }
   };
   function T(lang, key) { return (STR[lang] && STR[lang][key]) || STR.es[key] || key; }
@@ -345,20 +430,20 @@
   /* ---------- selector de notas (cuando un nodo tiene varias) ---------- */
 
   var BlgNotePick = class extends Oe.FuzzySuggestModal {
-    constructor(app, plugin, paths, onPick) {
+    constructor(app, plugin, entries, onPick) {
       super(app);
-      this.paths = paths;
+      this.entries = entries; // [{path, tag}]
       this.onPickCb = onPick;
       this.setPlaceholder(T(langOf(plugin), "pickNotePlaceholder"));
     }
-    getItems() { return this.paths; }
-    getItemText(p) {
-      var f = this.app.vault.getAbstractFileByPath(p);
-      var base = f ? f.basename : p;
-      var dir = p.replace(/\/[^/]*$/, "");
-      return dir && dir !== p ? base + "  —  " + dir : base;
+    getItems() { return this.entries; }
+    getItemText(e) {
+      var f = this.app.vault.getAbstractFileByPath(e.path);
+      var base = f ? f.basename : e.path;
+      var dir = e.path.replace(/\/[^/]*$/, "");
+      return dir && dir !== e.path ? base + "  —  " + dir : base;
     }
-    onChooseItem(p) { this.onPickCb && this.onPickCb(p); }
+    onChooseItem(e) { this.onPickCb && this.onPickCb(e); }
   };
 
   /* ---------- modal del mapa mental ---------- */
@@ -454,6 +539,87 @@
           scrollEl.clientWidth / 2, scrollEl.clientHeight / 2);
       }
 
+      /* ----- buscador: resalta la rama cuyo label coincide ----- */
+      var searchWrap = document.createElement("div");
+      searchWrap.className = "blg-mm-search";
+      var input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = T(lang, "searchPlaceholder");
+      input.setAttribute("aria-label", T(lang, "searchPlaceholder"));
+      var countEl = document.createElement("span");
+      countEl.className = "blg-mm-search-count";
+      searchWrap.appendChild(input);
+      searchWrap.appendChild(countEl);
+      this.contentEl.appendChild(searchWrap);
+
+      // Marca en un Set los state.key de los nodos cuyo LABEL matchea y de
+      // TODA su subrama (rama completa); el resto del mapa se atenúa.
+      function applyFilter() {
+        var q = input.value;
+        var set = new Set();
+        var hasQuery = q && q.trim();
+        var root = self.mm && self.mm.state && self.mm.state.data;
+        if (hasQuery && root) {
+          (function walk(n) {
+            var name = n.payload && n.payload.tag
+              ? String(n.payload.tag).split("/").pop() : "";
+            if (matchLabel(name, hasQuery)) {
+              set.add(n.state.key);
+              (function markDesc(c) {
+                var ch = c.children || [];
+                for (var i = 0; i < ch.length; i++) {
+                  set.add(ch[i].state.key);
+                  markDesc(ch[i]);
+                }
+              })(n);
+            }
+            var ch = n.children || [];
+            for (var i = 0; i < ch.length; i++) walk(ch[i]);
+          })(root);
+        }
+        var nodes = self.mm && self.mm.g && self.mm.g.node
+          ? self.mm.g.node().querySelectorAll("g.markmap-node") : [];
+        var visible = 0;
+        for (var i = 0; i < nodes.length; i++) {
+          var d = nodes[i].__data__;
+          if (!d || !d.state) continue;
+          var on = hasQuery && set.has(d.state.key);
+          if (on) visible++;
+          nodes[i].classList.toggle("blg-mm-hl", on);
+          nodes[i].classList.toggle("blg-mm-dim", !!hasQuery && !on);
+        }
+        if (!hasQuery) countEl.textContent = "";
+        else if (visible === 0) countEl.textContent = T(lang, "noMatches");
+        else if (visible === 1) countEl.textContent = T(lang, "oneMatch");
+        else countEl.textContent = T(lang, "nMatches").replace("%d", visible);
+      }
+
+      input.addEventListener("input", applyFilter);
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          if (!input.value) return; // sin texto: dejar cerrar el modal
+          input.value = "";
+          applyFilter();
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+        if (e.key !== "Enter") return;
+        // Enter → centrar el primer match visible (respetando el espejado L)
+        var nodes = self.mm && self.mm.g && self.mm.g.node
+          ? self.mm.g.node().querySelectorAll("g.markmap-node.blg-mm-hl") : [];
+        if (!nodes.length) return;
+        var d = nodes[0].__data__;
+        if (!d || !d.state || !d.state.rect) return;
+        var r = d.state.rect;
+        var cx = r.x + r.width / 2, cy = r.y + r.height / 2;
+        if (nodes[0].classList.contains("blg-mm-left")) {
+          var rr = self.mm.state.data.state.rect;
+          cx = 2 * (rr.x + rr.width / 2) - cx;
+        }
+        scrollTo({ x: cx, y: cy }, scrollEl.clientWidth / 2, scrollEl.clientHeight / 2);
+      });
+
       // Re-aplicar el layout bilateral + viewport tras CADA render
       // (inicial, plegados y ResizeObserver interno de markmap).
       var origRender = this.mm.renderData.bind(this.mm);
@@ -472,6 +638,7 @@
               place();
               if (anchor) scrollTo(anchor.c, anchor.sx, anchor.sy);
             }
+            applyFilter();
           } catch (e) { try { console.warn("[BLG Mindmap] sides/viewport", e); } catch (_) {} }
         });
       };
@@ -555,12 +722,29 @@
         var files = (g.__data__.payload && g.__data__.payload.files) || [];
         if (files.length === 0) { new Oe.Notice(T(lang, "noNotes")); return; }
         if (files.length === 1) { self.openPath(files[0]); self.close(); return; }
-        new BlgNotePick(self.app, self.plugin, files, function (p) { self.openPath(p); self.close(); }).open();
+        new BlgNotePick(self.app, self.plugin, files, function (e) { self.openPath(e); self.close(); }).open();
       });
     }
-    openPath(p) {
-      var f = this.app.vault.getAbstractFileByPath(p);
-      if (f instanceof Oe.TFile) this.app.workspace.getLeaf(false).openFile(f);
+    // Abre la nota posicionada en la línea exacta del tag del nodo: 1ª
+    // aparición inline en el cuerpo; si solo está en frontmatter, su línea
+    // dentro del YAML. entry = {path, tag}.
+    async openPath(entry) {
+      var f = this.app.vault.getAbstractFileByPath(entry.path);
+      if (!(f instanceof Oe.TFile)) return;
+      var line = await resolveTagLine(this.app, f, entry.tag);
+      var leaf = this.app.workspace.getLeaf(false);
+      await leaf.openFile(f, line != null ? { eState: { line: line } } : undefined);
+      if (line == null) return;
+      var v = leaf.view;
+      if (v && v.editor) {
+        // refuerzo en modo edición: eState.line puede ignorarse al reusar
+        // un leaf; en Reading View el salto es best-effort (sin editor)
+        try {
+          var pos = { line: line, ch: 0 };
+          v.editor.setCursor(pos);
+          v.editor.scrollIntoView({ from: pos, to: pos }, true);
+        } catch (e) {}
+      }
     }
     onClose() {
       try { this.mm && this.mm.destroy(); } catch (e) {}

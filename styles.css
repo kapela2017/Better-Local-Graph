@@ -212,6 +212,82 @@
   height: 18px;
 }
 
+/* buscador: textbox flotante (espejo de la barra de zoom) */
+.blg-mm-search {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.blg-mm-search input {
+  width: 200px;
+  padding: 5px 10px;
+  border: 1px solid #e0e0e8;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #222222;
+  caret-color: #222222;
+  font-size: 12px;
+  line-height: 1.4;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  outline: none;
+}
+
+.blg-mm-search input::placeholder {
+  color: #999999;
+  opacity: 1;
+}
+
+/* el tema de Obsidian oscurece los inputs al pasar el mouse;
+   lo neutralizamos con !important para mantener el contraste */
+.blg-mm-search input:hover,
+.blg-mm-search input:focus {
+  background: #ffffff !important;
+  color: #222222 !important;
+  caret-color: #222222 !important;
+  border-color: #6c5ce7;
+}
+
+.blg-mm-search input:focus {
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.25);
+}
+
+.blg-mm-search-count {
+  font-size: 11px;
+  color: #6c5ce7;
+  white-space: nowrap;
+}
+
+/* ramas que coinciden: resaltadas; el resto atenuado */
+.blg-mm-modal .blg-mm-hl .blg-mm-label {
+  border-color: #6c5ce7;
+  background: #eef0ff;
+  color: #3b2f9e;
+  font-weight: 600;
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.35);
+}
+
+.blg-mm-modal .blg-mm-hl .blg-mm-root-label {
+  box-shadow: 0 0 0 3px #ffffff, 0 0 0 6px rgba(108, 92, 231, 0.6);
+}
+
+.blg-mm-modal .blg-mm-hl .blg-mm-badge {
+  background: #6c5ce7;
+}
+
+.blg-mm-modal .blg-mm-hl .blg-mm-zero {
+  opacity: 1;
+}
+
+.blg-mm-modal .blg-mm-dim {
+  opacity: 0.25;
+  transition: opacity 0.15s ease;
+}
+
 /* nodo raíz: círculo */
 .blg-mm-modal .blg-mm-root-label {
   display: flex;
