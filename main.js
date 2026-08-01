@@ -2010,7 +2010,6 @@ cytoscape/dist/cytoscape.esm.mjs:
     return _onunload.call(this);
   };
 })();
-
 /* ============================================================
    Better Local Graph — Mapa mental de tags con markmap (inyectado)
    Pegar este bloque COMPLETO al FINAL de main.js (última línea).
@@ -2039,6 +2038,12 @@ cytoscape/dist/cytoscape.esm.mjs:
       frontmatter, su línea dentro del YAML (eState.line + refuerzo
       con setCursor/scrollIntoView en modo edición).
     - Click en nodo con 0 notas → Notice "sin notas directas".
+    - Click DERECHO en un nodo → menú "Renombrar tag #<ruta>": pide un
+      nuevo label (último segmento) y renombra el tag en TODAS las notas
+      de la rama (nodo + descendientes), inline y frontmatter, usando el
+      mismo matcheo por segmento de la Tag View. Si el nuevo nombre ya
+      existe (merge sin deshacer) pide confirmación; tras aplicarlo el
+      mapa se reconstruye en el mismo modal.
     - Buscador (textbox flotante): al escribir, resalta la RAMA COMPLETA
       bajo los nodos cuyo label coincide (substring case-insensitive),
       atenúa el resto y muestra un contador; Enter centra el primer
@@ -2132,6 +2137,36 @@ cytoscape/dist/cytoscape.esm.mjs:
       }
     }
     return map;
+  }
+
+  // Reemplaza la 1ª aparición de oldSegs (secuencia de segmentos, en
+  // cualquier posición) por newSegs dentro de un tag literal; null si no
+  // matchea. "ia/agentes/hermes/recursos/mcp" con oldSegs=[hermes,recursos]
+  // y newSegs=[hermes,recursos2] → "ia/agentes/hermes/recursos2/mcp".
+  function segReplace(literal, oldSegs, newSegs) {
+    var segs = splitSegs(literal);
+    var ol = oldSegs.length;
+    if (!ol || segs.length < ol) return null;
+    for (var k = 0; k + ol <= segs.length; k++) {
+      var ok = true;
+      for (var m = 0; m < ol; m++) { if (segs[k + m] !== oldSegs[m]) { ok = false; break; } }
+      if (ok) return segs.slice(0, k).concat(newSegs, segs.slice(k + ol)).join("/");
+    }
+    return null;
+  }
+
+  // Map(path -> Set(tagLiteral)) de todas las notas afectadas por renombrar
+  // la rama de oldTag (nodo + descendientes), según el matcheo por segmento.
+  function renameBranchTargets(app, oldTag) {
+    var subMap = collectTagMap(app, oldTag);
+    var out = new Map();
+    subMap.forEach(function (fm) {
+      fm.forEach(function (tag, path) {
+        if (!out.has(path)) out.set(path, new Set());
+        out.get(path).add(tag);
+      });
+    });
+    return out;
   }
 
   // línea (0-based) de la primera línea del frontmatter que contiene el tag
@@ -2318,7 +2353,12 @@ cytoscape/dist/cytoscape.esm.mjs:
       findTagLineInText: findTagLineInText, resolveTagLine: resolveTagLine,
       subtreeSpan: subtreeSpan, assignSides: assignSides,
       applySides: applySides,
-      matchLabel: matchLabel
+      matchLabel: matchLabel,
+      segReplace: segReplace,
+      renameBranchTargets: renameBranchTargets,
+      deleteBranchTargets: deleteBranchTargets,
+      applyDeleteTags: applyDeleteTags,
+      applyRenameToFiles: applyRenameToFiles
     };
   }
 
@@ -2355,7 +2395,23 @@ cytoscape/dist/cytoscape.esm.mjs:
       searchPlaceholder: "Buscar en el mapa…",
       noMatches: "Sin coincidencias",
       oneMatch: "1 coincidencia",
-      nMatches: "%d coincidencias"
+      nMatches: "%d coincidencias",
+      renameMenu: "Renombrar tag %s",
+      renameTitle: "Renombrar tag",
+      renamePlaceholder: "Edita el tag completo (usa '/' para añadir subtags)…",
+      invalidTagName: "Nombre de tag no válido (sin espacios ni caracteres prohibidos)",
+      unchanged: "Sin cambios: el label no cambió",
+      noTargets: "No hay notas con ese tag en la rama",
+      renamedN: "Renombrado: %d nota(s) actualizada(s)",
+      mergeTitle: "Aviso: no se puede deshacer",
+      mergeWarn: "Renombrar %s a %s fusionará notas con el tag existente. Esto no se puede deshacer. ¿Continuar?",
+      errPrefix: "Error al renombrar: ",
+      ok: "Aceptar",
+      cancel: "Cancelar",
+      deleteMenu: "Eliminar tag %s",
+      deleteTitle: "Eliminar tag",
+      deleteWarn: "Se eliminará el tag %s de las notas que lo usen, sin tocar sus subtags. Esto no se puede deshacer. ¿Continuar?",
+      deletedN: "Eliminado: %d nota(s) actualizada(s)"
     },
     en: {
       cmdName: "Better Local Graph: tag mindmap",
@@ -2371,7 +2427,23 @@ cytoscape/dist/cytoscape.esm.mjs:
       searchPlaceholder: "Search the map…",
       noMatches: "No matches",
       oneMatch: "1 match",
-      nMatches: "%d matches"
+      nMatches: "%d matches",
+      renameMenu: "Rename tag %s",
+      renameTitle: "Rename tag",
+      renamePlaceholder: "Edit the full tag (use '/' to add subtags)…",
+      invalidTagName: "Invalid tag name (no spaces or forbidden characters)",
+      unchanged: "Unchanged: label did not change",
+      noTargets: "No notes with that tag in the branch",
+      renamedN: "Renamed: %d file(s) updated",
+      mergeTitle: "Warning: no undo",
+      mergeWarn: "Renaming %s to %s will merge notes with the existing tag. This cannot be undone. Continue?",
+      errPrefix: "Error renaming: ",
+      ok: "Accept",
+      cancel: "Cancel",
+      deleteMenu: "Delete tag %s",
+      deleteTitle: "Delete tag",
+      deleteWarn: "Tag %s will be removed from the notes that use it, without touching its subtags. This cannot be undone. Continue?",
+      deletedN: "Deleted: %d file(s) updated"
     }
   };
   function T(lang, key) { return (STR[lang] && STR[lang][key]) || STR.es[key] || key; }
@@ -2459,6 +2531,302 @@ cytoscape/dist/cytoscape.esm.mjs:
     onChooseItem(e) { this.onPickCb && this.onPickCb(e); }
   };
 
+  /* ---------- modales de confirmación y prompt de rename ---------- */
+
+  var TAG_SEGMENT_RE = /^[^\s\/'"!#$%&()*+,.:;<=>?@^`{|}~\[\]\\]+$/;
+
+  var BlgConfirm = class extends Oe.Modal {
+    constructor(app, title, messageHtml, okText, cancelText, onOk) {
+      super(app);
+      this._t = title; this._m = messageHtml;
+      this._ok = okText; this._no = cancelText;
+      this.onOk = onOk;
+    }
+    onOpen() {
+      this.titleEl.setText(this._t);
+      this.contentEl.createDiv().innerHTML = this._m;
+      var bar = this.contentEl.createDiv();
+      bar.style.cssText = "margin-top:16px;display:flex;gap:8px;justify-content:flex-end";
+      var ok = bar.createEl("button", { text: this._ok, cls: "mod-cta mod-warning" });
+      var no = bar.createEl("button", { text: this._no });
+      var self = this;
+      ok.onclick = function () { self.close(); self.onOk && self.onOk(); };
+      no.onclick = function () { self.close(); };
+    }
+    onClose() { this.contentEl.empty(); }
+  };
+
+  var BlgRenamePrompt = class extends Oe.Modal {
+    constructor(app, title, current, hint, placeholder, okText, cancelText, onOk) {
+      super(app);
+      this._t = title; this._cur = current || ""; this._hint = hint || "";
+      this._ph = placeholder || ""; this._ok = okText; this._no = cancelText;
+      this.onOk = onOk;
+    }
+    onOpen() {
+      this.titleEl.setText(this._t);
+      if (this._hint) {
+        var hint = this.contentEl.createDiv();
+        hint.textContent = "#" + this._hint;
+        hint.style.cssText = "margin:0 0 4px;opacity:.55;font-size:.85em;word-break:break-all";
+      }
+      var input = this.contentEl.createEl("input", { type: "text" });
+      input.value = this._cur;
+      input.placeholder = this._ph;
+      input.style.cssText = "width:100%;margin:8px 0 12px;box-sizing:border-box";
+      var bar = this.contentEl.createDiv();
+      bar.style.cssText = "display:flex;gap:8px;justify-content:flex-end";
+      var ok = bar.createEl("button", { text: this._ok, cls: "mod-cta" });
+      var no = bar.createEl("button", { text: this._no });
+      var self = this;
+      ok.onclick = function () {
+        var v = input.value.trim();
+        self.close();
+        self.onOk && self.onOk(v);
+      };
+      no.onclick = function () { self.close(); };
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") { e.preventDefault(); ok.click(); }
+        else if (e.key === "Escape") { e.preventDefault(); no.click(); }
+      });
+      setTimeout(function () { input.focus(); input.select(); }, 0);
+    }
+    onClose() { this.contentEl.empty(); }
+  };
+
+  // Reemplazo por posición en el cuerpo + reescritura del frontmatter vía
+  // processFrontMatter (misma API que usa la costura del bundle, sin añadir
+  // dependencia YAML). Devuelve nº de archivos modificados.
+  // newTag = el tag COMPLETO nuevo (el campo de edición muestra el path
+  // entero); la rama se reemplaza con segReplace(oldSegs -> newSegs).
+  // Optimizaciones:
+  //  - vault.read SOLO si el caché muestra candidatos inline (fuera del fm).
+  //  - processFrontMatter SOLO si el pre-cálculo sobre los valores cacheados
+  //    indica un cambio real (evita reescrituras no-op y eventos espurios).
+  //  - Archivos procesados en lotes paralelos (paths distintos: sin carreras).
+  async function applyRenameToFiles(app, oldTag, newTag) {
+    var oldSegs = splitSegs(oldTag);
+    var newSegs = splitSegs(newTag);
+    var targets = renameBranchTargets(app, oldTag);
+    var paths = Array.from(targets.keys()).sort();
+    async function processOne(path) {
+      var f = app.vault.getAbstractFileByPath(path);
+      if (!f || (Oe && !(f instanceof Oe.TFile))) return 0;
+      var c = app.metadataCache.getFileCache(f);
+      var fmRange = (c && c.frontmatterPosition)
+        ? { a: c.frontmatterPosition.start.line, b: c.frontmatterPosition.end.line } : null;
+      var fileChanged = false;
+      // Candidatos inline según el caché (excluye los que viven en el YAML).
+      var toReplace = [];
+      if (c && c.tags) {
+        for (var j = 0; j < c.tags.length; j++) {
+          var t = c.tags[j];
+          if (!t || !t.position) continue;
+          var lit = String(t.tag).replace(/^#/, "");
+          if (fmRange && t.position.start.line >= fmRange.a && t.position.start.line <= fmRange.b) continue;
+          var repl = segReplace(lit, oldSegs, newSegs);
+          if (repl == null) continue;
+          toReplace.push({ t: t, repl: repl });
+        }
+      }
+      if (toReplace.length) {
+        // Los offsets del caché apuntan al archivo ORIGINAL: reemplazar de
+        // mayor a menor offset para no desalinear las posiciones restantes.
+        toReplace.sort(function (a, b) { return b.t.position.start.offset - a.t.position.start.offset; });
+        var text = await app.vault.read(f);
+        var orig = text;
+        for (var jj = 0; jj < toReplace.length; jj++) {
+          var o = toReplace[jj];
+          var s = o.t.position.start.offset, e = o.t.position.end.offset;
+          if (text.slice(s, e) !== String(o.t.tag)) continue; // archivo cambiado; saltar
+          text = text.slice(0, s) + "#" + o.repl + text.slice(e);
+        }
+        if (text !== orig) {
+          await app.vault.modify(f, text);
+          fileChanged = true;
+        }
+      }
+      // Frontmatter: pre-calcular con los valores cacheados; processFrontMatter
+      // re-serializa SIEMPRE, así que solo se invoca si hay cambio real.
+      var fmEdited = false;
+      if (c && c.frontmatter && c.frontmatter.tags != null) {
+        var ftv = c.frontmatter.tags;
+        var fmWillChange = false;
+        if (Array.isArray(ftv)) {
+          for (var q0 = 0; q0 < ftv.length; q0++) {
+            if (typeof ftv[q0] !== "string") continue;
+            var r0 = segReplace(ftv[q0].replace(/^#/, "").trim(), oldSegs, newSegs);
+            if (r0 != null && r0 !== ftv[q0]) { fmWillChange = true; break; }
+          }
+        } else if (typeof ftv === "string") {
+          var r0s = segReplace(ftv.replace(/^#/, "").trim(), oldSegs, newSegs);
+          if (r0s != null && r0s !== ftv) fmWillChange = true;
+        }
+        if (fmWillChange) {
+          try {
+            await app.fileManager.processFrontMatter(f, function (fm) {
+              var tv = fm.tags;
+              if (Array.isArray(tv)) {
+                for (var q = 0; q < tv.length; q++) {
+                  if (typeof tv[q] !== "string") continue;
+                  var r = segReplace(tv[q].replace(/^#/, "").trim(), oldSegs, newSegs);
+                  if (r != null && r !== tv[q]) { tv[q] = r; fmEdited = true; }
+                }
+              } else if (typeof tv === "string") {
+                var r2 = segReplace(tv.replace(/^#/, "").trim(), oldSegs, newSegs);
+                if (r2 != null && r2 !== tv) { fm.tags = r2; fmEdited = true; }
+              }
+            });
+          } catch (e) {
+            try { console.warn("[BLG Mindmap] rename frontmatter", e); } catch (_) {}
+          }
+        }
+      }
+      return (fileChanged || fmEdited) ? 1 : 0;
+    }
+    var count = 0;
+    var CHUNK = 8;
+    for (var i = 0; i < paths.length; i += CHUNK) {
+      var results = await Promise.all(paths.slice(i, i + CHUNK).map(processOne));
+      for (var k = 0; k < results.length; k++) count += results[k];
+    }
+    return count;
+  }
+
+  function renameBranch(app, plugin, oldTag, newTagInput, lang, onDone) {
+    newTagInput = String(newTagInput || "").trim();
+    // El campo de edición contiene el tag COMPLETO nuevo; se permite '/' para
+    // crear/mover subtags: cada segmento se valida por separado.
+    var newParts = splitSegs(newTagInput);
+    if (!newParts.length) { new Oe.Notice(T(lang, "invalidTagName")); return; }
+    for (var pi = 0; pi < newParts.length; pi++) {
+      if (!TAG_SEGMENT_RE.test(newParts[pi])) { new Oe.Notice(T(lang, "invalidTagName")); return; }
+    }
+    var oldSegs = splitSegs(oldTag);
+    if (!oldSegs.length) return;
+    var newSegs = newParts;
+    var newTag = newSegs.join("/");
+    if (String(oldTag).toLowerCase() === newTag.toLowerCase()) { new Oe.Notice(T(lang, "unchanged")); return; }
+    var exists = false;
+    try {
+      var all = app.metadataCache.getTags();
+      var nlower = newTag.toLowerCase();
+      for (var k in all) {
+        var kl = String(k).replace(/^#/, "").toLowerCase();
+        if (kl === nlower || kl.indexOf(nlower + "/") === 0) { exists = true; break; }
+      }
+    } catch (e) {}
+    function doRename() {
+      applyRenameToFiles(app, oldTag, newTag).then(function (n) {
+        new Oe.Notice(T(lang, "renamedN").replace("%d", n));
+        if (onDone) onDone(newTag);
+      }).catch(function (e) {
+        try { console.error("[BLG Mindmap] rename", e); } catch (_) {}
+        new Oe.Notice(T(lang, "errPrefix") + (e && e.message ? e.message : e));
+      });
+    }
+    if (exists) {
+      new BlgConfirm(app,
+        T(lang, "mergeTitle"),
+        T(lang, "mergeWarn").replace("%s", "#" + oldTag).replace("%s", "#" + newTag),
+        T(lang, "ok"), T(lang, "cancel"), doRename).open();
+      return;
+    }
+    doRename();
+  }
+
+  // Map(path -> Set(tagLiteral)) de las notas que tienen EXACTAMENTE el tag
+  // oldTag (subruta "" bajo el nodo). NO incluye descendientes (subtags):
+  // borrar un nodo no arrastra sus subtags, que son otros nodos.
+  function deleteBranchTargets(app, oldTag) {
+    var subMap = collectTagMap(app, oldTag);
+    var out = new Map();
+    var direct = subMap.get("");
+    if (direct) direct.forEach(function (tag, path) {
+      if (!out.has(path)) out.set(path, new Set());
+      out.get(path).add(tag);
+    });
+    return out;
+  }
+
+  // Elimina el tag EXACTO del nodo (sin subtags) de las notas que lo usan,
+  // inline y frontmatter. Devuelve nº de archivos modificados.
+  async function applyDeleteTags(app, oldTag) {
+    var targets = deleteBranchTargets(app, oldTag); // Map(path -> Set(tagLiteral))
+    var paths = Array.from(targets.keys()).sort();
+    var count = 0;
+    for (var i = 0; i < paths.length; i++) {
+      var f = app.vault.getAbstractFileByPath(paths[i]);
+      if (!f || (Oe && !(f instanceof Oe.TFile))) continue;
+      var tags = targets.get(paths[i]);
+      var c = app.metadataCache.getFileCache(f);
+      var fmRange = (c && c.frontmatterPosition)
+        ? { a: c.frontmatterPosition.start.line, b: c.frontmatterPosition.end.line } : null;
+      var fileChanged = false;
+      var orig = await app.vault.read(f);
+      var text = orig;
+      if (c && c.tags) {
+        var toRemove = [];
+        for (var j = 0; j < c.tags.length; j++) {
+          var t = c.tags[j];
+          if (!t || !t.position) continue;
+          var lit = String(t.tag).replace(/^#/, "");
+          if (fmRange && t.position.start.line >= fmRange.a && t.position.start.line <= fmRange.b) continue;
+          if (tags.has(lit)) toRemove.push(t);
+        }
+        // offsets del caché apuntan al archivo ORIGINAL: borrar de mayor a menor
+        toRemove.sort(function (a, b) { return b.position.start.offset - a.position.start.offset; });
+        for (var jj = 0; jj < toRemove.length; jj++) {
+          var o = toRemove[jj];
+          var s = o.position.start.offset, e = o.position.end.offset;
+          if (text.slice(s, e) !== String(o.tag)) continue; // archivo cambiado; saltar
+          text = text.slice(0, s) + text.slice(e);
+          fileChanged = true;
+        }
+      }
+      if (fileChanged && text !== orig) await app.vault.modify(f, text);
+      var fmEdited = false;
+      if (c && c.frontmatter && c.frontmatter.tags != null) {
+        try {
+          await app.fileManager.processFrontMatter(f, function (fm) {
+            var tv = fm.tags;
+            if (Array.isArray(tv)) {
+              var newArr = [];
+              for (var q = 0; q < tv.length; q++) {
+                if (typeof tv[q] !== "string") { newArr.push(tv[q]); continue; }
+                if (tags.has(tv[q].replace(/^#/, "").trim())) { fmEdited = true; continue; }
+                newArr.push(tv[q]);
+              }
+              fm.tags = newArr;
+            } else if (typeof tv === "string") {
+              if (tags.has(tv.replace(/^#/, "").trim())) { fm.tags = []; fmEdited = true; }
+            }
+          });
+        } catch (e) {
+          try { console.warn("[BLG Mindmap] delete frontmatter", e); } catch (_) {}
+        }
+      }
+      if (fileChanged || fmEdited) count++;
+    }
+    return count;
+  }
+
+  function deleteBranch(app, oldTag, lang, onDone) {
+    function doDelete() {
+      applyDeleteTags(app, oldTag).then(function (n) {
+        new Oe.Notice(T(lang, "deletedN").replace("%d", n));
+        if (onDone) onDone(oldTag);
+      }).catch(function (e) {
+        try { console.error("[BLG Mindmap] delete", e); } catch (_) {}
+        new Oe.Notice(T(lang, "errPrefix") + (e && e.message ? e.message : e));
+      });
+    }
+    new BlgConfirm(app,
+      T(lang, "deleteTitle"),
+      T(lang, "deleteWarn").replace("%s", "#" + oldTag),
+      T(lang, "ok"), T(lang, "cancel"), doDelete).open();
+  }
+
   /* ---------- modal del mapa mental ---------- */
 
   var BlgMindmapModal = class extends Oe.Modal {
@@ -2467,6 +2835,9 @@ cytoscape/dist/cytoscape.esm.mjs:
       this.plugin = plugin;
       this.rootTag = rootTag;
       this.mm = null;
+      this._rebuildTimer = null;
+      this._rebuildCap = null;
+      this._cacheRef = null;
     }
     onOpen() {
       var lang = langOf(this.plugin);
@@ -2737,6 +3108,38 @@ cytoscape/dist/cytoscape.esm.mjs:
         if (files.length === 1) { self.openPath(files[0]); self.close(); return; }
         new BlgNotePick(self.app, self.plugin, files, function (e) { self.openPath(e); self.close(); }).open();
       });
+
+      /* ----- click derecho en un nodo → renombrar tag de la rama ----- */
+      svg.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var tgt = e.target;
+        var tn = tgt && tgt.tagName ? String(tgt.tagName).toLowerCase() : "";
+        if (tn === "circle") return; // circulito de plegado
+        var g = tgt && tgt.closest ? tgt.closest("g.markmap-node") : null;
+        if (!g || !g.__data__) return;
+        var tag = g.__data__.payload && g.__data__.payload.tag;
+        if (!tag) return;
+        var menu = new Oe.Menu();
+        menu.addItem(function (it) {
+          it.setIcon("pencil")
+            .setTitle(T(lang, "renameMenu").replace("%s", "#" + tag))
+            .onClick(function () {
+              new BlgRenamePrompt(self.app, T(lang, "renameTitle"), tag, self.rootTag, T(lang, "renamePlaceholder"),
+                T(lang, "ok"), T(lang, "cancel"),
+                function (v) {
+                  renameBranch(self.app, self.plugin, tag, v, lang, function (newTag) {
+                    // Solo se re-enraíza el mapa si se renombró el propio nodo
+                    // raíz del filtro; si es una rama interna, el filtro sigue
+                    // siendo el mismo y solo se refresca el árbol.
+                    if (newTag && self.rootTag && tag === self.rootTag) self.rootTag = newTag;
+                    self._scheduleRebuild();
+                  });
+                }).open();
+            });
+        });
+        menu.showAtPosition({ x: e.clientX, y: e.clientY });
+      });
     }
     // Abre la nota posicionada en la línea exacta del tag del nodo: 1ª
     // aparición inline en el cuerpo; si solo está en frontmatter, su línea
@@ -2759,7 +3162,51 @@ cytoscape/dist/cytoscape.esm.mjs:
         } catch (e) {}
       }
     }
+    // Tras un rename: re-colecta tags, reconstruye el árbol y re-renderiza
+    // (el renderData envuelto re-aplica layout bilateral + viewport).
+    rebuildAfterRename() {
+      try {
+        var tagMap = collectTagMap(this.app, this.rootTag);
+        var data = buildTree(this.rootTag, tagMap);
+        if (this.mm) this.mm.setData(data);
+        this.setTitle("#" + this.rootTag);
+      } catch (e) { try { console.warn("[BLG Mindmap] rebuild", e); } catch (_) {} }
+    }
+    // Refresco forzado tras un rename: rebuild inmediato (feedback visual) +
+    // rebuild diferido cuando el metadataCache termine de re-parsear las notas
+    // modificadas (vault.modify/processFrontMatter actualizan el caché de
+    // forma ASÍNCRONA; sin esto el árbol se reconstruía con tags obsoletos).
+    // Debounce de 200ms tras el último evento "changed", con cap de 3s por si
+    // no llega ninguno. Los timers/listener se limpian en onClose.
+    _scheduleRebuild() {
+      var self = this;
+      this.rebuildAfterRename();
+      this._clearRebuildWait();
+      var done = false;
+      var finish = function () {
+        if (done) return;
+        done = true;
+        self._clearRebuildWait();
+        self.rebuildAfterRename();
+      };
+      try {
+        this._cacheRef = this.app.metadataCache.on("changed", function () {
+          if (self._rebuildTimer) clearTimeout(self._rebuildTimer);
+          self._rebuildTimer = setTimeout(finish, 200);
+        });
+      } catch (e) { this._cacheRef = null; }
+      this._rebuildCap = setTimeout(finish, 3000);
+    }
+    _clearRebuildWait() {
+      if (this._rebuildTimer) { clearTimeout(this._rebuildTimer); this._rebuildTimer = null; }
+      if (this._rebuildCap) { clearTimeout(this._rebuildCap); this._rebuildCap = null; }
+      if (this._cacheRef) {
+        try { this.app.metadataCache.offref(this._cacheRef); } catch (e) {}
+        this._cacheRef = null;
+      }
+    }
     onClose() {
+      this._clearRebuildWait();
       try { this.mm && this.mm.destroy(); } catch (e) {}
       this.mm = null;
       this.contentEl.empty();

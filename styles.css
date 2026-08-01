@@ -329,7 +329,7 @@
   color: #222222;
   font-size: 12px;
   line-height: 1.4;
-  cursor: pointer;
+  cursor: context-menu; /* click = abrir nota, click derecho = renombrar tag */
 }
 
 .blg-mm-modal .blg-mm-badge {
@@ -353,4 +353,9 @@
 
 .blg-mm-modal .blg-mm-zero .blg-mm-badge {
   background: #bbbbbb;
+}
+
+/* nodo raíz: también admite click derecho (renombrar tag) */
+.blg-mm-modal .blg-mm-root-label {
+  cursor: context-menu;
 }
