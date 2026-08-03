@@ -2048,9 +2048,23 @@ cytoscape/dist/cytoscape.esm.mjs:
       bajo los nodos cuyo label coincide (substring case-insensitive),
       atenúa el resto y muestra un contador; Enter centra el primer
       match, Esc limpia el filtro.
-    - El circulito de plegado de markmap se conserva (no choca con el
-      click de label, que markmap deja libre); en las ramas izquierdas
-      se mueve al borde exterior.
+   - El circulito de plegado de markmap se conserva (no choca con el
+     click de label, que markmap deja libre); en las ramas izquierdas
+     se mueve al borde exterior.
+   - Costuras (sewing): capa SVG propia (<g class="blg-mm-sew">) que
+     dibuja curvas entre los NODOS-TAG que contienen notas cosidas
+     (el sewing es nota→nota; el mapa muestra tags, así que la arista
+     une los nodos donde cuelgan esas notas). Flecha padre→hijo,
+     color configurable (settings.mmSewingColor, default #e0245e),
+     glow (drop-shadow) + pulso CSS. Se recalcula tras CADA render
+     (después de applySides, espejando la X de los nodos del lado
+     izquierdo). Auto-costuras (mismo nodo) no dibujan línea: marcan
+     el nodo con la clase blg-mm-selfsew. Extremo en rama plegada:
+     se oculta la arista o se ancla al ancestro visible más cercano,
+     según settings.mmSewingFoldMode ("hide" | "ancestor").
+     Toggle global: settings.mmShowSewing (default false) + botón de
+     ojo en la barra de zoom del modal. Ajustes inyectados en la
+     pestaña del plugin (mismo patrón hookAddSettingTab que fondos).
    ============================================================ */
 (function () {
   "use strict";
@@ -2345,6 +2359,93 @@ cytoscape/dist/cytoscape.esm.mjs:
     return { x1: minX - 8, y1: minY - 4, x2: maxX + 8, y2: maxY + 10 };
   }
 
+  /* ---------- costuras (sewing) entre nodos del mapa ---------- */
+
+  // Targets de sewing de una nota (idéntico a sewingTargets() del MCP /
+  // _sewingTargets() del bundle): frontmatter.sewing = lista de wikilinks.
+  function sewingTargetsOf(app, path) {
+    var out = [];
+    var f = app.vault.getAbstractFileByPath(path);
+    if (!f) return out;
+    var c = app.metadataCache.getFileCache(f);
+    var fm = c && c.frontmatter;
+    var sv = fm && fm.sewing;
+    if (sv == null) return out;
+    var ls = Array.isArray(sv) ? sv : [sv];
+    for (var i = 0; i < ls.length; i++) {
+      var it = ls[i];
+      if (typeof it !== "string") continue;
+      var m = it.match(/\[\[([^\]|#]+)/);
+      var lt = (m ? m[1] : it).trim();
+      if (!lt) continue;
+      var tf = app.metadataCache.getFirstLinkpathDest(lt, path);
+      if (tf) out.push(tf.path);
+    }
+    return out;
+  }
+
+  // Cruza las costuras nota→nota con los nodos-tag del árbol: una arista
+  // tagA→tagB por cada par de nodos que contienen notas cosidas (dedup).
+  // Auto-costuras (ambas notas cuelgan del mismo nodo) van aparte, en
+  // selfSewn. root = jerarquía markmap (nodos con payload {tag, files}).
+  function collectSewEdges(app, root) {
+    var byPath = new Map(); // path -> [nodeTag,...]
+    var nodes = [];
+    (function walk(n) {
+      if (!n || !n.payload || !n.payload.tag) return;
+      nodes.push(n);
+      var files = n.payload.files || [];
+      for (var i = 0; i < files.length; i++) {
+        var p = files[i].path;
+        if (!byPath.has(p)) byPath.set(p, []);
+        var arr = byPath.get(p);
+        if (arr.indexOf(n.payload.tag) === -1) arr.push(n.payload.tag);
+      }
+      var ch = n.children || [];
+      for (var j = 0; j < ch.length; j++) walk(ch[j]);
+    })(root);
+    var seen = new Set(), edges = [], selfSewn = new Set();
+    for (var ni = 0; ni < nodes.length; ni++) {
+      var n = nodes[ni], tagA = n.payload.tag;
+      var files = n.payload.files || [];
+      for (var i = 0; i < files.length; i++) {
+        var tgts = sewingTargetsOf(app, files[i].path);
+        for (var t = 0; t < tgts.length; t++) {
+          var dests = byPath.get(tgts[t]);
+          if (!dests) continue;
+          for (var d = 0; d < dests.length; d++) {
+            var tagB = dests[d];
+            if (tagB === tagA) { selfSewn.add(tagA); continue; }
+            var k = tagA + "" + tagB;
+            if (seen.has(k)) continue;
+            seen.add(k);
+            edges.push({ from: tagA, to: tagB });
+          }
+        }
+      }
+    }
+    return { edges: edges, selfSewn: Array.from(selfSewn) };
+  }
+
+  // Curva S horizontal entre dos puntos (estilo mindmap).
+  function sewCurve(x1, y1, x2, y2) {
+    var mx = (x1 + x2) / 2;
+    return "M" + x1 + "," + y1 + " C" + mx + "," + y1 + " " + mx + "," + y2 + " " + x2 + "," + y2;
+  }
+
+  // Punto sobre el borde de un rect (centrado en cx,cy, tamaño w×h, con un
+  // margen de 3px) en la dirección de (tx,ty): para que la arista arranque
+  // y termine en el borde del label, no en su centro.
+  function borderPoint(cx, cy, w, h, tx, ty) {
+    var dx = tx - cx, dy = ty - cy;
+    if (!dx && !dy) return { x: cx, y: cy };
+    var hw = w / 2 + 3, hh = h / 2 + 3;
+    var sx = dx ? hw / Math.abs(dx) : Infinity;
+    var sy = dy ? hh / Math.abs(dy) : Infinity;
+    var s = Math.min(sx, sy);
+    return { x: cx + dx * s, y: cy + dy * s };
+  }
+
   // hook de test en node (fuera de Obsidian no hay module.exports.default)
   if (typeof globalThis !== "undefined") {
     globalThis.__BLG_MM_TEST = {
@@ -2358,7 +2459,11 @@ cytoscape/dist/cytoscape.esm.mjs:
       renameBranchTargets: renameBranchTargets,
       deleteBranchTargets: deleteBranchTargets,
       applyDeleteTags: applyDeleteTags,
-      applyRenameToFiles: applyRenameToFiles
+      applyRenameToFiles: applyRenameToFiles,
+      sewingTargetsOf: sewingTargetsOf,
+      collectSewEdges: collectSewEdges,
+      sewCurve: sewCurve,
+      borderPoint: borderPoint
     };
   }
 
@@ -2411,7 +2516,19 @@ cytoscape/dist/cytoscape.esm.mjs:
       deleteMenu: "Eliminar tag %s",
       deleteTitle: "Eliminar tag",
       deleteWarn: "Se eliminará el tag %s de las notas que lo usen, sin tocar sus subtags. Esto no se puede deshacer. ¿Continuar?",
-      deletedN: "Eliminado: %d nota(s) actualizada(s)"
+      deletedN: "Eliminado: %d nota(s) actualizada(s)",
+      sewShow: "Mostrar costuras (sewing)",
+      sewHide: "Ocultar costuras (sewing)",
+      settingsTab: "Mapa mental",
+      settingsTitle: "Mapa mental de tags",
+      mmShowSewingName: "Mostrar costuras (sewing)",
+      mmShowSewingDesc: "Dibuja líneas entre los nodos del mapa mental cuyas notas están cosidas (propiedad sewing).",
+      mmSewingColorName: "Color de las costuras",
+      mmSewingColorDesc: "Color de las líneas de sewing en el mapa mental.",
+      mmSewingFoldName: "Costuras con ramas plegadas",
+      mmSewingFoldDesc: "Qué hacer cuando un extremo de la costura queda dentro de una rama plegada.",
+      mmFoldHide: "Ocultar la costura",
+      mmFoldAncestor: "Anclar al ancestro visible"
     },
     en: {
       cmdName: "Better Local Graph: tag mindmap",
@@ -2443,7 +2560,19 @@ cytoscape/dist/cytoscape.esm.mjs:
       deleteMenu: "Delete tag %s",
       deleteTitle: "Delete tag",
       deleteWarn: "Tag %s will be removed from the notes that use it, without touching its subtags. This cannot be undone. Continue?",
-      deletedN: "Deleted: %d file(s) updated"
+      deletedN: "Deleted: %d file(s) updated",
+      sewShow: "Show sewing edges",
+      sewHide: "Hide sewing edges",
+      settingsTab: "Mindmap",
+      settingsTitle: "Tag mindmap",
+      mmShowSewingName: "Show sewing edges",
+      mmShowSewingDesc: "Draws edges between mindmap nodes whose notes are sewn together (sewing property).",
+      mmSewingColorName: "Sewing edge color",
+      mmSewingColorDesc: "Color of the sewing edges in the mindmap.",
+      mmSewingFoldName: "Sewing edges with folded branches",
+      mmSewingFoldDesc: "What to do when an edge endpoint ends up inside a folded branch.",
+      mmFoldHide: "Hide the edge",
+      mmFoldAncestor: "Anchor to nearest visible ancestor"
     }
   };
   function T(lang, key) { return (STR[lang] && STR[lang][key]) || STR.es[key] || key; }
@@ -2863,8 +2992,8 @@ cytoscape/dist/cytoscape.esm.mjs:
         duration: 0,             // el espejado bilateral es instantáneo
         maxWidth: 320,
         paddingX: 14,
-        spacingHorizontal: 70,
-        spacingVertical: 10,
+        spacingHorizontal: 60,
+        spacingVertical: 7,
         initialExpandLevel: -1,  // todo expandido
         embedGlobalCSS: true,
         fitRatio: 0.92,
@@ -2921,6 +3050,95 @@ cytoscape/dist/cytoscape.esm.mjs:
         place();
         scrollTo({ x: (b.x1 + b.x2) / 2, y: (b.y1 + b.y2) / 2 },
           scrollEl.clientWidth / 2, scrollEl.clientHeight / 2);
+      }
+
+      /* ----- capa de costuras (sewing): curvas entre nodos-tag ----- */
+      var SVGNS = "http://www.w3.org/2000/svg";
+      var defs = document.createElementNS(SVGNS, "defs");
+      var sewMarker = document.createElementNS(SVGNS, "marker");
+      sewMarker.setAttribute("id", "blg-mm-sew-arrow");
+      sewMarker.setAttribute("viewBox", "0 0 10 10");
+      sewMarker.setAttribute("refX", "9");
+      sewMarker.setAttribute("refY", "5");
+      sewMarker.setAttribute("markerWidth", "6");
+      sewMarker.setAttribute("markerHeight", "6");
+      sewMarker.setAttribute("orient", "auto-start-reverse");
+      var sewMarkerPath = document.createElementNS(SVGNS, "path");
+      sewMarkerPath.setAttribute("d", "M0,0 L10,5 L0,10 z");
+      sewMarker.appendChild(sewMarkerPath);
+      defs.appendChild(sewMarker);
+      svg.insertBefore(defs, svg.firstChild);
+      var sewG = document.createElementNS(SVGNS, "g");
+      sewG.setAttribute("class", "blg-mm-sew");
+
+      // Redibuja la capa de costuras. Se llama tras CADA render de markmap
+      // (ya con applySides aplicado): los nodos del lado izquierdo están
+      // espejados vía CSS transform, así que su X visual se recalcula con
+      // la misma fórmula (2*ax - x - w) que usa applySides/applyFilter.
+      function drawSew() {
+        var st = self.plugin.settings || {};
+        var color = st.mmSewingColor || "#e0245e";
+        self.modalEl.style.setProperty("--blg-mm-sew-color", color);
+        sewMarkerPath.setAttribute("fill", color);
+        while (sewG.firstChild) sewG.removeChild(sewG.firstChild);
+        var gNode = self.mm && self.mm.g && self.mm.g.node ? self.mm.g.node() : null;
+        if (!gNode) return;
+        // z-order: links del árbol < costuras < labels de los nodos
+        gNode.insertBefore(sewG, gNode.querySelector("g.markmap-node") || null);
+        // limpiar marcas de auto-costura del render anterior
+        var prev = gNode.querySelectorAll("g.markmap-node.blg-mm-selfsew");
+        for (var pc = 0; pc < prev.length; pc++) prev[pc].classList.remove("blg-mm-selfsew");
+        if (!st.mmShowSewing) return;
+        var root = self.mm.state && self.mm.state.data;
+        if (!root || !root.state) return;
+        var res = collectSewEdges(self.app, root);
+        // nodos visibles (los plegados no tienen elemento en el DOM)
+        var vis = new Map();
+        var nodeEls = gNode.querySelectorAll("g.markmap-node");
+        for (var i = 0; i < nodeEls.length; i++) {
+          var d = nodeEls[i].__data__;
+          if (d && d.payload && d.payload.tag) vis.set(d.payload.tag, { d: d, el: nodeEls[i] });
+        }
+        if (!vis.size) return;
+        var foldMode = st.mmSewingFoldMode || "hide";
+        var byTag = new Map();
+        (function walk(n) {
+          if (n && n.payload && n.payload.tag) byTag.set(n.payload.tag, n);
+          var ch = (n && n.children) || [];
+          for (var q = 0; q < ch.length; q++) walk(ch[q]);
+        })(root);
+        var rr = root.state.rect, ax = rr.x + rr.width / 2;
+        function entryOf(tag) {
+          if (vis.has(tag)) return vis.get(tag);
+          if (foldMode !== "ancestor") return null;
+          var n = byTag.get(tag);
+          while (n && n.parent) {
+            n = n.parent;
+            if (n.payload && n.payload.tag && vis.has(n.payload.tag)) return vis.get(n.payload.tag);
+          }
+          return null;
+        }
+        function centerOf(en) {
+          var r = en.d.state.rect;
+          var vx = en.el.classList.contains("blg-mm-left") ? 2 * ax - r.x - r.width : r.x;
+          return { x: vx + r.width / 2, y: r.y + r.height / 2, w: r.width, h: r.height };
+        }
+        for (var ei = 0; ei < res.edges.length; ei++) {
+          var a = entryOf(res.edges[ei].from), b = entryOf(res.edges[ei].to);
+          if (!a || !b || a === b) continue;
+          var ca = centerOf(a), cb = centerOf(b);
+          var p1 = borderPoint(ca.x, ca.y, ca.w, ca.h, cb.x, cb.y);
+          var p2 = borderPoint(cb.x, cb.y, cb.w, cb.h, ca.x, ca.y);
+          var p = document.createElementNS(SVGNS, "path");
+          p.setAttribute("d", sewCurve(p1.x, p1.y, p2.x, p2.y));
+          p.setAttribute("class", "blg-mm-sew-edge");
+          p.setAttribute("marker-end", "url(#blg-mm-sew-arrow)");
+          sewG.appendChild(p);
+        }
+        for (var si = 0; si < res.selfSewn.length; si++) {
+          var v = vis.get(res.selfSewn[si]);
+          if (v) v.el.classList.add("blg-mm-selfsew");
+        }
       }
 
       /* ----- buscador: resalta la rama cuyo label coincide ----- */
@@ -3023,6 +3241,7 @@ cytoscape/dist/cytoscape.esm.mjs:
               if (anchor) scrollTo(anchor.c, anchor.sx, anchor.sy);
             }
             applyFilter();
+            drawSew();
           } catch (e) { try { console.warn("[BLG Mindmap] sides/viewport", e); } catch (_) {} }
         });
       };
@@ -3043,6 +3262,27 @@ cytoscape/dist/cytoscape.esm.mjs:
       mkBtn("zoom-out", T(lang, "zoomOut"), function () { zoomTo(vp.k / 1.25, centerAnchor()); });
       mkBtn("scan", T(lang, "fit"), fitAll);
       this.contentEl.appendChild(bar);
+
+      /* ----- botón ojo: toggle de costuras al vuelo (persiste setting) ----- */
+      var sewBtn = document.createElement("button");
+      sewBtn.type = "button";
+      function updSewBtn() {
+        var on = !!(self.plugin.settings && self.plugin.settings.mmShowSewing);
+        try { Oe.setIcon(sewBtn, on ? "eye" : "eye-off"); } catch (e) { sewBtn.textContent = "S"; }
+        var lbl = T(lang, on ? "sewHide" : "sewShow");
+        sewBtn.title = lbl;
+        sewBtn.setAttribute("aria-label", lbl);
+        sewBtn.classList.toggle("blg-mm-sew-on", on);
+      }
+      sewBtn.addEventListener("click", function () {
+        if (!self.plugin.settings) self.plugin.settings = {};
+        self.plugin.settings.mmShowSewing = !self.plugin.settings.mmShowSewing;
+        try { self.plugin.saveSettings(); } catch (e) {}
+        updSewBtn();
+        drawSew();
+      });
+      updSewBtn();
+      bar.insertBefore(sewBtn, bar.firstChild);
 
       /* ----- Ctrl+rueda = zoom anclado al cursor ----- */
       scrollEl.addEventListener("wheel", function (e) {
@@ -3213,10 +3453,109 @@ cytoscape/dist/cytoscape.esm.mjs:
     }
   };
 
+  /* ---------- sección de ajustes (pestaña propia, patrón de fondos) ---------- */
+
+  function injectMMSettings(plugin, containerEl) {
+    var lang = langOf(plugin);
+    var nav = containerEl.querySelector(".blg-settings-tabs");
+    var panelsHost = containerEl.querySelector(".blg-settings-panels");
+    if (!nav || !panelsHost) {
+      // fallback: contenedor plano (sin tabs). Lo anexamos al final.
+      panelsHost = containerEl;
+      nav = null;
+    }
+
+    var TAB_KEY = "mindmap";
+    var myBtn = null, myPanel = null;
+    if (nav) {
+      myBtn = nav.createEl("button", { cls: "blg-settings-tab", text: T(lang, "settingsTab") });
+      myPanel = panelsHost.createDiv({ cls: "blg-settings-panel" });
+      myBtn.addEventListener("click", function () {
+        containerEl.querySelectorAll(".blg-settings-tab").forEach(function (b) { b.removeClass("active"); });
+        containerEl.querySelectorAll(".blg-settings-panel").forEach(function (p) { p.removeClass("active"); });
+        myBtn.addClass("active"); myPanel.addClass("active");
+        try { plugin.settings.lastSettingsTab = TAB_KEY; plugin.saveSettings(); } catch (e) {}
+      });
+      // que los tabs originales también desactiven el mío
+      nav.querySelectorAll(".blg-settings-tab").forEach(function (b) {
+        if (b === myBtn) return;
+        b.addEventListener("click", function () {
+          myBtn.removeClass("active"); myPanel.removeClass("active");
+        });
+      });
+    } else {
+      myPanel = containerEl.createDiv({ cls: "blg-bg-section" });
+      myPanel.style.cssText = "margin-top:18px;border-top:1px solid var(--background-modifier-border);padding-top:12px";
+    }
+
+    var sec = myPanel;
+    sec.createEl("h3", { text: T(lang, "settingsTitle") });
+
+    new Oe.Setting(sec)
+      .setName(T(lang, "mmShowSewingName"))
+      .setDesc(T(lang, "mmShowSewingDesc"))
+      .addToggle(function (t) {
+        t.setValue(!!plugin.settings.mmShowSewing)
+          .onChange(function (v) { plugin.settings.mmShowSewing = v; plugin.saveSettings(); });
+      });
+
+    new Oe.Setting(sec)
+      .setName(T(lang, "mmSewingColorName"))
+      .setDesc(T(lang, "mmSewingColorDesc"))
+      .addColorPicker(function (c) {
+        c.setValue(plugin.settings.mmSewingColor || "#e0245e")
+          .onChange(function (v) { plugin.settings.mmSewingColor = v; plugin.saveSettings(); });
+      });
+
+    new Oe.Setting(sec)
+      .setName(T(lang, "mmSewingFoldName"))
+      .setDesc(T(lang, "mmSewingFoldDesc"))
+      .addDropdown(function (d) {
+        d.addOption("hide", T(lang, "mmFoldHide"))
+          .addOption("ancestor", T(lang, "mmFoldAncestor"))
+          .setValue(plugin.settings.mmSewingFoldMode || "hide")
+          .onChange(function (v) { plugin.settings.mmSewingFoldMode = v; plugin.saveSettings(); });
+      });
+
+    // activar mi tab si era la última usada
+    var wasActive = false;
+    try { wasActive = plugin.settings.lastSettingsTab === TAB_KEY; } catch (e) {}
+    if (myBtn && wasActive) {
+      containerEl.querySelectorAll(".blg-settings-tab").forEach(function (b) { b.removeClass("active"); });
+      containerEl.querySelectorAll(".blg-settings-panel").forEach(function (p) { p.removeClass("active"); });
+      myBtn.addClass("active"); myPanel.addClass("active");
+    } else if (myBtn) {
+      myBtn.removeClass("active"); myPanel.removeClass("active");
+    }
+  }
+
+  /* ---------- hook addSettingTab para capturar la instancia real ---------- */
+  function hookMMSettingTab(plugin) {
+    var origAdd = plugin.addSettingTab.bind(plugin);
+    plugin.addSettingTab = function (tab) {
+      try {
+        if (tab && tab.plugin && tab.plugin === plugin && typeof tab.display === "function" && !tab._blgMMHooked) {
+          var _d = tab.display;
+          tab.display = function () {
+            var r = _d.apply(this, arguments);
+            try { injectMMSettings(this.plugin, this.containerEl); }
+            catch (e) { console.warn("[BLG MM] settings inject:", e); }
+            return r;
+          };
+          tab._blgMMHooked = true;
+        }
+      } catch (e) { console.warn("[BLG MM] hook display:", e); }
+      return origAdd(tab);
+    };
+  }
+
   /* ---------- inyección: envolver onload para registrar el comando ---------- */
 
   var _onload = PLUGIN_PROTO.onload;
   PLUGIN_PROTO.onload = async function () {
+    // el hook de settings debe quedar instalado ANTES de que el onload del
+    // bundle llame a this.addSettingTab(...)
+    try { hookMMSettingTab(this); } catch (e) { try { console.warn("[BLG Mindmap] hook settings:", e); } catch (_) {} }
     await _onload.call(this);
     try {
       var self = this;
