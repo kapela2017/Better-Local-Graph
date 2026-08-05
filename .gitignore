@@ -6,6 +6,7 @@ ai-cache.json
 data.json
 AGENTS.md
 backgrounds/
+.clipboard_img.png
 
 # Backups — no archivos .bak en el repo
 *.bak
@@ -17,3 +18,4 @@ manifest.json.bak*
 data.json.bak*
 blg-backgrounds.js.bak*
 graphify-out/
+.clipboard_img_vision.png
