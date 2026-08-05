@@ -76,7 +76,11 @@ Key settings in the plugin options tab:
 
 ## MCP Server
 
-The plugin includes a built-in MCP server for AI agents. Start it from the plugin settings and connect your AI tools:
+The plugin includes a built-in MCP server for AI agents.
+
+**Un clic y listo:** el plugin tiene un boton en Ajustes llamado "MCP: copiar prompt de agente" (tambien disponible desde la paleta de comandos Ctrl+P como "Copiar prompt de agente MCP"). Lo ejecutas, se copia al portapapeles el prompt completo con tu URL, token y herramientas. Pegas en ChatGPT, Claude o Gemini, y listo.
+
+Si prefieres configuracion directa en tu coding agent:
 
 ```json
 {
@@ -91,7 +95,7 @@ The plugin includes a built-in MCP server for AI agents. Start it from the plugi
 }
 ```
 
-Available tools: `sewingTargets`, `getTagGraph`, `getActiveNoteRelations`, `sew`, `openTagView`, `exitTagView`, `searchNotes`, `getNote`, and more.
+Available tools: `blg_get_current_view`, `blg_get_active_note_relations`, `blg_get_tag_graph`, `blg_get_note`, `blg_search_notes`, `blg_list_tags`, `blg_sew`, `blg_open_tag_view`, `blg_exit_tag_view`.
 
 ## License
 
