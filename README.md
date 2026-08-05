@@ -78,9 +78,9 @@ Key settings in the plugin options tab:
 
 The plugin includes a built-in MCP server for AI agents.
 
-**Un clic y listo:** el plugin tiene un boton en Ajustes llamado "MCP: copiar prompt de agente" (tambien disponible desde la paleta de comandos Ctrl+P como "Copiar prompt de agente MCP"). Lo ejecutas, se copia al portapapeles el prompt completo con tu URL, token y herramientas. Pegas en ChatGPT, Claude o Gemini, y listo.
+**One click, done:** the plugin has a button in Settings called "MCP: copy agent prompt" (also available from the command palette Ctrl+P as "Copy agent MCP prompt"). Click it, it copies the full prompt with your URL, token and tools to your clipboard. Paste into ChatGPT, Claude or Gemini, and you are ready.
 
-Si prefieres configuracion directa en tu coding agent:
+If you prefer direct config for your coding agent (Claude Code, OpenCode, Cursor):
 
 ```json
 {
