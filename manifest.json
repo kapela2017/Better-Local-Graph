@@ -3,7 +3,7 @@
   "name": "Better Local Graph",
   "version": "3.2.2",
   "minAppVersion": "1.4.0",
-  "description": "Local graph view of the active note's neighborhood with Lucide icons and link direction. Tag overview mode (fcose): filter the whole vault by a tag or subtag, age-based node coloring and subtle pulse, then sew notes together. Secondary feature: sew parent-child relationships between notes through a visual sewing session. AI tooltip summaries (BYOK). English & Spanish. Embedded MCP server (Streamable HTTP on localhost) so external agents (Claude Code, OpenCode, Gemini, OpenClaw) can query tag graphs and sew notes.",
+  "description": "Live project context for you and your AI agents. Sew parent-child relationships between notes via the `sewing` property, bookmark nodes for quick access, cross-reference tags from the tag panel, and use the Coser A command to relate any note to your bookmarks. The embedded MCP server exposes your graph to AI agents so they know your project structure without scanning the whole vault. Lucide icons, link arrows, age-based coloring, AI tooltips (BYOK), bilingual EN/ES.",
   "author": "Pablo Zambrano",
   "authorUrl": "",
   "isDesktopOnly": false
