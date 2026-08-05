@@ -6,7 +6,7 @@
 
 ![Preview](assets/Preview.png)
 
-<video src="assets/0805.mp4" controls width="100%" style="max-width:720px;"></video>
+<video src="https://github.com/kapela2017/Better-Local-Graph/raw/main/assets/0805.mp4" controls width="100%"></video>
 
 **Better Local Graph** is an Obsidian plugin that transforms the local graph into a **live project context for you and your AI agents**. It goes beyond visualization: it lets you define meaningful parent-child relationships between notes through a visual **Sewing** session, bookmark nodes for quick access, and cross-reference tags from the tag panel. The embedded **MCP server** exposes your note graph to external AI agents (Claude Code, OpenCode, Gemini, etc.), giving them precise context about what you're working on — **your agent will never search your entire vault again, saving tokens and providing direct context on what you're currently viewing**.
 
@@ -50,115 +50,51 @@ No more generic graphs. Your agent knows your current project structure because 
 
 ### From GitHub Release
 
-1. Download `main.js`, `manifest.json`, and `styles.css` from the [latest release](https://github.com/pablozambrano/better-local-graph/releases/latest)
-2. Create a folder called `better-local-graph` in your vault's plugins folder:
-   ```
-   /path/to/vault/.obsidian/plugins/better-local-graph/
-   ```
-3. Copy the downloaded files into the folder
-4. Enable the plugin in Obsidian Settings → Community plugins
+1. Go to [Releases](https://github.com/kapela2017/Better-Local-Graph/releases)
+2. Download `better-local-graph-x.x.x.zip` from the latest release
+3. Extract to your vault's `.obsidian/plugins/better-local-graph/` folder
+4. Enable the plugin in Obsidian settings
 
-### From source (development)
+### From Source (development)
 
-1. Clone into your vault's plugins folder:
-   ```bash
-   cd /path/to/vault/.obsidian/plugins
-   git clone https://github.com/pablozambrano/better-local-graph.git
-   cd better-local-graph
-   ```
-2. Install dependencies and build:
-   ```bash
-   npm install
-   npm run build
-   ```
-3. Enable the plugin in Obsidian
+```bash
+git clone git@github.com:kapela2017/Better-Local-Graph.git
+cd Better-Local-Graph
+# Ensure the build outputs (main.js, styles.css, manifest.json) are present
+# No npm/build step required — this is a distribution bundle
+```
 
 ## Configuration
 
-| Setting | Description | Default |
-|---------|-------------|---------|
-| AI Provider URL | OpenAI-compatible endpoint for tooltips | `https://api.openai.com/v1` |
-| AI Model | Model name for tooltip generation | `gpt-4o-mini` |
-| API Key | Your API key (stored locally, never sent) | — |
-| Max Nodes | Maximum nodes in the local graph | `50` |
-| Pulse Duration | Age pulse animation speed (ms) | `2000` |
-| Sewing Tag Format | Path format for child tags | `slug-parent/sewing/slug-child` |
+Key settings in the plugin options tab:
 
-## Comparison with similar plugins
+| Setting | Description |
+|---------|-------------|
+| MCP Enabled | Enable the embedded MCP server for AI agent integration |
+| MCP Port | Server port (default: 27125) |
+| MCP Token | Bearer token for MCP authentication |
+| AI Provider | OpenAI-compatible endpoint for AI tooltips |
+| UI Language | English or Spanish |
 
-| Feature | Better Local Graph | Obsidian Local Graph | Graph Analysis |
-|---------|-------------------|---------------------|----------------|
-| Lucide icons per node | ✅ | ❌ | ❌ |
-| Link direction arrows | ✅ | ❌ | ❌ |
-| Age-based coloring | ✅ | ❌ | ❌ |
-| Tag Overview (fcose) | ✅ | ❌ | ❌ |
-| Sewing (parent-child) | ✅ | ❌ | ❌ |
-| AI tooltips (BYOK) | ✅ | ❌ | ❌ |
-| MCP server for agents | ✅ | ❌ | ❌ |
-| Bilingual (ES/EN) | ✅ | ✅ | ❌ |
+## MCP Server
 
-## Privacy & Data
+The plugin includes a built-in MCP server for AI agents. Start it from the plugin settings and connect your AI tools:
 
-- **AI tooltips**: Your note content is sent only if you configure an API key. No data is sent by default.
-- **MCP server**: Listens on `localhost` only. Not exposed to the network.
-- **No telemetry**: Better Local Graph does not collect usage data or phone home.
-
-## Troubleshooting
-
-### Graph not showing
-
-If the graph view is blank, check that your vault has at least one note with internal links. The local graph requires at least one connected note to render.
-
-### MCP server won't start
-
-Ensure port `3100` (default) is not in use by another application. Check the plugin settings for the correct port and try restarting Obsidian.
-
-### AI tooltips not working
-
-| Issue | Check |
-|-------|-------|
-| Provider URL correct? | Must be an OpenAI-compatible endpoint (e.g. `https://api.openai.com/v1`) |
-| API key set? | Entered in plugin settings |
-| Model exists? | Verify the model name is valid for your provider |
-| Network? | Obsidian needs internet access to reach the provider |
-
-### Sewing doesn't create child tags
-
-Make sure the child notes exist in your vault. The plugin looks up notes by filename — if the name has changed after linking, the sewing tag won't be created.
-
-## Architecture
-
-```
-better-local-graph/
-├── main.js                 # Plugin entry point
-├── manifest.json           # Plugin metadata
-├── styles.css              # Graph styling
-├── data.json               # User settings
-├── blg-mcp-server.js       # Embedded MCP server
-├── README-MCP.md           # MCP server documentation
-└── README.md               # You are here
+```json
+{
+  "mcpServers": {
+    "better-local-graph": {
+      "url": "http://localhost:27125/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-token>"
+      }
+    }
+  }
+}
 ```
 
-## Development
-
-```bash
-# Watch mode
-npm run dev
-
-# Production build
-npm run build
-```
+Available tools: `sewingTargets`, `getTagGraph`, `getActiveNoteRelations`, `sew`, `openTagView`, `exitTagView`, `searchNotes`, `getNote`, and more.
 
 ## License
 
-Licensed under the [MIT License](LICENSE).
-
-## Star History
-
-<a href="https://www.star-history.com/#pablozambrano/better-local-graph&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/image?repos=pablozambrano/better-local-graph&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/image?repos=pablozambrano/better-local-graph&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/image?repos=pablozambrano/better-local-graph&type=Date" />
- </picture>
-</a>
+MIT
