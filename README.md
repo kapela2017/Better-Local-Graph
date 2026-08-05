@@ -4,9 +4,7 @@
 ![GitHub release](https://img.shields.io/github/v/release/pablozambrano/better-local-graph)
 ![License](https://img.shields.io/github/license/pablozambrano/better-local-graph)
 
-![Preview](assets/Preview.png)
-
-<video src="https://github.com/kapela2017/Better-Local-Graph/raw/main/assets/0805.mp4" controls width="100%"></video>
+[![Click to watch demo — Better Local Graph in action](assets/Preview.png)](assets/0805.mp4)
 
 **Better Local Graph** is an Obsidian plugin that transforms the local graph into a **live project context for you and your AI agents**. It goes beyond visualization: it lets you define meaningful parent-child relationships between notes through a visual **Sewing** session, bookmark nodes for quick access, and cross-reference tags from the tag panel. The embedded **MCP server** exposes your note graph to external AI agents (Claude Code, OpenCode, Gemini, etc.), giving them precise context about what you're working on — **your agent will never search your entire vault again, saving tokens and providing direct context on what you're currently viewing**.
 
