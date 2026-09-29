@@ -823,13 +823,22 @@
     if (!oldSegs.length) return;
     var newSegs = newParts;
     var newTag = newSegs.join("/");
-    if (String(oldTag).toLowerCase() === newTag.toLowerCase()) { new Oe.Notice(T(lang, "unchanged")); return; }
+    // Guarda "sin cambios" EXACTA (case-sensitive): un rename de solo
+    // mayúsculas/minúsculas (Electricidad → electricidad) SÍ debe proceder;
+    // Obsidian trata los tags case-insensitive, así que es un re-casing del
+    // mismo tag, no una fusión.
+    if (String(oldTag) === newTag) { new Oe.Notice(T(lang, "unchanged")); return; }
     var exists = false;
     try {
       var all = app.metadataCache.getTags();
       var nlower = newTag.toLowerCase();
+      var olower = String(oldTag).toLowerCase();
       for (var k in all) {
         var kl = String(k).replace(/^#/, "").toLowerCase();
+        // Excluir el propio tag de origen y sus descendientes: para Obsidian
+        // son el mismo tag (case-insensitive) y forman parte de la rama que
+        // se renombra; no son una colisión, so pena de aviso de fusión espurio.
+        if (kl === olower || kl.indexOf(olower + "/") === 0) continue;
         if (kl === nlower || kl.indexOf(nlower + "/") === 0) { exists = true; break; }
       }
     } catch (e) {}
@@ -1366,6 +1375,14 @@
                 }).open();
             });
         });
+        // BLG-DROPS: solo notas DIRECTAS del payload de este nodo-tag.
+        if (typeof globalThis !== "undefined" && globalThis.__BLG_DROPS) {
+          globalThis.__BLG_DROPS.addMoveToMenu(menu, {
+            source: "mindmap", plugin: self.plugin, tag: tag, lang: lang,
+            files: (g.__data__.payload && g.__data__.payload.files) || [],
+            onDone: function () { self._scheduleRebuild(); }
+          });
+        }
         menu.showAtPosition({ x: e.clientX, y: e.clientY });
       });
     }

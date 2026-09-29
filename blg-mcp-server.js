@@ -319,7 +319,7 @@
       },
       /* ===== NUEVA HERRAMIENTA: estado de la vista actual del plugin ===== */
       blg_get_current_view: {
-        description: "Detecta qué está viendo el usuario en el plugin Better Local Graph AHORA MISMO: vista local (nota central), vista de tag (Tag View con un tag concreto y selección) o sesión de costura (sewing). Úsalo PRIMERO cuando el usuario diga 'la vista actual', 'lo que estoy viendo', 'trae lo que tengo en pantalla', 'esta vista' o pida trabajar con lo que ve sin nombrar un archivo. No modifica nada; solo lee el estado. Después, según el modo devuelto, usa la herramienta adecuada: mode='local' → blg_get_active_note_relations; mode='tag' → blg_get_tag_graph con current:true o con el tag devuelto; mode='sewing' → usa los datos de sewing de la respuesta.",
+        description: "Detecta qué está viendo el usuario en el plugin Better Local Graph AHORA MISMO: vista local (nota central), vista de tag (Tag View con un tag concreto y selección), pizarra de notas fijadas (pin board) o sesión de costura (sewing). Úsalo PRIMERO cuando el usuario diga 'la vista actual', 'lo que estoy viendo', 'trae lo que tengo en pantalla', 'esta vista' o pida trabajar con lo que ve sin nombrar un archivo. No modifica nada; solo lee el estado. Después, según el modo devuelto, usa la herramienta adecuada: mode='local' → blg_get_active_note_relations; mode='tag' → blg_get_tag_graph con current:true o con el tag devuelto; mode='pinboard' → blg_pin_board con action:'get'; mode='sewing' → usa los datos de sewing de la respuesta.",
         inputSchema: { type: "object", properties: {} },
         handler: function () {
           var view = plugin.getView && plugin.getView();
@@ -338,6 +338,23 @@
           function activeIsBookmarkFn(activePath) {
             if (!bmInfo || !activePath) return false;
             return activePath === bmInfo.path;
+          }
+
+          // --- pizarra de notas fijadas (cubre la vista local/tag) ---
+          var pinH = plugin._blgPin && plugin._blgPin.attached;
+          if (pinH && typeof pinH.active === "function" && pinH.active()) {
+            result.mode = "pinboard";
+            var pbCards = (plugin.settings && plugin.settings.pinBoard && plugin.settings.pinBoard.cards) || {};
+            result.pinnedCount = Object.keys(pbCards).length;
+            var pbSel = (typeof pinH.selected === "function") ? pinH.selected() : [];
+            result.selectedNotes = pbSel.map(function (p) {
+              var pf = app.vault.getAbstractFileByPath(p);
+              return { path: p, basename: pf ? pf.basename : p.replace(/\.md$/, "").split("/").pop() };
+            });
+            result.selectionCount = result.selectedNotes.length;
+            result.bookmark = bmInfo;
+            result.message = "El usuario está viendo la pizarra de notas fijadas (pin board). Usa la herramienta blg_pin_board con action:'get' para leer su estado completo o con open/close/pin/unpin/focus/fit para manipularla.";
+            return result;
           }
 
           // --- sesión de costura ---
@@ -500,6 +517,115 @@
 
           if (args.includeContent) result.content = await app.vault.cachedRead(active);
           return result;
+        }
+      },
+
+      /* ===== pizarra de notas fijadas (pin board) ===== */
+      blg_pin_board: {
+        description: "Gestiona la pizarra de notas fijadas (pin board) de Better Local Graph: el tablero visual donde el usuario fija notas como tarjetas conectadas por costuras. Acciones: 'get' = estado completo (¿activa?, tarjetas con posición/carpeta/disponibilidad, selección, cámara y aristas de costura entre tarjetas) — funciona con la pizarra cerrada; 'open' = abre el panel BLG si hace falta y ACTIVA la pizarra en pantalla; 'close' = sale de la pizarra conservando pines y distribución; 'pin' = fija notas nuevas (no duplica ni mueve las existentes); 'unpin' = quita notas de la pizarra (NO borra las notas ni sus costuras; sirve también para tarjetas cuya nota ya no existe); 'focus' = activa la pizarra si hace falta y centra la cámara en la tarjeta; 'fit' = encuadra todas las tarjetas. Úsala cuando el usuario diga 'mi pizarra', 'lo que tengo pineado/fijado', 'fija esta nota', 'quítala de la pizarra' o pida verla en pantalla. Si una referencia es ambigua (varias notas con el mismo nombre) se devuelven los candidatos sin elegir ninguno: pide al usuario que precise la ruta. Las costuras entre tarjetas se crean con blg_sew, no aquí.",
+        inputSchema: { type: "object", required: ["action"], properties: {
+          action: { type: "string", enum: ["get", "open", "close", "pin", "unpin", "focus", "fit"], description: "Operación a ejecutar." },
+          notes: { type: "array", items: { type: "string" }, description: "Requerido para pin/unpin/focus: rutas, basenames o wikilinks (focus usa solo el primero)." }
+        } },
+        handler: async function (args) {
+          args = args || {};
+          var api = (typeof globalThis !== "undefined") && globalThis.__BLG_PINBOARD;
+          if (!api || typeof api.boardState !== "function") throw { code: -32603, message: "El módulo de la pizarra no está disponible en esta sesión de Obsidian." };
+          var action = String(args.action || "").toLowerCase().trim();
+          var refs = Array.isArray(args.notes) ? args.notes.filter(function (s) { return s != null && String(s).trim(); }) : [];
+          /* Resolución estricta: ruta exacta (con o sin .md), basename ÚNICO y,
+             como último recurso, el resolvedor de Obsidian. Un basename con
+             varias notas NO se elige: se reporta ambiguo con candidatos. */
+          function resolveStrict(ref) {
+            var Oe2 = require("obsidian");
+            var r = String(ref || "").trim().replace(/^\[\[|\]\]$/g, "");
+            if (!r) return { file: null };
+            var f = app.vault.getAbstractFileByPath(r);
+            if (f instanceof Oe2.TFile) return { file: f };
+            f = app.vault.getAbstractFileByPath(r + ".md");
+            if (f instanceof Oe2.TFile) return { file: f };
+            var low = r.toLowerCase(), matches = [];
+            var all = app.vault.getMarkdownFiles();
+            for (var i = 0; i < all.length; i++) if (all[i].basename.toLowerCase() === low) matches.push(all[i].path);
+            if (matches.length === 1) return { file: app.vault.getAbstractFileByPath(matches[0]) };
+            if (matches.length > 1) return { file: null, ambiguous: matches };
+            f = app.metadataCache.getFirstLinkpathDest(r, "");
+            if (f) return { file: f };
+            return { file: null };
+          }
+          /* Para unpin/focus la nota puede ya no existir: también se resuelve
+             contra las rutas pineadas (exacta o basename único). */
+          function resolvePinned(ref) {
+            var got = resolveStrict(ref);
+            if (got.file) return { path: got.file.path };
+            var r = String(ref || "").trim().replace(/^\[\[|\]\]$/g, "");
+            var pinned = api.boardState(plugin).cards.map(function (c) { return c.path; });
+            if (pinned.indexOf(r) >= 0) return { path: r };
+            if (pinned.indexOf(r + ".md") >= 0) return { path: r + ".md" };
+            var low = r.toLowerCase();
+            var matches = pinned.filter(function (p) { return p.replace(/\.md$/i, "").split("/").pop().toLowerCase() === low; });
+            if (matches.length === 1) return { path: matches[0] };
+            if (matches.length > 1) return { path: null, ambiguous: matches };
+            if (got.ambiguous) return { path: null, ambiguous: got.ambiguous };
+            return { path: null };
+          }
+          async function ensureOpen() {
+            var opened = await api.openBoard(plugin);
+            if (!opened) throw { code: -32603, message: "No se pudo activar la pizarra: el panel Better Local Graph no está disponible." };
+          }
+          switch (action) {
+            case "get":
+              return api.boardState(plugin);
+            case "open": {
+              await ensureOpen();
+              return { ok: true, active: true, pinnedCount: api.boardState(plugin).pinnedCount };
+            }
+            case "close":
+              api.closeBoard(plugin);
+              return { ok: true, active: false };
+            case "fit": {
+              await ensureOpen();
+              if (!api.fitBoard(plugin)) throw { code: -32603, message: "No se pudo encuadrar la pizarra." };
+              return { ok: true };
+            }
+            case "focus": {
+              if (!refs.length) throw { code: -32602, message: "focus requiere 'notes' con la nota a enfocar" };
+              var fp = resolvePinned(refs[0]);
+              if (fp.ambiguous) return { ok: false, error: "ambiguous", ref: String(refs[0]), candidates: fp.ambiguous };
+              if (!fp.path) throw { code: -32602, message: "No hay ninguna tarjeta pineada para: " + refs[0] };
+              await ensureOpen();
+              if (!api.focusCard(plugin, fp.path)) throw { code: -32603, message: "No se pudo enfocar la tarjeta: " + fp.path };
+              return { ok: true, focused: fp.path };
+            }
+            case "pin": {
+              if (!refs.length) throw { code: -32602, message: "pin requiere 'notes' (array de rutas o nombres)" };
+              var pinned = [], already = [], notFound = [], ambiguous = [];
+              refs.forEach(function (r) {
+                var got = resolveStrict(r);
+                if (got.ambiguous) { ambiguous.push({ ref: String(r), candidates: got.ambiguous }); return; }
+                if (!got.file) { notFound.push(String(r)); return; }
+                if (api.isPinned(plugin, got.file.path)) { already.push(got.file.path); return; }
+                api.pin(plugin, got.file); pinned.push(got.file.path);
+              });
+              return { ok: !notFound.length && !ambiguous.length, pinned: pinned, alreadyPinned: already,
+                notFound: notFound, ambiguous: ambiguous, pinnedCount: api.boardState(plugin).pinnedCount };
+            }
+            case "unpin": {
+              if (!refs.length) throw { code: -32602, message: "unpin requiere 'notes' (array de rutas o nombres)" };
+              var unpinned = [], notPinned = [], notFound2 = [], ambiguous2 = [];
+              refs.forEach(function (r) {
+                var got = resolvePinned(r);
+                if (got.ambiguous) { ambiguous2.push({ ref: String(r), candidates: got.ambiguous }); return; }
+                if (!got.path) { notFound2.push(String(r)); return; }
+                if (!api.isPinned(plugin, got.path)) { notPinned.push(got.path); return; }
+                api.unpin(plugin, got.path); unpinned.push(got.path);
+              });
+              return { ok: !notFound2.length && !ambiguous2.length, unpinned: unpinned, notPinned: notPinned,
+                notFound: notFound2, ambiguous: ambiguous2, pinnedCount: api.boardState(plugin).pinnedCount };
+            }
+            default:
+              throw { code: -32602, message: "action desconocida: '" + action + "'. Usa get|open|close|pin|unpin|focus|fit." };
+          }
         }
       },
     };

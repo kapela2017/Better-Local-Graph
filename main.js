@@ -5,7 +5,7 @@ var BLG_T={
  es:{
   ribbonOpen:"Better Local Graph: abrir vista",
   cmdOpenName:"Better Local Graph: abrir vista",
-  cmdTagViewName:"Better Local Graph: filtrar por tag (vista general)",tagViewTitle:function(t){return "Tag: #"+t;},tagPickTitle:"Filtrar por tag",tagPickPlaceholder:"Escribe para buscar un tag\u2026",tagViewEmpty:function(t){return "No hay notas con el tag #"+t+".";},tagBack:"Volver a vista local",tagApplySel:function(n){return "Coser "+n+" seleccionadas";},tagClearSel:"Limpiar seleccion",tagViewCount:function(n){return n+" notas";},n_tagNew:"Color nota reciente (vista tag)",d_tagNew:"Color de los nodos recien creados en la vista por tag.",n_tagOld:"Color nota antigua (vista tag)",d_tagOld:"Color al que tiende un nodo segun envejece.",n_tagFloor:"Opacidad minima por edad",d_tagFloor:"Las notas mas antiguas nunca bajan de esta opacidad.",n_tagPulse:"Latido de nodos (vista tag)",d_tagPulse:"Activa un latido sutil en los nodos de la vista por tag.",n_tagSingleColor:"Color unico (vista tag)",d_tagSingleColor:"Usa un solo color para todos los nodos del Tag View.",n_tagNodeSingleColor:"Color unico de nodos",d_tagNodeSingleColor:"Color usado cuando Color unico esta activado.",n_tagPulseSpeed:"Velocidad del latido (ms)",d_tagPulseSpeed:"Duracion del ciclo de latido en milisegundos.",n_tagPulseOpacity:"Intensidad opacidad latido",d_tagPulseOpacity:"Cuanto varia la opacidad durante el latido.",n_tagPulseGlow:"Intensidad brillo latido",d_tagPulseGlow:"Cuanto varia el brillo durante el latido.",n_tagSelCol:"Color de seleccion (vista tag)",d_tagSelCol:"Borde de los nodos seleccionados en la vista por tag.",n_localPulse:"Latido del nodo activo (vista local)",d_localPulse:"Activa un pulso sutil que expande y contrae el nodo de la nota actual en la vista local.",n_localPulseSpeed:"Velocidad del latido (ms)",d_localPulseSpeed:"Duracion del ciclo de pulso del nodo activo en milisegundos.",n_localPulseSize:"Intensidad del pulso",d_localPulseSize:"Cuanto crece el nodo en el pico del pulso (1.15 = 15% mas grande).",
+  cmdTagViewName:"Better Local Graph: filtrar por tag (vista general)",tagViewTitle:function(t){return "Tag: #"+t;},tagPickTitle:"Filtrar por tag",tagPickPlaceholder:"Escribe para buscar un tag\u2026",tagViewEmpty:function(t){return "No hay notas con el tag #"+t+".";},tagBack:"Volver a vista local",tagApplySel:function(n){return "Coser "+n+" seleccionadas";},tagClearSel:"Limpiar seleccion",tagViewCount:function(n){return n+" notas";},tagSearchPlaceholder:"Buscar en el tag\u2026",tagSearchClear:"Limpiar b\u00fasqueda",tagSearchMatches:function(n){return n===1?"1 coincidencia":n+" coincidencias";},tagSearchNone:"Sin coincidencias",n_tagNew:"Color nota reciente (vista tag)",d_tagNew:"Color de los nodos recien creados en la vista por tag.",n_tagOld:"Color nota antigua (vista tag)",d_tagOld:"Color al que tiende un nodo segun envejece.",n_tagFloor:"Opacidad minima por edad",d_tagFloor:"Las notas mas antiguas nunca bajan de esta opacidad.",n_tagPulse:"Latido de nodos (vista tag)",d_tagPulse:"Activa un latido sutil en los nodos de la vista por tag.",n_tagSingleColor:"Color unico (vista tag)",d_tagSingleColor:"Usa un solo color para todos los nodos del Tag View.",n_tagNodeSingleColor:"Color unico de nodos",d_tagNodeSingleColor:"Color usado cuando Color unico esta activado.",n_tagPulseSpeed:"Velocidad del latido (ms)",d_tagPulseSpeed:"Duracion del ciclo de latido en milisegundos.",n_tagPulseOpacity:"Intensidad opacidad latido",d_tagPulseOpacity:"Cuanto varia la opacidad durante el latido.",n_tagPulseGlow:"Intensidad brillo latido",d_tagPulseGlow:"Cuanto varia el brillo durante el latido.",n_tagSelCol:"Color de seleccion (vista tag)",d_tagSelCol:"Borde de los nodos seleccionados en la vista por tag.",n_localPulse:"Latido del nodo activo (vista local)",d_localPulse:"Activa un pulso sutil que expande y contrae el nodo de la nota actual en la vista local.",n_localPulseSpeed:"Velocidad del latido (ms)",d_localPulseSpeed:"Duracion del ciclo de pulso del nodo activo en milisegundos.",n_localPulseSize:"Intensidad del pulso",d_localPulseSize:"Cuanto crece el nodo en el pico del pulso (1.15 = 15% mas grande).",
   cmdSewName:"Coser a partir de esta nota",
   viewSession:"Coser Notas",
   viewLocal:"Vista Local",
@@ -13,7 +13,9 @@ var BLG_T={
   ctxSewFrom:"Coser desde esta nota",
   ctxBookmark:"Marcar nota (bookmark)",
   ctxEditYaml:"Editar propiedades (YAML)",
-  ctxWhyRelated:"\u2728 \u00bfPor qu\u00e9 se relacionan?",
+   ctxWhyRelated:"\u2728 \u00bfPor qu\u00e9 se relacionan?",
+   ctxMoveTo:"Mover A",dropsBtnShow:"Mostrar Ubicación",dropsBtnHide:"Ocultar Ubicación",dropsCopyHint:function(m){return m==="none"?"Copia desactivada":"Copiar al soltar con "+m;},dropsExcluded:"Las notas en carpetas excluidas no entran en el modo de ubicación.",dropsCompact:"Muchas carpetas: se usa una disposición compacta.",dropsPanHint:"No caben todos los conjuntos a este zoom; arrastra el fondo para recorrerlos.",dropsCount:function(v,t){return v===t?String(v):v+" de "+t;},dropsTarget:function(p){return "→ "+p;},dropsInvalid:"Destino no válido",dropsNoNodes:"No hay notas Markdown visibles para agrupar.",moveExists:function(p){return "Ya existe: "+p;},moveDone:function(p){return "Nota movida a "+p;},moveCopied:function(p){return "Nota copiada a "+p;},moveResult:function(a,b){return a+" movidas, "+b+" omitidas";},copyResult:function(a,b){return a+" copiadas, "+b+" omitidas";},moveError:function(e){return "No se pudo completar la operación: "+e;},copyUnavailable:"La copia no está disponible; no se ha movido ninguna nota.",moveFolderPicker:"Buscar carpeta de destino…",moveFolderTitle:"Mover A",moveFolderCount:function(n){return n+" notas";},moveCurrent:"(actual)",moveRoot:"Raíz",moveNewFolder:function(p){return "Crear carpeta «"+p+"»";},moveNewFolderTitle:"Crear carpeta de destino",moveNewFolderBody:function(p){return "¿Crear «"+p+"» y usarla como destino?";},moveCreate:"Crear carpeta",moveBadFolder:"Ruta de carpeta no válida.",mmMoveTitle:"Mover notas del tag",mmMoveBody:function(n,t,p){return "Se moverán "+n+" notas directas con #"+t+" a "+p+".";},mmMoveOk:"Mover notas",mmMoveResult:function(a,b){return a+" movidas, "+b+" omitidas";},
+       n_drops:"Conjuntos de ubicación",d_drops:"Agrupa las notas visibles por carpeta y permite moverlas entre conjuntos.",n_dropsColor:"Color del conjunto",d_dropsColor:"Color base de los conjuntos; el contraste se adapta al tema.",n_dropsOpacity:"Opacidad del conjunto",d_dropsOpacity:"Transparencia del relleno del conjunto.",n_dropsSize:"Tamaño del conjunto",d_dropsSize:"Escala los conjuntos y recalcula su encuadre.",n_dropsBorderColor:"Color del borde",n_dropsBorderWidth:"Grosor del borde",n_dropsGoo:"Fusión líquida",n_dropsSpeed:"Velocidad del líquido",n_dropsLabels:"Rótulos de carpetas",n_dropsLabelSize:"Tamaño del rótulo",d_dropsLabelSize:"Escala del nombre de la carpeta (0,85 = 15 % más pequeño).",n_dropsLegend:"Panel de carpetas",n_dropsZoomOut:"Encuadrar al activar",n_dropsMinZoom:"Zoom mínimo",n_dropsCopyMod:"Modificador para copiar",n_dropsMaxFolders:"Umbral de modo compacto",dropsReset:"Restablecer conjuntos",dropsCopyCtrl:"Ctrl",dropsCopyAlt:"Alt",dropsCopyNone:"Ninguno",dropsLegendTitle:"Carpetas visibles",dropsLegendCollapse:"Ocultar lista de carpetas",dropsLegendExpand:"Mostrar lista de carpetas",dropsSetColor:"Cambiar color del conjunto",dropsResetColor:"Usar color predeterminado",dropsColorFor:function(p){return "Color de «"+p+"»";},dropsApplyColor:"Aplicar",pinBtnShow:"Mostrar pizarra",pinBtnHide:"Ocultar pizarra",pinCount:function(n){return n===1?"1 nota fijada":n+" notas fijadas";},ctxPinNote:"Fijar en pizarra",ctxUnpinNote:"Quitar de la pizarra",pinAdded:function(n){return 'Fijada en la pizarra: "'+n+'"';},pinRemoved:function(n){return 'Quitada de la pizarra: "'+n+'"';},pinEmptyTitle:"Pizarra vacía",pinEmptyHint:"Fija notas con clic derecho sobre un nodo: «Fijar en pizarra».",pinUnavailable:"Nota no disponible",pinOpen:"Abrir nota",pinUnpin:"Desfijar",pinFit:"Encuadrar todo",pinModified:"Última modificación",pinCardColor:"Color de tarjeta",pinBoardColor:"Color de la pizarra",pinEdgeColor:"Color de relación",pinResetColor:"Restablecer color",pinResetStyle:"Restablecer estilo",pinApply:"Aplicar",pinRelateCount:function(n){return "Relacionar "+n+" tarjetas";},pinSewTwo:function(a,b){return '¿Realizar costura? "'+a+'" será padre de "'+b+'".';},pinSewParentAll:function(a,n){return '1. "'+a+'" como padre de '+n+' tarjetas';},pinSewChain:"2. En cadena por orden (1→2→3…)",pinLineSolid:"Línea continua",pinLineDashed:"Línea discontinua",pinClearSelection:"Limpiar selección",pinTab:"Pizarra",pinSettingsTitle:"Pizarra",pinDateFont:"Fuente de la fecha",pinDateFontDesc:"Fuente usada para la fecha de modificación sobre cada tarjeta.",pinDateColor:"Color de la fecha",pinDateColorDesc:"Color de la fecha manuscrita sobre cada tarjeta.",
   noteMarked:function(n){return 'Nota marcada: "'+n+'".';},
   ctxSewToBookmark:function(n){return 'Coser a bookmark: "'+n+'"';},
   bookmarkNotFound:"No se encontro la nota marcada.",
@@ -117,7 +119,7 @@ var BLG_T={
  en:{
   ribbonOpen:"Better Local Graph: open view",
   cmdOpenName:"Better Local Graph: open view",
-  cmdTagViewName:"Better Local Graph: filter by tag (overview)",tagViewTitle:function(t){return "Tag: #"+t;},tagPickTitle:"Filter by tag",tagPickPlaceholder:"Type to search a tag\u2026",tagViewEmpty:function(t){return "No notes with tag #"+t+".";},tagBack:"Back to local view",tagApplySel:function(n){return "Sew "+n+" selected";},tagClearSel:"Clear selection",tagViewCount:function(n){return n+" notes";},n_tagNew:"Recent note color (tag view)",d_tagNew:"Color of freshly created nodes in the tag view.",n_tagOld:"Old note color (tag view)",d_tagOld:"Color a node tends toward as it ages.",n_tagFloor:"Min opacity by age",d_tagFloor:"The oldest notes never drop below this opacity.",n_tagPulse:"Node pulse (tag view)",d_tagPulse:"Enables a subtle pulse on the tag view nodes.",n_tagSingleColor:"Single color (tag view)",d_tagSingleColor:"Use a single color for all nodes in the Tag View.",n_tagNodeSingleColor:"Single node color",d_tagNodeSingleColor:"Color used when Single color is enabled.",n_tagPulseSpeed:"Pulse speed (ms)",d_tagPulseSpeed:"Duration of the pulse cycle in milliseconds.",n_tagPulseOpacity:"Pulse opacity intensity",d_tagPulseOpacity:"How much the opacity varies during the pulse.",n_tagPulseGlow:"Pulse glow intensity",d_tagPulseGlow:"How much the glow varies during the pulse.",n_tagSelCol:"Selection color (tag view)",d_tagSelCol:"Border of selected nodes in the tag view.",n_localPulse:"Active node pulse (local view)",d_localPulse:"Enables a subtle pulse that expands and contracts the current note node in the local view.",n_localPulseSpeed:"Pulse speed (ms)",d_localPulseSpeed:"Duration of the active node pulse cycle in milliseconds.",n_localPulseSize:"Pulse intensity",d_localPulseSize:"How much the node grows at the pulse peak (1.15 = 15% larger).",
+  cmdTagViewName:"Better Local Graph: filter by tag (overview)",tagViewTitle:function(t){return "Tag: #"+t;},tagPickTitle:"Filter by tag",tagPickPlaceholder:"Type to search a tag\u2026",tagViewEmpty:function(t){return "No notes with tag #"+t+".";},tagBack:"Back to local view",tagApplySel:function(n){return "Sew "+n+" selected";},tagClearSel:"Clear selection",tagViewCount:function(n){return n+" notes";},tagSearchPlaceholder:"Search in tag\u2026",tagSearchClear:"Clear search",tagSearchMatches:function(n){return n===1?"1 match":n+" matches";},tagSearchNone:"No matches",n_tagNew:"Recent note color (tag view)",d_tagNew:"Color of freshly created nodes in the tag view.",n_tagOld:"Old note color (tag view)",d_tagOld:"Color a node tends toward as it ages.",n_tagFloor:"Min opacity by age",d_tagFloor:"The oldest notes never drop below this opacity.",n_tagPulse:"Node pulse (tag view)",d_tagPulse:"Enables a subtle pulse on the tag view nodes.",n_tagSingleColor:"Single color (tag view)",d_tagSingleColor:"Use a single color for all nodes in the Tag View.",n_tagNodeSingleColor:"Single node color",d_tagNodeSingleColor:"Color used when Single color is enabled.",n_tagPulseSpeed:"Pulse speed (ms)",d_tagPulseSpeed:"Duration of the pulse cycle in milliseconds.",n_tagPulseOpacity:"Pulse opacity intensity",d_tagPulseOpacity:"How much the opacity varies during the pulse.",n_tagPulseGlow:"Pulse glow intensity",d_tagPulseGlow:"How much the glow varies during the pulse.",n_tagSelCol:"Selection color (tag view)",d_tagSelCol:"Border of selected nodes in the tag view.",n_localPulse:"Active node pulse (local view)",d_localPulse:"Enables a subtle pulse that expands and contracts the current note node in the local view.",n_localPulseSpeed:"Pulse speed (ms)",d_localPulseSpeed:"Duration of the active node pulse cycle in milliseconds.",n_localPulseSize:"Pulse intensity",d_localPulseSize:"How much the node grows at the pulse peak (1.15 = 15% larger).",
   cmdSewName:"Start sewing from this note",
   viewSession:"Sewing",
   viewLocal:"Local View",
@@ -125,7 +127,9 @@ var BLG_T={
   ctxSewFrom:"Start sewing from this note",
   ctxBookmark:"Bookmark note",
   ctxEditYaml:"Edit properties (YAML)",
-  ctxWhyRelated:"\u2728 Why are they related?",
+   ctxWhyRelated:"\u2728 Why are they related?",
+   ctxMoveTo:"Move To",dropsBtnShow:"Show Locations",dropsBtnHide:"Hide Locations",dropsCopyHint:function(m){return m==="none"?"Copy disabled":"Hold "+m+" when dropping to copy";},dropsExcluded:"Notes in excluded folders are not included in location mode.",dropsCompact:"Many folders: using a compact arrangement.",dropsPanHint:"The sets cannot all fit at this zoom; drag the background to explore them.",dropsCount:function(v,t){return v===t?String(v):v+" of "+t;},dropsTarget:function(p){return "→ "+p;},dropsInvalid:"Invalid destination",dropsNoNodes:"No visible Markdown notes to group.",moveExists:function(p){return "Already exists: "+p;},moveDone:function(p){return "Note moved to "+p;},moveCopied:function(p){return "Note copied to "+p;},moveResult:function(a,b){return a+" moved, "+b+" skipped";},copyResult:function(a,b){return a+" copied, "+b+" skipped";},moveError:function(e){return "Could not complete the operation: "+e;},copyUnavailable:"Copy is unavailable; no notes were moved.",moveFolderPicker:"Search for a destination folder…",moveFolderTitle:"Move To",moveFolderCount:function(n){return n+" notes";},moveCurrent:"(current)",moveRoot:"Vault root",moveNewFolder:function(p){return "Create folder “"+p+"”";},moveNewFolderTitle:"Create destination folder",moveNewFolderBody:function(p){return "Create “"+p+"” and use it as the destination?";},moveCreate:"Create folder",moveBadFolder:"Invalid folder path.",mmMoveTitle:"Move tagged notes",mmMoveBody:function(n,t,p){return "Move "+n+" direct notes tagged #"+t+" to "+p+".";},mmMoveOk:"Move notes",mmMoveResult:function(a,b){return a+" moved, "+b+" skipped";},
+       n_drops:"Location sets",d_drops:"Groups visible notes by folder and lets you move them between sets.",n_dropsColor:"Set color",d_dropsColor:"Base set color; contrast adapts to the theme.",n_dropsOpacity:"Set opacity",d_dropsOpacity:"Transparency of the set fill.",n_dropsSize:"Set size",d_dropsSize:"Scales the sets and recalculates the camera framing.",n_dropsBorderColor:"Border color",n_dropsBorderWidth:"Border width",n_dropsGoo:"Liquid fusion",n_dropsSpeed:"Liquid speed",n_dropsLabels:"Folder labels",n_dropsLabelSize:"Label size",d_dropsLabelSize:"Scale of the folder name (0.85 = 15% smaller).",n_dropsLegend:"Folder panel",n_dropsZoomOut:"Fit on activation",n_dropsMinZoom:"Minimum zoom",n_dropsCopyMod:"Copy modifier",n_dropsMaxFolders:"Compact-mode threshold",dropsReset:"Reset sets",dropsCopyCtrl:"Ctrl",dropsCopyAlt:"Alt",dropsCopyNone:"None",dropsLegendTitle:"Visible folders",dropsLegendCollapse:"Hide folder list",dropsLegendExpand:"Show folder list",dropsSetColor:"Change set color",dropsResetColor:"Use default color",dropsColorFor:function(p){return "Color for “"+p+"”";},dropsApplyColor:"Apply",pinBtnShow:"Show board",pinBtnHide:"Hide board",pinCount:function(n){return n===1?"1 pinned note":n+" pinned notes";},ctxPinNote:"Pin to board",ctxUnpinNote:"Unpin from board",pinAdded:function(n){return 'Pinned to board: "'+n+'"';},pinRemoved:function(n){return 'Removed from board: "'+n+'"';},pinEmptyTitle:"Empty board",pinEmptyHint:'Pin notes by right-clicking a node: "Pin to board".',pinUnavailable:"Note unavailable",pinOpen:"Open note",pinUnpin:"Unpin",pinFit:"Fit all",pinModified:"Last modified",pinCardColor:"Card color",pinBoardColor:"Board color",pinEdgeColor:"Relationship color",pinResetColor:"Reset color",pinResetStyle:"Reset style",pinApply:"Apply",pinRelateCount:function(n){return "Relate "+n+" cards";},pinSewTwo:function(a,b){return 'Sew? "'+a+'" will be the parent of "'+b+'".';},pinSewParentAll:function(a,n){return '1. "'+a+'" as parent of '+n+' cards';},pinSewChain:"2. Chain by order (1→2→3…)",pinLineSolid:"Solid line",pinLineDashed:"Dashed line",pinClearSelection:"Clear selection",pinTab:"Board",pinSettingsTitle:"Board",pinDateFont:"Date font",pinDateFontDesc:"Font used for the modification date above each card.",pinDateColor:"Date color",pinDateColorDesc:"Color of the handwritten date above each card.",
   noteMarked:function(n){return 'Note bookmarked: "'+n+'".';},
   ctxSewToBookmark:function(n){return 'Sew to bookmark: "'+n+'"';},
   bookmarkNotFound:"Bookmarked note not found.",
@@ -604,12 +608,24 @@ function Xm(t,e){let r=(0,Oe.getIcon)(t);if(!r)return console.warn("[Better Loca
 function _blgGetIconizeApi(){try{var p=window.app&&window.app.plugins&&window.app.plugins.plugins&&window.app.plugins.plugins["obsidian-icon-folder"];if(p&&p.api)return p.api}catch(e){}return null}
 function _blgGetIconicPlugin(){try{var p=window.app&&window.app.plugins&&window.app.plugins.plugins&&window.app.plugins.plugins["iconic"];if(p)return p}catch(e){}return null}
 function _blgSvgToDataUri(svg,ink){try{var doc=new DOMParser().parseFromString(svg,"image/svg+xml");var el=doc.documentElement;if(!el||el.tagName.toLowerCase()!=="svg")return null;el.setAttribute("width","24");el.setAttribute("height","24");el.setAttribute("xmlns","http://www.w3.org/2000/svg");var ser=new XMLSerializer().serializeToString(el);if(ink)ser=ser.replace(/currentColor/g,ink);return"data:image/svg+xml;base64,"+btoa(unescape(encodeURIComponent(ser)))}catch(e){return null}}
-function _blgResolveIcon(file,settings,mc,ink){var _ic=ink||settings.iconColor;var fm=null;try{fm=(mc?mc.getFileCache(file):null)||{};fm=fm.frontmatter||{}}catch(e){fm={}}if(fm&&typeof fm.icon==="string"){var d=Xm(fm.icon,_ic);if(d)return d}try{var api=_blgGetIconizeApi();if(api&&file&&file.path){var ic=null;try{ic=api.getIconByPath?api.getIconByPath(file.path):null}catch(e){}if(ic){var svgStr=null;if(typeof ic==="string"){if(ic.indexOf("<svg")===0)svgStr=ic}else if(ic.svgElement)svgStr=ic.svgElement;else if(ic.svg)svgStr=ic.svg;if(svgStr){var d2=_blgSvgToDataUri(svgStr,ink);if(d2)return d2}}}}catch(e){}try{var ip=_blgGetIconicPlugin();if(ip&&file&&file.path){var iconicIcon=null;if(ip.settings&&ip.settings.fileIcons)iconicIcon=ip.settings.fileIcons[file.path];if(!iconicIcon&&ip.getFileItem){var fi=ip.getFileItem(file.path);if(fi)iconicIcon=fi.icon}if(iconicIcon&&typeof iconicIcon==="string"){var lucideId=iconicIcon;if(lucideId.indexOf("lucide-")===0)lucideId=lucideId.substring(7);var d3=Xm(lucideId,_ic);if(d3)return d3}}}catch(e){}return null}var Vq=class extends Oe.Modal{constructor(e,r,a){super(e);this.msg=r;this.cb=a}onOpen(){this.titleEl.setText(L("confirmTitle"));this.contentEl.createEl("p",{text:this.msg});let e=this.contentEl.createDiv();e.style.cssText="display:flex;gap:8px;justify-content:flex-end";let r=e.createEl("button",{text:L("confirmYes"),cls:"mod-cta"});r.onclick=()=>{this.close(),this.cb()};let a=e.createEl("button",{text:L("cancel")});a.onclick=()=>this.close()}onClose(){this.contentEl.empty()}};var Wq=class extends Oe.Modal{constructor(e,r,a){super(e);this.file=r;this.view=a;this.model=null}onOpen(){var F;this.titleEl.setText(L("editPropsTitle")(this.file.basename));let fm=(F=this.app.metadataCache.getFileCache(this.file))==null?void 0:F.frontmatter;this.model={};if(fm){for(let k of Object.keys(fm)){if(k==="position")continue;let v=fm[k];this.model[k]=Array.isArray(v)?v.slice():v instanceof Date?new Date(v.getTime()):v}}let nm=this.contentEl.createDiv();nm.style.cssText="margin-bottom:8px";let nl=nm.createDiv({text:L("noteNameLabel")});nl.style.cssText="font-weight:600;font-size:11px;margin-bottom:2px;color:var(--text-muted)";let nrow=nm.createDiv();nrow.style.cssText="display:flex;gap:6px;align-items:center";let ni=nrow.createEl("input",{type:"text"});ni.value=this.file.basename;ni.style.cssText="flex:1;height:26px";this._nameInput=ni;let cbt=nrow.createEl("button",{cls:"clickable-icon"});Oe.setIcon(cbt,"clipboard");cbt.title=L("copyTagBtn");cbt.setAttr("aria-label",L("copyTagBtn"));cbt.onclick=()=>{let raw=ni.value.trim();if(!raw){new Oe.Notice(L("tagEmpty"));return}let tg=raw.normalize("NFD").replace(/[\u0300-\u036f]/g,"").split("/").map(sg=>sg.replace(/\s+/g,"_").replace(/[^A-Za-z0-9_]/g,"").toLowerCase()).filter(Boolean).join("/");if(!tg){new Oe.Notice(L("tagInvalid"));return}navigator.clipboard.writeText(tg);new Oe.Notice(L("tagCopied")+tg)};let body=this.contentEl.createDiv();body.style.cssText="max-height:48vh;overflow-y:auto;padding-right:2px";this._body=body;this._renderRows();let ft=this.contentEl.createDiv();ft.style.cssText="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;align-items:center";let dl=ft.createEl("button",{text:L("deleteNoteBtn")});dl.style.cssText="font-size:11px;padding:4px 10px;color:var(--text-error)";dl.onclick=()=>this._confirmDelete();let ap=ft.createEl("button",{text:L("addPropBtn")});ap.style.cssText="font-size:11px;padding:4px 10px";ap.onclick=()=>this._addProp();let sp=ft.createDiv();sp.style.flex="1";let sv=ft.createEl("button",{text:L("save"),cls:"mod-cta"});sv.style.cssText="font-size:11px;padding:4px 10px";sv.onclick=()=>this._save();let ca=ft.createEl("button",{text:L("cancel")});ca.style.cssText="font-size:11px;padding:4px 10px";ca.onclick=()=>this.close()}_renderRows(){let body=this._body;if(!body)return;body.empty();let keys=Object.keys(this.model);if(keys.length===0){let p=body.createEl("p",{text:L("addPropEmptyMsg")});p.style.cssText="color:var(--text-muted);font-style:italic;margin:8px 0";return}for(let k of keys)this._row(body,k)}_addProp(){let body=this._body;if(!body)return;let form=body.createDiv();form.style.cssText="margin-bottom:6px;padding:6px;border:1px dashed var(--background-modifier-border);border-radius:6px";let nameIn=form.createEl("input",{type:"text",placeholder:L("addPropName")});nameIn.style.cssText="width:100%;margin-bottom:4px;height:26px";let valIn=form.createEl("input",{type:"text",placeholder:L("addPropValue")});valIn.style.cssText="width:100%;margin-bottom:4px;height:26px";let btns=form.createDiv();btns.style.cssText="display:flex;gap:6px;justify-content:flex-end";let ok=btns.createEl("button",{text:L("addPropConfirm"),cls:"mod-cta"});let no=btns.createEl("button",{text:L("cancel")});let errEl=form.createDiv();errEl.style.cssText="color:var(--text-error);font-size:11px;margin-top:4px;display:none";let close=()=>form.remove();no.onclick=close;ok.onclick=()=>{let key=nameIn.value.trim();if(!key||key==="position"||Object.prototype.hasOwnProperty.call(this.model,key)){errEl.textContent=L("addPropInvalid");errEl.style.display="block";return}this.model[key]=valIn.value;close();this._renderRows()}}_type(v){return typeof v=="boolean"?"bool":v instanceof Date?"date":Array.isArray(v)?"array":typeof v=="string"&&/^\d{4}-\d{2}-\d{2}$/.test(v)?"date":typeof v=="number"?"num":v!==null&&typeof v=="object"?"obj":"text"}_isWk(x){return typeof x=="string"&&/^\[\[.*\]\]$/.test(x.trim())}_widget(k){var t,e;let tm=this.app.metadataTypeManager,kl=String(k).toLowerCase(),w=(e=(t=tm==null?void 0:tm.properties)==null?void 0:t[kl])==null?void 0:e.widget;if(!w&&tm&&typeof tm.getAssignedWidget=="function")try{let g=tm.getAssignedWidget(k);typeof g=="string"&&(w=g)}catch(r){}return w||null}_bpSel(k){var t,e,r;let bp=(e=(t=this.app.plugins)==null?void 0:t.plugins)==null?void 0:e["better-properties"],cfg=(r=(e=bp==null?void 0:bp.settings)==null?void 0:e.propertySettings)==null?void 0:r[String(k).toLowerCase()],sel=cfg==null?void 0:cfg.select;if(!sel||sel.optionsType!=="manual"||!Array.isArray(sel.manualOptions))return null;let vals=sel.manualOptions.map(o=>o&&o.value!=null?String(o.value):"").filter(v=>v.length>0);return vals.length?vals:null}_row(host,k){let sel=this._widget(k)==="better-properties:select"?this._bpSel(k):null,t=sel?"select":this._type(this.model[k]),row=host.createDiv();row.style.cssText="margin-bottom:6px";let lb=row.createDiv({text:k});lb.style.cssText="font-weight:600;font-size:11px;margin-bottom:2px;color:var(--text-muted)";if(t=="select"){let cur=this.model[k]==null?"":String(this.model[k]),dd=row.createEl("select",{cls:"dropdown"});dd.style.width="100%";dd.createEl("option",{text:(BLG_LANG==="en"?"(empty)":"(vacio)"),value:""});for(let v of sel){let op=dd.createEl("option",{text:v,value:v});v===cur&&(op.selected=!0)}if(cur&&sel.indexOf(cur)<0){let op=dd.createEl("option",{text:cur+(BLG_LANG==="en"?" (current value)":" (valor actual)"),value:cur});op.selected=!0}dd.onchange=()=>this.model[k]=dd.value}else if(t=="bool"){let cb=row.createEl("input",{type:"checkbox"});cb.checked=!!this.model[k];cb.onchange=()=>this.model[k]=cb.checked}else if(t=="date"){let v=this.model[k],iso=v instanceof Date?v.toISOString().slice(0,10):v,inp=row.createEl("input",{type:"date"});inp.value=iso;inp.onchange=()=>this.model[k]=inp.value}else if(t=="array")this._arr(row,k);else if(t=="obj"){let inp=row.createEl("input",{type:"text"});inp.value=(BLG_LANG==="en"?"(object: not editable here)":"(objeto: no editable aqui)");inp.disabled=!0;inp.style.width="100%"}else{let inp=row.createEl("input",{type:"text"});inp.value=this.model[k]==null?"":String(this.model[k]);inp.style.width="100%";let isN=t=="num";inp.onchange=()=>{if(isN){let n=Number(inp.value);this.model[k]=inp.value.trim()!==""&&!isNaN(n)?n:inp.value}else this.model[k]=inp.value};this._isWk(this.model[k])&&this._sug(inp)}}_arr(row,k){let list=row.createDiv(),rebuild=()=>{list.empty();let ar=this.model[k],wk=ar.some(x=>this._isWk(x));ar.forEach((it,ix)=>{let li=list.createDiv();li.style.cssText="display:flex;gap:3px;align-items:center;margin-bottom:3px";let inp=li.createEl("input",{type:"text"});inp.value=it==null?"":String(it);inp.style.flex="1";inp.style.height="26px";inp.onchange=()=>ar[ix]=inp.value;wk?this._sug(inp):String(k).toLowerCase()==="tags"&&this._tagSug(inp,ar);let mk=(tx,fn)=>{let b=li.createEl("button",{text:tx});b.style.cssText="padding:0 4px";b.onclick=fn};mk("\u2191",()=>{if(ix>0){let tp=ar[ix-1];ar[ix-1]=ar[ix];ar[ix]=tp;rebuild()}});mk("\u2193",()=>{if(ix<ar.length-1){let tp=ar[ix+1];ar[ix+1]=ar[ix];ar[ix]=tp;rebuild()}});mk("\u00d7",()=>{ar.splice(ix,1);rebuild()})});let ad=list.createEl("button",{text:(BLG_LANG==="en"?"+ Add":"+ Agregar")});ad.style.cssText="margin-top:2px";ad.onclick=()=>{ar.push("");rebuild()}};rebuild()}_sug(inp){if(!Oe.AbstractInputSuggest)return;let app=this.app;new(class extends Oe.AbstractInputSuggest{getSuggestions(q){let m=String(q||"").replace(/^\s*\[\[/,"").replace(/\]\]\s*$/,"").toLowerCase();return m?app.vault.getMarkdownFiles().filter(f=>f.basename.toLowerCase().includes(m)).slice(0,20).map(f=>f.basename):[]}renderSuggestion(v,el){el.setText(v)}selectSuggestion(v){inp.value="[["+v+"]]";inp.dispatchEvent(new Event("change"));this.close()}})(app,inp)}_tagSug(inp,ar){if(!Oe.AbstractInputSuggest)return;let app=this.app,modal=this;let sug=new(class extends Oe.AbstractInputSuggest{getSuggestions(q){if(!modal._tagCache){let tg={};try{tg=app.metadataCache.getTags()||{}}catch(e){}modal._tagCache=Object.keys(tg).map(t=>{let b=t.replace(/^#/,"");return[b,tg[t],b.toLowerCase()]}).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]))}let m=String(q||"").trim().replace(/^#/,"").toLowerCase();let ex=Array.isArray(ar)?new Set(ar.map(x=>String(x).toLowerCase())):null;if(!m)return modal._tagCache.filter(e=>!(ex&&ex.has(e[2]))).slice(0,20);let p=[],sg=[];for(let e of modal._tagCache){if(ex&&ex.has(e[2]))continue;if(e[2].startsWith(m))p.push(e);else if(e[2].indexOf(m)>-1)sg.push(e)}return p.concat(sg).slice(0,20)}renderSuggestion(v,el){el.setText(v[0]);let s=el.createSpan({text:" "+v[1]});s.style.cssText="color:var(--text-muted);font-size:10px;margin-left:6px"}selectSuggestion(v){inp.value=v[0];inp.dispatchEvent(new Event("change"));this.close()}open(){this._o=!0;super.open()}close(){this._o=!1;super.close()}})(app,inp);inp.addEventListener("keydown",function(ev){if(ev.key!=="Tab"||!sug._o)return;let r=null;try{r=sug.getSuggestions(inp.value)}catch(e){}if(r&&typeof r.then==="function"){r.then(function(a){if(a&&a.length){sug.selectSuggestion(a[0]);inp.focus()}});ev.preventDefault();ev.stopPropagation()}else if(r&&r.length){ev.preventDefault();ev.stopPropagation();sug.selectSuggestion(r[0]);inp.focus()}})}_save(){var F0;let fm0=(F0=this.app.metadataCache.getFileCache(this.file))==null?void 0:F0.frontmatter;fm0=fm0||{};let nn0=this._nameInput?this._nameInput.value.trim():"";let _nv=v=>Array.isArray(v)?v.map(x=>typeof x=="string"?x.trim():x).filter(x=>x!=null&&String(x).length>0):v;let _eq=(a,b)=>{a=_nv(a);if(a instanceof Date||b instanceof Date)return a instanceof Date&&b instanceof Date&&a.getTime()===b.getTime();if(Array.isArray(a)||Array.isArray(b)){if(!Array.isArray(a)||!Array.isArray(b)||a.length!==b.length)return!1;for(let _i=0;_i<a.length;_i++)if(String(a[_i])!==String(b[_i]))return!1;return!0}return String(a)===String(b)};let _dirty=!!(nn0&&nn0!==this.file.basename);if(!_dirty){for(let k of Object.keys(this.model)){if(!_eq(this.model[k],fm0[k])){_dirty=!0;break}}}if(!_dirty){new Oe.Notice(L("noChanges"));this.close();return}this.app.fileManager.processFrontMatter(this.file,fm=>{for(let k of Object.keys(this.model)){let v=this.model[k];fm[k]=Array.isArray(v)?v.map(x=>typeof x=="string"?x.trim():x).filter(x=>x!=null&&String(x).length>0):v}}).then(async()=>{let nn=this._nameInput?this._nameInput.value.trim():"";if(nn&&nn!==this.file.basename){try{let np=this._validateNewName(nn);await this.app.fileManager.renameFile(this.file,np);new Oe.Notice(L("noteRenamed"))}catch(err){new Oe.Notice(L("renameError")+(err&&err.message?err.message:String(err)));return}}new Oe.Notice(L("propsSaved"));this.view&&this.view.resetHover&&this.view.resetHover();this.view&&this.view._scheduleRefresh&&this.view._scheduleRefresh(true);this.close()}).catch(e=>{new Oe.Notice(L("saveError")+(e&&e.message?e.message:e))})}_validateNewName(nn){if(!nn||!nn.trim())throw new Error(L("invalidName"));if(/[\\\/:*?"<>|]/.test(nn))throw new Error(L("invalidName"));var dir=this.file.parent?this.file.parent.path:"",np=dir?dir+"/"+nn+".md":nn+".md";if(this.app.vault.getAbstractFileByPath(np))throw new Error(L("nameExists"));return np}_confirmDelete(){new Vq(this.app,L("confirmDeleteMsg")(this.file.basename),async()=>{try{await this.app.vault.trash(this.file,false);new Oe.Notice(L("noteDeleted"));this.view&&this.view.resetHover&&this.view.resetHover();this.view&&this.view._scheduleRefresh&&this.view._scheduleRefresh(true);this.close()}catch(e){new Oe.Notice(L("saveError")+(e&&e.message?e.message:String(e)))}}).open()}onClose(){this.contentEl.empty()}};var BLGIconPicker=class extends Oe.Modal{constructor(e,r,a){super(e);this.file=r;this.view=a;this._allIcons=null;this._filtered=null}onOpen(){var self=this;this.titleEl.setText(L("iconPickerTitle"));var wrap=this.contentEl.createDiv();wrap.style.cssText="max-height:70vh;display:flex;flex-direction:column";var searchBar=wrap.createDiv();searchBar.style.cssText="margin-bottom:8px;display:flex;gap:6px";var searchInput=searchBar.createEl("input",{type:"text",placeholder:L("iconPickerSearch")});searchInput.style.cssText="flex:1;height:32px;padding:4px 8px";var removeBtn=searchBar.createEl("button",{text:L("iconRemove")});removeBtn.style.cssText="font-size:11px;padding:4px 10px;color:var(--text-error)";removeBtn.onclick=function(){if(!self.file)return;self.app.fileManager.processFrontMatter(self.file,function(fm){delete fm.icon}).then(function(){new Oe.Notice(L("iconRemoved"));if(self.view&&self.view.resetHover)self.view.resetHover();if(self.view&&self.view._scheduleRefresh)self.view._scheduleRefresh(true);if(self.view&&self.view.renderTagGraph)self.view.renderTagGraph();self.close()}).catch(function(e2){new Oe.Notice(L("iconSetError")+(e2&&e2.message?e2.message:String(e2)))})};var gridWrap=wrap.createDiv();gridWrap.style.cssText="flex:1;overflow-y:auto;max-height:55vh";var grid=gridWrap.createDiv();grid.style.cssText="display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:4px";var _lucide=["activity","air-vent","alarm-clock","alert-circle","alert-octagon","alert-triangle","align-center","align-justify","align-left","align-right","anchor","aperture","archive","archive-restore","arrow-big-down","arrow-big-left","arrow-big-right","arrow-big-up","arrow-down","arrow-down-circle","arrow-down-left","arrow-down-right","arrow-down-to-dot","arrow-down-to-line","arrow-left","arrow-left-circle","arrow-left-right","arrow-right","arrow-right-circle","arrow-up","arrow-up-circle","arrow-up-left","arrow-up-right","arrow-up-from-dot","arrow-up-to-line","asterisk","at-sign","award","axe","backpack","banknote","bar-chart","bar-chart-2","bar-chart-3","bar-chart-4","baseline","battery-charging","battery-full","battery-low","battery-medium","battery-warning","battery","beaker","bed","bed-double","beer","bell","bell-minus","bell-off","bell-plus","bell-ring","bike","binary","bitcoin","bluetooth","book","book-open","book-marked","book-copy","book-a","book-a-check","bookmark","bookmark-check","bookmark-minus","bookmark-plus","bookmark-x","bot","box","box-select","boxes","briefcase","brush","bug","building","building-2","bus","bus-front","cake","calculator","calendar","calendar-check","calendar-check-2","calendar-clock","calendar-days","calendar-heart","calendar-minus","calendar-minus-2","calendar-off","calendar-plus","calendar-range","calendar-search","calendar-x","calendar-x-2","camera","camera-off","carrot","cast","check","check-check","check-circle","check-circle-2","check-square","check-square-2","chef-hat","chevron-down","chevron-first","chevron-last","chevron-left","chevron-right","chevron-up","chevrons-down","chevrons-left","chevrons-right","chevrons-up","chrome","cigarette","circle","circle-dot","circle-ellipsis","circle-equal","circle-help","circle-minus","circle-off","circle-plus","circle-slash","circle-slash-2","circle-user","circle-user-round","circle-x","citrus","clipboard","clipboard-check","clipboard-copy","clipboard-list","clipboard-paste","clipboard-signature","clipboard-type","clipboard-x","clock","clock-1","clock-2","clock-3","clock-4","clock-5","clock-6","clock-7","clock-8","clock-9","clock-10","clock-11","clock-12","cloud","cloud-cog","cloud-drizzle","cloud-fog","cloud-hail","cloud-lightning","cloud-moon","cloud-moon-rain","cloud-off","cloud-rain","cloud-rain-wind","cloud-snow","cloud-sun","cloud-sun-rain","cloudy","clover","code","code-2","codepen","codesandbox","coffee","cog","cog-wheel","coins","columns","columns-2","columns-3","command","compass","component","concierge-bell","construction","contact","contrast","cookie","copy","copyleft","copyright","corner-down-left","corner-down-right","corner-left-down","corner-left-up","corner-right-down","corner-right-up","corner-up-left","corner-up-right","cpu","credit-card","croissant","crop","cross","crosshair","crown","cup-soda","currency","database","delete","diamond","dice-1","dice-2","dice-3","dice-4","dice-5","dice-6","dices","diff","disc","divide","divide-circle","divide-square","dollar-sign","download","download-cloud","dribbble","droplet","droplets","drumstick","ear","ear-off","edit","edit-2","edit-3","egg","equal","eraser","euro","expand","external-link","external-link-2","eye","eye-off","facebook","factory","fast-forward","feather","figma","file","file-archive","file-audio","file-audio-2","file-axis-3d","file-axis-4","file-badge","file-bar-chart","file-bar-chart-2","file-box","file-check","file-check-2","file-clock","file-code","file-code-2","file-cog","file-diff","file-digit","file-down","file-edit","file-heart","file-image","file-input","file-json","file-json-2","file-key","file-line","file-lock","file-lock-2","file-minus","file-minus-2","file-output","file-pen-line","file-pen","file-plus","file-plus-2","file-question","file-search","file-signature","file-spreadsheet","file-symlink","file-terminal","file-text","file-type","file-type-2","file-up","file-video","file-video-2","file-volume","file-volume-2","file-warning","file-x","file-x-2","files","film","filter","fingerprint","fish","flag","flag-off","flag-triangle-left","flag-triangle-right","flame","flashlight","flashlight-off","flask-conical","flask-round","flip-horizontal","flip-horizontal-2","flip-vertical","flip-vertical-2","flower","flower-2","focus","folder","folder-archive","folder-check","folder-clock","folder-closed","folder-cloud","folder-cog","folder-down","folder-edit","folder-git-2","folder-heart","folder-hidden","folder-home","folder-input","folder-kanban","folder-key","folder-lock","folder-minus","folder-open","folder-output","folder-pen","folder-plus","folder-root","folder-search","folder-settings","folder-shared","folder-shield","folder-sync","folder-tree","folder-up","folder-x","folders","forklift","form-input","forward","frame","framer","frown","fuel","function-square","gamepad","gamepad-2","gauge","gavel","gem","ghost","gift","git-branch","git-commit","git-commit-vertical","git-fork","git-merge","git-pull-request","git-pull-request-closed","git-pull-request-draft","glasses","globe","globe-2","grab","graduation-cap","grape","grid","grid-2","grip-horizontal","grip-vertical","hammer","hand","hand-metal","hard-drive","hard-hat","hash","haze","heading","heading-1","heading-2","heading-3","heading-4","heading-5","heading-6","headphones","headphone","heart","heart-crack","heart-handshake","heart-off","heart-pulse","help-circle","helping-hand","hexagon","highlighter","history","home","hop","hourglass","ice-cream","image","image-minus","image-off","image-plus","import","inbox","indent","indent-decrease","indent-increase","infinity","info","instagram","italic","japanese-yen","joystick","key","keyboard","keyboard-2","landmark","landmark-2","languages","laptop","laptop-2","lasso","layers","layout","layout-dashboard","layout-grid","layout-list","layout-panel-left","layout-panel-top","layout-template","leaf","library","life-buoy","lightbulb","lightbulb-off","line-chart","link","link-2","link-2-off","linkedin","list","list-checks","list-end","list-minus","list-music","list-ordered","list-plus","list-start","list-video","list-x","loader","loader-2","locate","locate-fixed","locate-off","lock","lock-unlock","log-in","log-out","luggage","magnet","magnifying-glass","mail","mail-check","mail-open","map","map-pin","map-pin-off","maximize","maximize-2","medal","megaphone","meh","memory","menu","message-circle","message-square","message-square-plus","message-square-reply","mic","mic-off","mic-2","microscope","microwave","milestone","minimize","minimize-2","minus","minus-circle","minus-square","monitor","monitor-check","monitor-cog","monitor-dot","monitor-down","monitor-off","monitor-pause","monitor-play","monitor-smartphone","monitor-speaker","monitor-stop","monitor-up","monitor-x","moon","moon-star","more-horizontal","more-vertical","mountain","mountain-snow","mouse","mouse-pointer","mouse-pointer-2","mouse-pointer-click","move","move-3d","move-diagonal","move-diagonal-2","move-horizontal","move-vertical","music","music-2","music-3","music-4","navigation","navigation-2","navigation-off","network","newspaper","nfc","notebook","notebook-pen","notebook-tabs","octagon","option","orbit","outdent","package","package-2","package-check","package-minus","package-open","package-plus","package-search","package-x","paintbrush","paintbrush-2","palette","palm","panel-bottom","panel-bottom-close","panel-left","panel-left-close","panel-left-open","panel-right","panel-right-close","panel-right-open","paperclip","paperclip-2","pause","pause-circle","pause-octagon","pause-octagon-off","pen-tool","pencil","pencil-line","pencil-ruler","pennant","percent","person-standing","phone","phone-call","phone-forwarded","phone-incoming","phone-missed","phone-off","phone-outgoing","pie-chart","piggy-bank","pin","pin-off","pipette","plane","play","play-circle","plug","plug-2","plug-zap","plus","plus-circle","plus-square","pocket","podcast","pointer","power","printer","puzzle","quote","radar","radio","radio-receiver","recycle","redo","redo-2","refresh-ccw","refresh-ccw-dot","refresh-cw","registered","repeat","repeat-1","reply","reply-all","rewind","rocket","rotate-3d","rotate-ccw","rotate-cw","route","router","rss","ruler","ruler-2","russian-ruble","save","scale","scan","scan-face","scan-line","scissors","screen-share","screen-share-off","scroll","search","search-check","selection","selection-background","send","send-horizontal","separator","server","server-cog","server-crash","server-off","settings","settings-2","share","share-2","sheet","shield","shield-alert","shield-check","shield-close","shield-off","shield-question","shirt","shopping-bag","shopping-cart","shovel","shower","shrink","shrub","shuffle","sidebar","sidebar-close","sidebar-open","sigma","signal","signal-high","signal-low","signal-medium","signal-zero","signature","signpost","sim-card","siren","skip-back","skip-forward","skull","slack","slash","slice","sliders","sliders-horizontal","smartphone","smile","smile-plus","snowflake","sofa","sort-asc","sort-desc","sound","sound-2","sound-wave","soup","space","spade","sparkle","sparkles","speaker","speech","spell-check","spell-check-2","split","spray-can","square","square-asterisk","square-code","square-dashed","square-dot","square-equal","square-slash","square-stack","squirrel","stamp","star","star-half","star-off","step-back","step-forward","sticker","sticky-note","stop","stop-circle","store","strikethrough","strikethrough-2","sun","sun-dim","sun-medium","sun-snow","sunrise","sunset","superscript","switch-camera","switch-horizontal","switch-horizontal-2","switch-vertical","switch-vertical-2","swords","syringe","table","table-2","tablet","tablet-smartphone","tag","tag-2","tags","target","target-2","tent","terminal","terminal-square","text","text-cursor","text-cursor-input","text-search","text-select","thermometer","thermometer-cold","thermometer-snowflake","thermometer-sun","thumbs-down","thumbs-up","ticket","timer","timer-off","timer-reset","toggle-left","toggle-right","tornado","toilet","touch","touchpad","toxic","train","train-front","train-track","tractor","traffic-cone","trending-down","trending-up","triangle","triangle-alert","triangle-right","trolley","trophy","truck","tv","tv-2","twitch","twitter","type","umbrella","umbrella-2","umbrella-off","underline","undo","undo-2","unlink","unlink-2","unlock","unlock-2","upload","upload-cloud","user","user-check","user-cog","user-minus","user-plus","users","utensils","uv","uv-sun","verified","vibrate","video","video-off","video-2","view","voicemail","volume","volume-1","volume-2","volume-x","vote","vote-2","wallet","wand","wand-2","wand-sparkles","watch","waves","waypoints","webhook","weight","whale","wifi","wifi-off","wind","wind-2","wine","wrench","x","x-circle","x-octagon","x-square","y","youtube","zap","zap-off","zap-nfc","zoom-in","zoom-out"];this._allIcons=[];for(var i=0;i<_lucide.length;i++){this._allIcons.push({name:_lucide[i],type:"lucide"})}try{var p=window.app&&window.app.plugins&&window.app.plugins.plugins&&window.app.plugins.plugins["obsidian-icon-folder"];if(p&&p.api){var allNames=p.api.getAllIconNames?p.api.getAllIconNames():[];if(allNames&&allNames.length){for(var j=0;j<allNames.length;j++){this._allIcons.push({name:allNames[j],type:"iconize"})}}}}catch(e){}var renderGrid=function(filterTxt){grid.empty();var lower=(filterTxt||"").toLowerCase();var items=[];for(var i2=0;i2<self._allIcons.length;i2++){if(!lower||self._allIcons[i2].name.toLowerCase().indexOf(lower)>=0){items.push(self._allIcons[i2])}}var max=Math.min(items.length,300);for(var k=0;k<max;k++){(function(ic){var cell=grid.createDiv();cell.style.cssText="display:flex;align-items:center;justify-content:center;width:36px;height:36px;cursor:pointer;border-radius:4px";cell.title=ic.name;if(ic.type==="lucide"){var el=(0,Oe.getIcon)(ic.name);if(el){var clone=el.cloneNode(true);clone.setAttribute("width","20");clone.setAttribute("height","20");cell.appendChild(clone)}}else if(ic.type==="iconize"){try{var p2=window.app.plugins.plugins["obsidian-icon-folder"];if(p2&&p2.api){var iconObj=p2.api.getIconByName?p2.api.getIconByName(ic.name):null;if(iconObj&&iconObj.svgElement){var div=cell.createDiv();div.style.cssText="display:flex;align-items:center;justify-content:center";div.innerHTML=iconObj.svgElement;var svg=div.querySelector("svg");if(svg){svg.setAttribute("width","20");svg.setAttribute("height","20")}}}}catch(e2){}}cell.onmouseenter=function(){cell.style.background="var(--background-modifier-hover)"};cell.onmouseleave=function(){cell.style.background=""};cell.onclick=function(){self._pick(ic)}})(items[k])}if(items.length>300){var more=grid.createDiv({text:L("iconPickerMore")(items.length)});more.style.cssText="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:8px;font-size:11px"}};renderGrid("");searchInput.oninput=function(){renderGrid(searchInput.value)};setTimeout(function(){searchInput.focus()},50)}_pick(ic){var self=this;if(!this.file)return;var iconValue=ic.name;this.app.fileManager.processFrontMatter(this.file,function(fm){fm.icon=iconValue}).then(function(){new Oe.Notice(L("iconSet"));if(self.view&&self.view.resetHover)self.view.resetHover();if(self.view&&self.view._scheduleRefresh)self.view._scheduleRefresh(true);if(self.view&&self.view.renderTagGraph)self.view.renderTagGraph();self.close()}).catch(function(e){new Oe.Notice(L("iconSetError")+(e&&e.message?e.message:String(e)))})}onClose(){this.contentEl.empty()}};var BlgTagPick=class extends Oe.FuzzySuggestModal{constructor(app,onPick){super(app);this.onPick=onPick;this.setPlaceholder(L("tagPickPlaceholder"));this.titleText=L("tagPickTitle")}onOpen(){super.onOpen();try{this.titleEl&&this.titleEl.setText(this.titleText)}catch(e){}}getItems(){let set=new Set,mc=this.app.metadataCache;let addAll=function(x){if(!x)return;set.add(x);let segs=x.split("/");for(let s of segs){if(s)set.add(s)}let acc="";for(let s of segs){acc=acc?acc+"/"+s:s;set.add(acc)}};for(let f of this.app.vault.getMarkdownFiles()){let c=mc.getFileCache(f);if(!c)continue;if(c.tags)for(let t of c.tags){addAll(t.tag.replace(/^#/,""))}let fm=c.frontmatter;if(fm&&fm.tags){let arr=Array.isArray(fm.tags)?fm.tags:[fm.tags];for(let t of arr){if(t==null)continue;addAll(String(t).replace(/^#/,"").trim())}}}return Array.from(set).sort((a,b)=>a.localeCompare(b))}getItemText(t){return "#"+t}onChooseItem(t){this.onPick&&this.onPick(t)}};var To=class extends Oe.ItemView{constructor(r,a){super(r);this.cy=null;this.currentPath=null;this.plugin=a}getViewType(){return ua}getDisplayText(){return this.plugin.tagView?L("tagViewTitle")(this.plugin.tagView.tag):this.plugin.session?L("viewSession"):L("viewLocal")}getIcon(){return this.plugin.tagView?"tag":this.plugin.session?"git-merge":"git-fork"}async onOpen(){let r=this.contentEl;r.empty(),r.addClass("blg-root"),this.titleEl=r.createDiv({cls:"blg-title"}),this.toolbarEl=r.createDiv({cls:"blg-toolbar"}),this.graphEl=r.createDiv({cls:"blg-graph"}),this.graphEl.style.position="relative",this.cy=hr({container:this.graphEl,style:this.buildStyle(),layout:{name:"null"},userZoomingEnabled:!1,boxSelectionEnabled:!1,autounselectify:!0}),this._sz={z:this.cy.zoom(),tz:this.cy.zoom(),running:!1},this.graphEl.addEventListener("wheel",e=>{e.preventDefault();let t=-e.deltaY*.001,r=this.cy.zoom();this._sz.tz=Math.max(.1,Math.min(10,r*(1+t))),this._sz.running||(this._sz.running=!0,requestAnimationFrame(function l(){let a=this.cy.zoom(),n=this._sz.tz-a;Math.abs(n)<.001?(this.cy.zoom(this._sz.tz),this._sz.running=!1):(this.cy.zoom(a+n*.25),requestAnimationFrame(l.bind(this)))}.bind(this)))}),this.cy.on("tap","node",a=>{let ev=a.originalEvent;if(ev&&ev.shiftKey){this.toggleSel(a.target);return}let n=a.target.id(),i=this.app.vault.getAbstractFileByPath(n);i instanceof Oe.TFile&&this.app.workspace.getLeaf(!1).openFile(i)}),this.cy.on("tap",a=>{if(a.target!==this.cy)return;if(!this.cy.elements().length)return;this._sz&&(this._sz.running=!1);this.cy.animate({fit:{eles:this.cy.elements(),padding:60}},{duration:350,easing:"ease-in-out-cubic",complete:()=>{this._sz&&(this._sz.tz=this.cy.zoom())}})}),this.cy.on("cxttap","node",a=>{let n=a.target.id(),i=this.app.vault.getAbstractFileByPath(n);if(!(i instanceof Oe.TFile))return;let s=new Oe.Menu;s.addItem(o=>o.setTitle(L("ctxSewFrom")).setIcon("git-merge").onClick(()=>this.plugin.iniciarCosturaDesde(i)));s.addItem(o=>o.setTitle(L("ctxBookmark")).setIcon("bookmark").onClick(()=>{this.plugin.bookmark={path:i.path,name:i.basename},new Oe.Notice(L("noteMarked")(i.basename)),this.renderBookmark()}));let bm=this.plugin.bookmark;if(bm&&bm.path!==i.path){s.addItem(o=>o.setTitle(L("ctxSewToBookmark")(bm.name)).setIcon("git-merge").onClick(()=>{let pf=this.app.vault.getAbstractFileByPath(bm.path);if(!(pf instanceof Oe.TFile)){new Oe.Notice(L("bookmarkNotFound"));return}this.plugin.coserInmediata(pf,i)}))}s.addItem(o=>o.setTitle(L("ctxEditYaml")).setIcon("pencil").onClick(()=>{new Wq(this.app,i,this).open()}));this.plugin.aiClient&&this.plugin.aiClient.isConfigured()&&this.currentPath&&this.currentPath!==i.path&&s.addItem(o=>o.setTitle(L("ctxWhyRelated")).setIcon("sparkles").onClick(async()=>{let cf=this.app.vault.getAbstractFileByPath(this.currentPath);if(!(cf instanceof Oe.TFile))return;let nn=new Oe.Notice(L("analyzing"),0);try{let tx=await explainRelation(this.plugin,cf,i);nn.hide();new Oe.Notice(tx,15e3)}catch(err){nn.hide();new Oe.Notice(err&&err.message?err.message:String(err))}}));let u=a.originalEvent;s.showAtPosition({x:u.clientX,y:u.clientY})}),this.registerEvent(this.app.workspace.on("active-leaf-change",()=>{this.plugin.session||this._scheduleRefresh(!1)})),this.registerEvent(this.app.metadataCache.on("resolved",()=>{this.plugin.session||this._scheduleRefresh(!0)})),this.registerEvent(this.app.metadataCache.on("changed",file=>{if(this.plugin.session)return;this._invalidateIconCache(file);this._scheduleRefresh(!0)})),this._sel=[],this._selKey=e=>{if(e.key!=="Enter"||!this._sel||this._sel.length<2)return;if(document.body.querySelector(".modal-container"))return;let t=e.target;if(t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.tagName==="BUTTON"||t.isContentEditable))return;e.preventDefault(),e.stopPropagation(),this.relacionarSel()},document.addEventListener("keydown",this._selKey,!0),this.renderMode(),this.renderBookmark()}async onClose(){var r;this._pulseT&&clearTimeout(this._pulseT);this._stopPulse&&this._stopPulse();this._ttEl&&this._ttEl.remove(),this._ttEl=null,this._ttKey&&document.removeEventListener("keydown",this._ttKey,!0),this._ttKey=null,this._ttKey2&&document.removeEventListener("keydown",this._ttKey2,!0),this._ttKey2=null,this._ttWheel&&this.graphEl&&this.graphEl.removeEventListener("wheel",this._ttWheel,!0),this._ttWheel=null,this._ttMove&&this.graphEl&&this.graphEl.removeEventListener("mousemove",this._ttMove),this._ttMove=null,this._ttLeave&&this.graphEl&&this.graphEl.removeEventListener("mouseleave",this._ttLeave),this._selKey&&document.removeEventListener("keydown",this._selKey,!0),this._selKey=null,this._rfT&&(clearTimeout(this._rfT),this._rfT=null),this._rfForce=!1,(r=this.cy)==null||r.destroy(),this.cy=null}renderMode(){var r,a;this.cy&&((a=(r=this.leaf).updateHeader)==null||a.call(r),this.plugin.tagView?this.renderTagGraph():this.plugin.session?this.renderSewing():(this._noRf=!1,this.currentPath=null,this._lastCentralPath=null,this._lastSig=null,this.refreshLocal(!0)))}_scheduleRefresh(force=!1){this._rfForce=this._rfForce||force;this._rfT&&clearTimeout(this._rfT);this._rfT=setTimeout(()=>{this._rfT=null;let f=this._rfForce;this._rfForce=!1;this.refreshLocal(f)},280)}_invalidateIconCache(file){if(!this._iconCache)return;if(file){var _pre=file.path+"|";for(var _k of Array.from(this._iconCache.keys())){if(_k===_pre||_k.indexOf(_pre)===0)this._iconCache.delete(_k)}}else{this._iconCache=new Map}}refreshLocal(r=!1){if(!this.cy||this.plugin.session||this._noRf)return;let a=this.app.workspace.getActiveFile();if(this.titleEl.setText(L("viewLocal")),this.toolbarEl.empty(),!a||a.extension!=="md"){this.currentPath=null;this._lastSig=null;this.cy.elements().remove();return}!r&&a.path===this.currentPath||(this.currentPath=a.path,this.renderLocalGraph(a))}_ensureCentralVisible(path){if(!this.cy||!path)return;var n=this.cy.getElementById(path);if(!n||!n.length)return;this.cy.batch(function(){n.removeClass("dim");n.addClass("central");n.style("opacity",1);if(n.hasClass("mag")){n.style("width",62);n.style("height",62)}else{n.style("width",42);n.style("height",42)}})}renderLocalActive(){if(!this.cy)return;this._noRf=!1;let a=this.plugin._lastMdFile;if(!(a instanceof Oe.TFile)||a.extension!=="md"){a=null;let mv=this.app.workspace.getActiveViewOfType(Oe.MarkdownView);mv&&mv.file&&(a=mv.file),a||(a=this.app.workspace.getActiveFile())}if(!(a instanceof Oe.TFile)||a.extension!=="md"){this.currentPath=null,this.cy.elements().remove(),this.titleEl.setText(L("viewLocal")),this.toolbarEl.empty();return}this.titleEl.setText(L("viewLocal")),this.toolbarEl.empty(),this.currentPath=a.path,this.renderLocalGraph(a)}renderLocalGraph(r){var y;if(!this.cy)return;let a=this.app.metadataCache.resolvedLinks,st=this.plugin.settings,xl=st.excludedFolders||[],mn=st.maxNodes||30;let isMd=p=>{for(let d of xl)if(p===d||p.startsWith(d+"/"))return!1;return p.endsWith(".md")};let i=g=>{var p;return Object.keys((p=a[g])!=null?p:{}).filter(isMd)};let _bc=new Set;for(let g in a){let lp=a[g];if(lp&&lp[r.path]&&isMd(g))_bc.add(g)}let u=new Set([...i(r.path),..._bc]);u.delete(r.path);let l=new Set([r.path,...u]),v=new Set;for(let g of u)for(let p of i(g))l.has(p)||v.add(p);for(let g in a){let lp=a[g];if(!lp||!isMd(g)||l.has(g))continue;for(let p in lp){if(u.has(p)){v.add(g);break}}}let f=new Set([r.path,...u,...v]);let n=new Map;for(let g in a){let lp=a[g];if(!lp)continue;for(let p in lp){if(f.has(p)&&isMd(p)&&isMd(g)){if(!n.has(p))n.set(p,new Set);n.get(p).add(g)}}}let s=g=>{var p;return Array.from((p=n.get(g))!=null?p:[]).filter(isMd)},c=[];if(f.size>mn){this._lastSig=null;this.cy.elements().remove();let e=this.graphEl.querySelector(".coser-overlimit");e||(e=this.graphEl.createDiv({cls:"coser-overlimit",text:(BLG_LANG==="en"?("This view cannot be processed: "+f.size+" nodes (max "+mn+")"):("Esta Vista No se Puede Procesar: "+f.size+" nodos (maximo "+mn+")"))}));return}let oe=this.graphEl.querySelector(".coser-overlimit");oe&&oe.remove();for(let g of f){let p=this.app.vault.getAbstractFileByPath(g),m=p instanceof Oe.TFile?p.basename:g.replace(/\.md$/,""),b=g===r.path?"central":u.has(g)?"gen1":"gen2",w=null,al=null;if(p instanceof Oe.TFile){let E=(y=this.app.metadataCache.getFileCache(p))==null?void 0:y.frontmatter;let _ck=p.path+"|"+(p.stat?p.stat.mtime:0);if(this._iconCache&&this._iconCache.has(_ck)){w=this._iconCache.get(_ck)}else{let C=E==null?void 0:E.icon;typeof C=="string"&&(w=Xm(C,st.iconColor));if(!w)w=_blgResolveIcon(p,st,this.app.metadataCache);if(!this._iconCache)this._iconCache=new Map();this._iconCache.set(_ck,w)}if(u.has(g)&&E){let _av=E.aliases!=null?E.aliases:E.alias;_av!=null&&(al=Array.isArray(_av)?_av:[_av])}}let lb=m;c.push({data:{id:g,label:lb,bg:w,al:al},classes:w?`${b} has-icon`:b})}let _swc=new Map,_swl=g=>{var F;if(_swc.has(g))return _swc.get(g);let pf=this.app.vault.getAbstractFileByPath(g),ls=[];if(pf instanceof Oe.TFile){let fm=(F=this.app.metadataCache.getFileCache(pf))==null?void 0:F.frontmatter,sv=fm==null?void 0:fm.sewing;sv!=null&&(ls=Array.isArray(sv)?sv:[sv])}let out=new Set;for(let it of ls){if(typeof it!="string")continue;let mm=it.match(/\[\[([^\]|#]+)/),lt=(mm?mm[1]:it).trim();if(!lt)continue;let tf=this.app.metadataCache.getFirstLinkpathDest(lt,g);tf&&out.add(tf.path)}return _swc.set(g,out),out},_sw=(g,p)=>_swl(g).has(p);let h=new Set,d=(g,p)=>{var P,D,B,A;if(!f.has(g)||!f.has(p)||g===p)return;let m=((D=(P=a[g])==null?void 0:P[p])!=null?D:0)>0,b=((A=(B=a[p])==null?void 0:B[g])!=null?A:0)>0;if(!m&&!b)return;let[w,E]=g<p?[g,p]:[p,g],C=`${w}\0${E}`;if(h.has(C))return;h.add(C);let x=m&&b,T=m?g:p,k=m?p:g;let sj=x?_sw(w,E)||_sw(E,w):_sw(T,k);c.push({data:{id:C,source:x?w:T,target:x?E:k},classes:(x?"bidir":"dir")+(sj?" sewing":"")+(g===r.path||p===r.path?" g1":" g2")})};for(let g of f){for(let p of i(g))d(g,p);for(let p of s(g))d(p,g)}let _sig=JSON.stringify(c);if(_sig===this._lastSig)return;this._lastSig=_sig;var _centralChanged=!this._lastCentralPath||this._lastCentralPath!==r.path;this._lastCentralPath=r.path;if(_centralChanged){this.cy.elements().remove(),this.cy.add(c),this.cy.layout({name:"concentric",minNodeSpacing:40,concentric:g=>g.id()===r.path?3:u.has(g.id())?2:1,levelWidth:()=>1}).run(),this.cy.fit(void 0,30),this._animIn(300)}else{var _nIds=new Set,_eIds=new Set;for(var _el of c){if(_el.data.source)_eIds.add(_el.data.id);else _nIds.add(_el.data.id)}var _rm=[];this.cy.nodes().forEach(function(n){if(!_nIds.has(n.id()))_rm.push(n)});this.cy.edges().forEach(function(e){if(!_eIds.has(e.id()))_rm.push(e)});if(_rm.length)this.cy.remove(_rm);var _add=[];for(var _el2 of c){var _ex=this.cy.getElementById(_el2.data.id);if(_ex&&_ex.length){_ex.removeClass("central gen1 gen2 has-icon");if(_el2.classes){var _ca=_el2.classes.split(" ");for(var _ci=0;_ci<_ca.length;_ci++)_ex.addClass(_ca[_ci])}_ex.data(_el2.data)}else{_add.push(_el2)}}if(_add.length){var _added=this.cy.add(_add);_added.style("opacity",0);this.cy.layout({name:"concentric",minNodeSpacing:40,concentric:g=>g.id()===r.path?3:u.has(g.id())?2:1,levelWidth:()=>1}).run();this.cy.fit(void 0,30);_added.animate({style:{opacity:1}},{duration:300,easing:"ease-out"})}else{this.cy.fit(void 0,30)}}this._ensureCentralVisible(r.path);this._stopPulse&&this._stopPulse();this._pulseT&&clearTimeout(this._pulseT);var _selfL=this,_stL=st;this._pulseT=setTimeout(function(){if(_selfL.cy&&!_selfL.plugin.tagView&&!_selfL.plugin.session){_selfL._startLocalPulse(_stL)}},650);this._resyncSelNodes();this._selChanged();if(this._ttEl){this._ttEl.style.display="none";this._ttNode=null;this._hoverNode=null;this._aiMsg=null;this.cy&&this.cy.elements().removeClass("dim hl mag ehl")}if(!this._ttEl||!this._ttEl.parentNode){let _tt=document.createElement("div");_tt.className="coser-tooltip";_tt.style.cssText="position:fixed;display:none;background:"+((function(h,o){var m=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h);if(m){return"rgba("+parseInt(m[1],16)+","+parseInt(m[2],16)+","+parseInt(m[3],16)+","+o+")"}return"rgba(30,30,30,"+o+")"})(this.plugin.settings.tooltipBg||"#1e1e1e",(this.plugin.settings.tooltipBgOpacity!=null?this.plugin.settings.tooltipBgOpacity:1)))+";color:"+(this.plugin.settings.tooltipText||"#ddd")+";border:1px solid #555;border-radius:6px;padding:8px 12px;font-size:12px;max-height:170px;min-width:180px;max-width:280px;overflow-y:auto;overflow-x:auto;z-index:99999;pointer-events:none;line-height:1.5;white-space:pre-wrap;box-shadow:0 2px 10px rgba(0,0,0,.5)";document.body.appendChild(_tt);this._ttEl=_tt;let _ht=null;let _hideNow=()=>{_ht&&(clearTimeout(_ht),_ht=null),_tt.style.display="none"};let _hide=()=>{_ht&&clearTimeout(_ht),_ht=setTimeout(()=>{_ht=null,_tt.style.display="none"},120)};let _undim=()=>{this.cy&&this.cy.elements().removeClass("dim")};let _clearMag=()=>{_laserStop();if(this._hoverNode){this._hoverNode.removeClass("hl mag");this._hoverNode.connectedEdges().removeClass("ehl");this._hoverNode=null}};let _clearAll=()=>{_clearMag();this.cy&&this.cy.elements().removeClass("dim hl mag ehl")};let _lcEl=()=>{let c=this.graphEl.querySelector(".coser-laser");if(!c){c=document.createElement("canvas");c.className="coser-laser";c.style.cssText="position:absolute;left:0;top:0;pointer-events:none;z-index:99998";this.graphEl.appendChild(c)}return c};let _laserStop=()=>{if(this._laf!=null){cancelAnimationFrame(this._laf);this._laf=null}this._ltgt=null;_lh.length=0;let c=_lcEl(),ctx=c&&c.getContext("2d");ctx&&ctx.clearRect(0,0,c.width,c.height)};let _lh=[];let _laserStart=t=>{_laserStop();this._ltgt=t;let W=()=>{let c=_lcEl(),w=this.graphEl.clientWidth,h=this.graphEl.clientHeight;if(c.width!==w||c.height!==h){c.width=w;c.height=h}return c};let step=()=>{if(!this._ltgt)return;let c=W(),ctx=c.getContext("2d");if(!ctx){this._laf=requestAnimationFrame(step);return}ctx.clearRect(0,0,c.width,c.height);let n=this._ltgt;if(typeof n.renderedPosition!="function"||typeof n.renderedBoundingBox!="function"){this._laf=requestAnimationFrame(step);return}let S=this.plugin.settings||{},lc=S.laserColor||"#00e5ff",ls=S.laserSpeed||300,lb=S.laserStrength||14;let ctr=n.renderedPosition(),bb=n.renderedBoundingBox({includeLabels:!1,includeOverlays:!1}),cx=ctr.x,cy=ctr.y,rx=(bb.x2-bb.x1)/2,ry=(bb.y2-bb.y1)/2,r=Math.max(rx,ry)+3,ang=Date.now()/ls,px=cx+r*Math.cos(ang),py=cy+r*Math.sin(ang);_lh.unshift({x:px,y:py});if(_lh.length>14)_lh.pop();for(let i=0;i<_lh.length;i++){let p=_lh[i],a=1-i/_lh.length;ctx.globalAlpha=a*0.9;ctx.fillStyle=lc;ctx.shadowColor=lc;ctx.shadowBlur=lb*(1-i*0.06);ctx.beginPath();ctx.arc(p.x,p.y,4*(1-i*0.05),0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;ctx.shadowBlur=0;this._laf=requestAnimationFrame(step)};this._laf=requestAnimationFrame(step)};let _props=()=>{let ps=this.plugin.settings.tooltipProps;ps=Array.isArray(ps)&&ps.length?ps.slice():["aliases"];this.plugin.aiClient&&this.plugin.aiClient.isConfigured()&&ps.push("✨ ai");return ps};let _pval=(g,nm)=>{var F;let pf=this.app.vault.getAbstractFileByPath(g);if(!(pf instanceof Oe.TFile))return[];let fm=(F=this.app.metadataCache.getFileCache(pf))==null?void 0:F.frontmatter;if(!fm)return[];let v=fm[nm];nm==="aliases"&&v==null&&(v=fm.alias);if(v==null)return[];let ls=Array.isArray(v)?v:[v];return ls.filter(x=>x!=null&&String(x).length>0).map(x=>String(x))};this._ttIdx=0;this._ttNode=null;this._hoverNode=null;this._ttMx=null;this._ttMy=null;this._laf=null;this._ltgt=null;let _ttPos=()=>{let t=this._ttNode;if(!t)return;let pos=typeof t.renderedPosition=="function"?t.renderedPosition():null;if(!pos)return;let rect=this.graphEl.getBoundingClientRect();_tt.style.left=(rect.left+pos.x+25)+"px";_tt.style.top=(rect.top+pos.y-15)+"px"};let _ttIn=()=>{let t=this._ttNode;if(!t||this._ttMx==null)return!1;let bb=t.renderedBoundingBox({includeLabels:!1,includeOverlays:!1}),rc=this.graphEl.getBoundingClientRect(),mx=this._ttMx-rc.left,my=this._ttMy-rc.top;return mx>=bb.x1-4&&mx<=bb.x2+4&&my>=bb.y1-4&&my<=bb.y2+4};let _ttRender=()=>{let t=this._ttNode;if(!t){_hideNow();return}let ps=_props(),N=ps.length,ix=((this._ttIdx%N)+N)%N,nm=ps[ix];_tt.textContent="";let fn=t.id().split("/").pop().replace(/\.md$/,"");let fh=document.createElement("div");fh.style.cssText="font-weight:700;font-size:13px;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden";fh.textContent=fn;_tt.appendChild(fh);if(nm==="✨ ai"){let hd="✨ ai ("+(ix+1)+"/"+N+")"+(N>1?" ↑↓":"");let he=document.createElement("div");he.style.cssText="font-weight:600;color:#999;font-size:10px;margin-bottom:3px";he.textContent=hd;_tt.appendChild(he);let bd;if(this._aiMsg)bd=this._aiMsg;else{let pf=this.app.vault.getAbstractFileByPath(t.id());let hit=pf instanceof Oe.TFile?this.plugin.aiCache.get(AICache.keyFor(pf,"sum")):null;bd=hit||(BLG_LANG==="en"?"Press R to generate summary ✨":"Presiona R para generar resumen ✨")}_tt.appendChild(document.createTextNode(bd));if(!this._aiMsg){let ht2=document.createElement("div");ht2.style.cssText="color:#999;font-size:9px;margin-top:4px";ht2.textContent=(BLG_LANG==="en"?"R: generate · Shift+R: regenerate":"R: generar · Shift+R: regenerar");_tt.appendChild(ht2)}}else{let vals=_pval(t.id(),nm),hd=nm+" ("+(ix+1)+"/"+N+")"+(N>1?" ↑↓":""),bd=vals.length?vals.map(x=>"- "+x).join("\n"):"—";if(_pval(t.id(),ps[this._ttIdx]).length){let he=document.createElement("div");he.style.cssText="font-weight:600;color:#999;font-size:10px;margin-bottom:3px";he.textContent=hd;_tt.appendChild(he);_tt.appendChild(document.createTextNode(bd))}}let _hh=document.createElement("div");_hh.style.cssText="color:#777;font-size:9px;margin-top:6px;border-top:1px solid #333;padding-top:3px";_hh.textContent=(BLG_LANG==="en"?"S:toggle P:path I:icon O:open R:ai":"S:toggle P:ruta I:icono O:abrir R:ia");_tt.appendChild(_hh);_ttPos();_tt.style.display="block";_tt.scrollTop=0;_tt.scrollLeft=0;this._ttScr&&(this._ttScr.t=0,this._ttScr.c=0,this._ttScr.tx=0,this._ttScr.cx=0)};this.cy.on("mouseover","node",e=>{let t=e.target;if(!t||typeof t.isNode!="function"||!t.isNode()){_hideNow();return}let nb=t.closedNeighborhood();this.cy.elements().not(nb).addClass("dim");nb.removeClass("dim");if(this._hoverNode&&this._hoverNode!==t){this._hoverNode.removeClass("hl mag")}this._hoverNode=t;t.addClass("hl mag");t.connectedEdges().addClass("ehl");_laserStart(t);if(!this.plugin.settings.tooltipAllNodes&&!t.hasClass("gen1")){_hide();return}_ht&&(clearTimeout(_ht),_ht=null);let ps=_props(),fi=-1;for(let q=0;q<ps.length;q++)if(_pval(t.id(),ps[q]).length){fi=q;break}if(fi<0)fi=0;this._ttNode=t;this._ttIdx=fi;_ttRender()});this.cy.on("mouseout","node",e=>{if(e.target===this._hoverNode){_clearMag()}if(e.target===this._ttNode&&_tt.style.display!=="none"&&_ttIn())return;_undim(),_hide()});this.cy.on("zoom pan",()=>{this._ttNode&&_tt.style.display!=="none"?_ttPos():(_clearAll(),_hideNow())});this._ttLeave=()=>{_clearAll(),_hideNow()};this.graphEl.addEventListener("mouseleave",this._ttLeave);this._ttKey&&document.removeEventListener("keydown",this._ttKey,!0);this._ttKey=e=>{if(!this._ttEl)return;let _ae=document.activeElement;if(_ae&&(_ae.tagName==="INPUT"||_ae.tagName==="TEXTAREA"||_ae.isContentEditable||(_ae.closest&&_ae.closest(".cm-editor"))))return;let _over=this._ttNode&&_ttIn();let k=e.key;if(k==="s"||k==="S"){if(!_over)return;e.preventDefault();e.stopPropagation();if(this._ttEl.style.display==="none"){_ttRender()}else{_hideNow()}return}if(k==="p"||k==="P"){if(!_over||!this._ttNode)return;e.preventDefault();e.stopPropagation();let path=this._ttNode.id();let ok=false;try{let el=require("electron");if(el&&el.clipboard){el.clipboard.writeText(path);ok=true}}catch(_){}if(!ok){try{if(typeof navigator!=="undefined"&&navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(path);ok=true}}catch(_){}}new Oe.Notice(L("pathCopied"));return}if(k==="i"||k==="I"){if(!_over||!this._ttNode)return;e.preventDefault();e.stopPropagation();var _if=this.app.vault.getAbstractFileByPath(this._ttNode.id());if(_if instanceof Oe.TFile){if(e.shiftKey){var _self=this;this.app.fileManager.processFrontMatter(_if,function(fm){delete fm.icon}).then(function(){new Oe.Notice(L("iconRemoved"));_self.resetHover&&_self.resetHover();_self.refreshLocal&&_self.refreshLocal(true)}).catch(function(err){new Oe.Notice(L("iconSetError")+(err&&err.message?err.message:String(err)))})}else{new BLGIconPicker(this.app,_if,this).open()}}return}if(k==="o"||k==="O"){if(!_over||!this._ttNode)return;e.preventDefault();e.stopPropagation();var _of=this.app.vault.getAbstractFileByPath(this._ttNode.id());if(_of instanceof Oe.TFile){try{var _fp=this.app.vault.adapter.getFullPath(_of.path);require("electron").shell.showItemInFolder(_fp)}catch(err){new Oe.Notice(L("openLocError"))}}return}if(k==="r"||k==="R"){if(!_over)return;e.preventDefault();e.stopPropagation();let ps2=_props(),ai2=ps2.indexOf("✨ ai");if(ai2<0){new Oe.Notice(L("aiNotConfigured"));return}this._ttIdx=ai2;if(this._ttEl.style.display==="none"){_ttRender()}if(this._aiBusy){_ttRender();return}let pf2=this.app.vault.getAbstractFileByPath(this._ttNode.id());if(!(pf2 instanceof Oe.TFile))return;this._aiBusy=!0;let nd2=this._ttNode;this._aiMsg=L("generating");_ttRender();summarizeNote(this.plugin,pf2,e.shiftKey).then(()=>{this._aiBusy=!1;this._aiMsg=null;this._ttNode===nd2&&this._ttEl&&this._ttEl.style.display!=="none"&&_ttRender()}).catch(err=>{this._aiBusy=!1;this._aiMsg=null;new Oe.Notice(err&&err.message?err.message:String(err));this._ttNode===nd2&&this._ttEl&&this._ttEl.style.display!=="none"&&_ttRender()});return}if(this._ttEl.style.display==="none")return;if(k==="ArrowDown"){e.preventDefault();e.stopPropagation();this._ttIdx++;_ttRender()}else if(k==="ArrowUp"){e.preventDefault();e.stopPropagation();this._ttIdx--;_ttRender()}};document.addEventListener("keydown",this._ttKey,!0);this._ttMove&&this.graphEl.removeEventListener("mousemove",this._ttMove);this._ttMove=e=>{this._ttMx=e.clientX;this._ttMy=e.clientY;if(!this._ttEl||this._ttEl.style.display==="none"||!this._ttNode)return;if(_ttIn()){_ht&&(clearTimeout(_ht),_ht=null)}else{_undim();_hide()}};this.graphEl.addEventListener("mousemove",this._ttMove);this._ttWheel&&this.graphEl.removeEventListener("wheel",this._ttWheel,!0);this._ttScr={t:0,c:0,tx:0,cx:0,run:!1};this._ttWheel=e=>{let tt=this._ttEl;if(!tt||tt.style.display==="none")return;let hz=!!e.shiftKey,mx=hz?tt.scrollWidth-tt.clientWidth:tt.scrollHeight-tt.clientHeight;if(mx<=0)return;e.preventDefault();e.stopImmediatePropagation();let d=hz?(e.deltaY||e.deltaX):e.deltaY;e.deltaMode===1?d*=20:e.deltaMode===2&&(d*=hz?tt.clientWidth:tt.clientHeight);let s=this._ttScr;hz?s.tx=Math.max(0,Math.min(mx,s.tx+d*.45)):s.t=Math.max(0,Math.min(mx,s.t+d*.45));s.run||(s.run=!0,s.c=tt.scrollTop,s.cx=tt.scrollLeft,requestAnimationFrame(function st(){let el=this._ttEl;if(!el){s.run=!1;return}let n=s.t-s.c,nx=s.tx-s.cx,fin=!0;Math.abs(n)<.5?(s.c=s.t,el.scrollTop=s.t):(s.c+=n*.18,el.scrollTop=s.c,fin=!1);Math.abs(nx)<.5?(s.cx=s.tx,el.scrollLeft=s.tx):(s.cx+=nx*.18,el.scrollLeft=s.cx,fin=!1);fin?s.run=!1:requestAnimationFrame(st.bind(this))}.bind(this)))};this.graphEl.addEventListener("wheel",this._ttWheel,{capture:!0,passive:!1});}}resetHover(){this._ttNode=null,this._hoverNode=null,this._ttEl&&(this._ttEl.style.display="none"),this.cy&&this.cy.elements().removeClass("dim hl mag ehl")}toggleSel(t){if(!t||typeof t.isNode!="function"||!t.isNode())return;this._sel||(this._sel=[]);let id=t.id(),ix=this._sel.findIndex(s=>s.id===id);if(ix>=0){let s=this._sel[ix];if(s.src){s.src.delete("graph");if(s.src.size>0){this._selChanged();return}}this._sel.splice(ix,1),t.removeClass("sel")}else{let pf=this.app.vault.getAbstractFileByPath(id);if(!(pf instanceof Oe.TFile))return;this._sel.push({id:id,path:pf.path,name:pf.basename,src:new Set(["graph"])}),t.addClass("sel")}this._selChanged()}_selChanged(){this.renderSelPanel();if(this.plugin.tagView&&this._syncTagButtons)this._syncTagButtons();if(this.plugin&&this.plugin._tagUpdateBtn)this.plugin._tagUpdateBtn()}_addSelNote(file,source){this._sel||(this._sel=[]);let ex=this._sel.find(s=>s.path===file.path);if(ex){if(!ex.src)ex.src=new Set();ex.src.add(source);if(this.cy){let nd=this.cy.getElementById(ex.id);nd&&nd.length&&nd.addClass("sel")}return false}this._sel.push({id:file.path,path:file.path,name:file.basename,src:new Set([source])});if(this.cy){let nd=this.cy.getElementById(file.path);nd&&nd.length&&nd.addClass("sel")}return true}_removeSelSource(source){if(!this._sel)return;for(let i=this._sel.length-1;i>=0;i--){let s=this._sel[i];if(s.src){s.src.delete(source);if(s.src.size>0)continue}if(this.cy){let nd=this.cy.getElementById(s.id);nd&&nd.length&&nd.removeClass("sel")}this._sel.splice(i,1)}this._selChanged()}_resyncSelNodes(){if(!this.cy)return;this.cy.nodes().removeClass("sel");if(!this._sel)return;for(let s of this._sel){let nd=this.cy.getElementById(s.id);nd&&nd.length&&nd.addClass("sel")}}clearSel(){this._sel=[],this.cy&&this.cy.nodes().removeClass("sel"),this._selChanged();if(this.plugin&&this.plugin._tagResetSel)this.plugin._tagResetSel()}renderSelPanel(){let r=this.graphEl.querySelector(".coser-selpanel");r&&r.remove();let a=this._sel||[];if(!a.length)return;let st=this.plugin.settings,n=this.graphEl.createDiv({cls:"coser-selpanel"});n.style.cssText="position:absolute;top:8px;right:8px;z-index:9998;background:rgba(30,30,30,.92);color:"+st.textColor+";border:1.5px solid "+(st.gen1Color||st.childColor)+";border-radius:10px;padding:8px 10px;font-size:12px;width:175px;display:flex;flex-direction:column;gap:5px;box-shadow:0 2px 10px rgba(0,0,0,.5)";["mousedown","mouseup","click","contextmenu","dblclick"].forEach(ev=>n.addEventListener(ev,e=>e.stopPropagation()));let h=n.createDiv({text:a.length+(BLG_LANG==="en"?(" selected"):(" seleccionado"+(a.length>1?"s":"")))});h.style.cssText="font-weight:600;font-size:10px;color:#999";let ls=n.createDiv();ls.style.cssText="display:flex;flex-direction:column;gap:2px;max-height:110px;overflow-y:auto";a.forEach((s,i)=>{let it=ls.createDiv({text:(i+1)+". "+s.name});it.style.cssText="white-space:nowrap;overflow:hidden;text-overflow:ellipsis";it.title=s.path});let row=n.createDiv();row.style.cssText="display:flex;gap:6px;justify-content:flex-end";let _bmPath=this.plugin.bookmark?this.plugin.bookmark.path:null;let _distinct=a.filter(s=>s.path!==_bmPath).length;if(a.length>1||(this.plugin.bookmark&&_distinct>=1)){let b=row.createEl("button",{text:(BLG_LANG==="en"?"Relate":"Relacionar"),cls:"mod-cta"});b.style.cssText="cursor:pointer;font-size:11px;padding:2px 8px";b.title=(BLG_LANG==="en"?"Enter also works":"Enter tambien funciona");b.onclick=()=>this.relacionarSel()}let c=row.createEl("button",{text:"\u00d7"});c.title=(BLG_LANG==="en"?"Clear selection":"Limpiar seleccion");c.style.cssText="cursor:pointer;font-size:11px;padding:2px 8px";c.onclick=()=>this.clearSel()}relacionarSel(){let a=(this._sel||[]).slice();let bm=this.plugin.bookmark,bmFile=bm?this.app.vault.getAbstractFileByPath(bm.path):null;if(bm&&bmFile instanceof Oe.TFile){let kids=a.filter(s=>s.path!==bmFile.path);if(kids.length===0){new Oe.Notice(L("noChildrenTag"));return}let bmNote={id:bmFile.path,path:bmFile.path,name:bmFile.basename};let pairs=kids.map(k=>[bmNote,k]);new Vq(this.app,(BLG_LANG==="en"?('Sew? Bookmark "'+bmFile.basename+'" will be the parent of '+kids.length+' note(s).'):('\u00bfRealizar costura? El bookmark "'+bmFile.basename+'" sera padre de '+kids.length+' nota(s).')),()=>this.coserPares(pairs)).open();return}if(a.length<2)return;this.resetHover();if(a.length===2){new Vq(this.app,(BLG_LANG==="en"?('Sew? "'+a[0].name+'" will be the parent of "'+a[1].name+'".'):('\u00bfRealizar costura? "'+a[0].name+'" sera padre de "'+a[1].name+'".')),()=>this.coserPares([[a[0],a[1]]])).open();return}let m=new Oe.Modal(this.app);m.titleEl.setText((BLG_LANG==="en"?("Relate "+a.length+" notes"):("Relacionar "+a.length+" notas")));let d=m.contentEl.createDiv();d.style.cssText="display:flex;flex-direction:column;gap:8px";let b1=d.createEl("button",{text:(BLG_LANG==="en"?('1. "'+a[0].name+'" as parent of all'):('1. "'+a[0].name+'" como padre de todas')),cls:"mod-cta"});b1.onclick=()=>{m.close();let ps=[];for(let i=1;i<a.length;i++)ps.push([a[0],a[i]]);this.coserPares(ps)};let b2=d.createEl("button",{text:(BLG_LANG==="en"?"2. Chain by order (1\u21922\u21923\u2026)":"2. En cadena por orden (1\u21922\u21923\u2026)")});b2.onclick=()=>{m.close();let ps=[];for(let i=0;i<a.length-1;i++)ps.push([a[i],a[i+1]]);this.coserPares(ps)};let b3=d.createEl("button",{text:L("cancel")});b3.onclick=()=>{this.resetHover(),m.close()};m.open()}async coserPares(ps){let n=0;this._noRf=!0;try{let _B=5;for(let _i=0;_i<ps.length;_i+=_B){let _batch=ps.slice(_i,_i+_B);await Promise.all(_batch.map(async pr=>{let fp=this.app.vault.getAbstractFileByPath(pr[0].path),fh=this.app.vault.getAbstractFileByPath(pr[1].path);if(fp instanceof Oe.TFile&&fh instanceof Oe.TFile){await this.plugin.coserInmediata(fp,fh,!0);n++}}))}}finally{this._noRf=!1}this.clearSel();this.resetHover();new Oe.Notice(L("sewBySelection")(n));if(this.plugin.tagView&&this.renderTagGraph){this.renderTagGraph()}else if(this.refreshLocal){this._lastSig=null;this.refreshLocal(!0)}}renderBookmark(){let r=this.graphEl.querySelector(".coser-bookmark");r&&r.remove();let a=this.plugin.bookmark;if(!a)return;let st=this.plugin.settings;let n=this.graphEl.createDiv({cls:"coser-bookmark"});n.style.cssText="position:absolute;top:8px;left:8px;z-index:9998;background:rgba(30,30,30,.92);color:"+st.textColor+";border:1.5px solid "+st.parentColor+";border-radius:10px;padding:10px 12px 8px;font-size:12px;width:160px;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 2px 10px rgba(0,0,0,.5)";let o=n.createEl("button",{text:"\u00d7"});o.title=(BLG_LANG==="en"?"Remove bookmark":"Quitar marca");o.style.cssText="position:absolute;top:2px;right:2px;cursor:pointer;background:transparent;border:none;color:#999;font-size:15px;line-height:1;padding:2px 6px";o.onclick=()=>{this.plugin.bookmark=null,this.renderBookmark()};let c=n.createDiv();c.style.cssText="width:36px;height:36px;border-radius:50%;background:"+st.parentColor+";display:flex;align-items:center;justify-content:center;flex:0 0 auto;cursor:pointer;box-shadow:0 0 "+(st.glow||0)+"px "+(st.glowColor||st.linkColor);c.title=(BLG_LANG==="en"?('Sew: "'+a.name+'" will be the parent of the active note'):('Coser: "'+a.name+'" sera padre de la nota activa'));let f=this.app.vault.getAbstractFileByPath(a.path);if(f instanceof Oe.TFile){let fm=this.app.metadataCache.getFileCache(f);fm=fm&&fm.frontmatter;if(fm&&typeof fm.icon=="string"){let ic=(0,Oe.getIcon)(fm.icon);ic&&(ic.setAttribute("stroke",st.bgColor),ic.setAttribute("width","20"),ic.setAttribute("height","20"),c.appendChild(ic))}c.onclick=()=>{let tg=this.plugin._tagSel||[];if(tg.length>0){let resolved=tg.map(t=>({tag:t,notes:this.plugin._tagNotesFor(t)})),sinNota=resolved.filter(r=>r.notes.length===0);sinNota.length&&new Oe.Notice(L("tagsNoNote")(sinNota.map(r=>r.tag).join(", ")));let uniq=new Map,sameTags=new Set,dupTags=new Set;for(let r of resolved){let kept=0,sameHit=!1,dupHit=!1;for(let nf of r.notes){if(nf.path===f.path){sameHit=!0;continue}if(this.plugin._yaCosido(f,nf)){dupHit=!0;continue}uniq.has(nf.path)||uniq.set(nf.path,nf),kept++}kept===0&&r.notes.length>0&&(sameHit&&sameTags.add(r.tag),dupHit&&dupTags.add(r.tag))}let rejSame=[...sameTags],rejDup=[...dupTags];let children=[...uniq.values()];if(children.length===0){new Oe.Notice(L("noNewChildren"));rejSame.length&&new Oe.Notice(L("ignoredSameNote")(rejSame.join(", ")));rejDup.length&&new Oe.Notice(L("omittedExisting")(rejDup.join(", ")));return}new Vq(this.app,(BLG_LANG==="en"?("Sew "+children.length+" note(s) from the tags as children of \""+a.name+"\"?"):("\u00bfCoser "+children.length+" nota(s) de los tags como hijas de \""+a.name+"\"?")),async()=>{let n=0;for(let h of children){await this.plugin.coserInmediata(f,h);n++}new Oe.Notice(L("sewnFromBookmark")(a.name)+" \u2192 "+n+L("notesSuffix"));rejSame.length&&new Oe.Notice(L("ignoredSameNote")(rejSame.join(", ")));rejDup.length&&new Oe.Notice(L("omittedExisting")(rejDup.join(", ")));this.plugin._tagResetSel&&this.plugin._tagResetSel()}).open();return}let h=this.app.workspace.getActiveFile();if(!h||h.extension!=="md"){new Oe.Notice(L("noActiveToSew"));return}if(h.path===f.path){new Oe.Notice(L("activeIsBookmark"));return}new Vq(this.app,(BLG_LANG==="en"?('Sew? "'+a.name+'" will be the parent of "'+h.basename+'".'):('\u00bfDesea realizar costura? "'+a.name+'" sera padre de "'+h.basename+'".')),()=>this.plugin.coserInmediata(f,h)).open()}}let s=n.createSpan({text:a.name});s.style.cssText="text-align:center;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap";s.title=a.path}renderTagGraph(){
+var _blgNnMeta=new Map(),_blgNnNormMeta=new Map(),_blgNnFonts=new Set(),_blgNnGlyphCache=new Map(),_blgNnCanvas=null,_blgNnWarmState=0,_blgNnLastWarm=0;
+var _blgNnProviders={bi:{id:"bootstrap-icons",family:"NotebookNavigatorBootstrapIcons"},fas:{id:"fontawesome-solid",family:"NotebookNavigatorFontAwesomeSolid"},mi:{id:"material-icons",family:"NotebookNavigatorMaterialIcons"},ph:{id:"phosphor",family:"NotebookNavigatorPhosphorIcons"},ra:{id:"rpg-awesome",family:"NotebookNavigatorRpgAwesome"},si:{id:"simple-icons",family:"NotebookNavigatorSimpleIcons"}};
+var _blgNnAssetsBase="https://raw.githubusercontent.com/johansan/notebook-navigator/main/icon-assets/";
+var _blgNnLegacyPrefix={Fas:"fas",Bi:"bi",Mi:"mi",Ph:"ph",Ra:"ra",Si:"si"};
+function _blgNnParseIconValue(raw){if(!raw||typeof raw!=="string")return null;var v=raw.trim();if(!v)return null;var m=v.match(/^(bi|fas|mi|ph|ra|si)-([A-Za-z0-9_][\s\S]*)$/);if(m)return{kind:"pack",prefix:m[1],name:m[2]};var lm=v.match(/^(Fas|Bi|Mi|Ph|Ra|Si|Li)([A-Z][A-Za-z0-9]*)$/);if(lm){if(lm[1]==="Li")return{kind:"lucide-legacy",name:lm[2]};return{kind:"pack-legacy",prefix:_blgNnLegacyPrefix[lm[1]],name:lm[2]}}if(!/[\w\s-]/.test(v)&&/\p{Extended_Pictographic}/u.test(v))return{kind:"emoji",name:v};return null}
+function _blgNnStoreMeta(pk,parsed){var map=new Map();function add(k,cp){if(typeof k==="string"&&k&&typeof cp==="number"&&isFinite(cp)&&cp>0)map.set(k,cp)}try{if(Array.isArray(parsed)){for(var i=0;i<parsed.length;i++){var it=parsed[i];if(it&&typeof it.id==="string"&&typeof it.unicode==="string")add(it.id,parseInt(it.unicode,16))}}else if(parsed&&typeof parsed==="object"){for(var k in parsed){if(!Object.prototype.hasOwnProperty.call(parsed,k))continue;var v=parsed[k];if(typeof v==="number")add(k,v);else if(v&&typeof v.unicode==="string")add(k,parseInt(v.unicode,16))}}}catch(e){}if(map.size){_blgNnMeta.set(pk,map);var nm=new Map();map.forEach(function(cp,id){var nk=String(id).replace(/[-_\s]/g,"").toLowerCase();if(nk&&!nm.has(nk))nm.set(nk,cp)});_blgNnNormMeta.set(pk,nm)}return map.size>0}
+function _blgNnIdbRecords(dbName){return new Promise(function(resolve){function done(r){resolve(r||[])}try{if(typeof indexedDB==="undefined"||!indexedDB.databases){done();return}indexedDB.databases().then(function(dbs){var found=false;try{found=(dbs||[]).some(function(d){return d&&d.name===dbName})}catch(e){}if(!found){done();return}var req;try{req=indexedDB.open(dbName)}catch(e){done();return}req.onerror=function(){done()};req.onsuccess=function(){var db=req.result;try{if(!db.objectStoreNames.contains("providers")){db.close();done();return}var g=db.transaction(["providers"],"readonly").objectStore("providers").getAll();g.onsuccess=function(){var r=g.result||[];db.close();done(r)};g.onerror=function(){db.close();done()}}catch(e2){try{db&&db.close()}catch(_){}done()}}}).catch(function(){done()})}catch(e){done()}})}
+async function _blgNnEnsureFont(family,data){try{if(document.fonts&&document.fonts.check&&document.fonts.check('16px "'+family+'"')){_blgNnFonts.add(family);return true}if(!data)return false;var face=new FontFace(family,data);await face.load();document.fonts.add(face);_blgNnFonts.add(family);return true}catch(e){return false}}
+function _blgNnWarm(){if(_blgNnWarmState===1)return;var now=Date.now();if(_blgNnWarmState===2&&now-_blgNnLastWarm<30000)return;_blgNnWarmState=1;_blgNnLastWarm=now;(async function(){try{var appId="default";try{appId=(window.app&&window.app.appId)||"default"}catch(e){}var records=await _blgNnIdbRecords("notebooknavigator/icons/"+appId);var byId={};for(var i=0;i<records.length;i++){var rec=records[i];if(rec&&rec.id)byId[rec.id]=rec}var jobs=[];for(var key in _blgNnProviders){if(!Object.prototype.hasOwnProperty.call(_blgNnProviders,key))continue;(function(k){jobs.push((async function(){var prov=_blgNnProviders[k];if(_blgNnMeta.has(k)&&_blgNnFonts.has(prov.family))return;var rec=byId[prov.id],fontData=null,ok=false;if(rec){try{if(typeof rec.metadata==="string")ok=_blgNnStoreMeta(k,JSON.parse(rec.metadata))}catch(e){}if(rec.data)fontData=rec.data}if(!ok){try{var man=await(await fetch(_blgNnAssetsBase+prov.id+"/latest.json")).json();ok=_blgNnStoreMeta(k,await(await fetch(man.metadata)).json());if(!fontData)fontData=await(await fetch(man.font)).arrayBuffer()}catch(e){}}if(_blgNnMeta.has(k))await _blgNnEnsureFont(prov.family,fontData)})())})(key)}await Promise.all(jobs)}catch(e){}_blgNnWarmState=2;try{var p=window.app&&window.app.plugins&&window.app.plugins.plugins&&window.app.plugins.plugins["better-local-graph"];var v=p&&p.getView?p.getView():null;if(v){v._iconCache=new Map();v._lastSig=null;if(v._scheduleRefresh)v._scheduleRefresh(true)}}catch(e){}})()}
+function _blgNnIconToDataUri(parsed,ink){try{if(!parsed)return null;var ck=(parsed.kind==="emoji"?"emoji:":parsed.prefix+":")+parsed.name+"|"+(ink||"");var hit=_blgNnGlyphCache.get(ck);if(hit)return hit;var ch=null,fam=null;if(parsed.kind==="emoji"){ch=parsed.name}else{var prov=_blgNnProviders[parsed.prefix];if(!prov)return null;var meta=_blgNnMeta.get(parsed.prefix);if(!meta||!_blgNnFonts.has(prov.family))return null;var cp=null;if(parsed.kind==="pack-legacy"){var nm=_blgNnNormMeta.get(parsed.prefix);cp=nm?nm.get(parsed.name.replace(/[-_\s]/g,"").toLowerCase()):null}else{cp=meta.get(parsed.name)}if(cp==null)return null;ch=String.fromCodePoint(cp);fam=prov.family}if(!_blgNnCanvas){_blgNnCanvas=document.createElement("canvas");_blgNnCanvas.width=256;_blgNnCanvas.height=256}var ctx=_blgNnCanvas.getContext("2d");ctx.clearRect(0,0,256,256);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ctx.fillStyle=ink||"#dddddd";ctx.font=fam?'184px "'+fam+'"':'184px sans-serif';ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(ch,128,130);var uri=_blgNnCanvas.toDataURL("image/png");if(_blgNnGlyphCache.size>500)_blgNnGlyphCache.clear();_blgNnGlyphCache.set(ck,uri);return uri}catch(e){return null}}
+function _blgFmIcon(value,ink){var p=_blgNnParseIconValue(value);if(p){if(p.kind==="emoji"){var ue=_blgNnIconToDataUri(p,ink);return ue||null}if(p.kind==="lucide-legacy"){return Xm(p.name.replace(/([a-z0-9])([A-Z])/g,"$1-$2").toLowerCase(),ink)}if(!_blgNnMeta.has(p.prefix)){if(_blgNnWarmState!==2){_blgNnWarm();return null}}else{var u=_blgNnIconToDataUri(p,ink);if(u)return u}}return Xm(value,ink)}
+function _blgResolveIcon(file,settings,mc,ink){var _ic=ink||settings.iconColor;var fm=null;try{fm=(mc?mc.getFileCache(file):null)||{};fm=fm.frontmatter||{}}catch(e){fm={}}if(fm&&typeof fm.icon==="string"){var d=_blgFmIcon(fm.icon,_ic);if(d)return d}try{var api=_blgGetIconizeApi();if(api&&file&&file.path){var ic=null;try{ic=api.getIconByPath?api.getIconByPath(file.path):null}catch(e){}if(ic){var svgStr=null;if(typeof ic==="string"){if(ic.indexOf("<svg")===0)svgStr=ic}else if(ic.svgElement)svgStr=ic.svgElement;else if(ic.svg)svgStr=ic.svg;if(svgStr){var d2=_blgSvgToDataUri(svgStr,ink);if(d2)return d2}}}}catch(e){}try{var ip=_blgGetIconicPlugin();if(ip&&file&&file.path){var iconicIcon=null;if(ip.settings&&ip.settings.fileIcons)iconicIcon=ip.settings.fileIcons[file.path];if(!iconicIcon&&ip.getFileItem){var fi=ip.getFileItem(file.path);if(fi)iconicIcon=fi.icon}if(iconicIcon&&typeof iconicIcon==="string"){var lucideId=iconicIcon;if(lucideId.indexOf("lucide-")===0)lucideId=lucideId.substring(7);var d3=Xm(lucideId,_ic);if(d3)return d3}}}catch(e){}return null}var Vq=class extends Oe.Modal{constructor(e,r,a){super(e);this.msg=r;this.cb=a}onOpen(){this.titleEl.setText(L("confirmTitle"));this.contentEl.createEl("p",{text:this.msg});let e=this.contentEl.createDiv();e.style.cssText="display:flex;gap:8px;justify-content:flex-end";let r=e.createEl("button",{text:L("confirmYes"),cls:"mod-cta"});r.onclick=()=>{this.close(),this.cb()};let a=e.createEl("button",{text:L("cancel")});a.onclick=()=>this.close()}onClose(){this.contentEl.empty()}};var Wq=class extends Oe.Modal{constructor(e,r,a){super(e);this.file=r;this.view=a;this.model=null}async onOpen(){var F;this.titleEl.setText(L("editPropsTitle")(this.file.basename));let fm=(F=this.app.metadataCache.getFileCache(this.file))==null?void 0:F.frontmatter;if(!fm||!Object.keys(fm).length)try{let i=await this.app.vault.read(this.file);i=Oe.parseYaml(i.match(/^---\s*\n([\s\S]*?)\n---\s*\n/)[1]);fm=typeof i=="object"&&i?i:{}}catch(e){fm={}}this.model={};if(fm){for(let k of Object.keys(fm)){if(k==="position")continue;let v=fm[k];this.model[k]=Array.isArray(v)?v.slice():v instanceof Date?new Date(v.getTime()):v}}let nm=this.contentEl.createDiv();nm.style.cssText="margin-bottom:8px";let nl=nm.createDiv({text:L("noteNameLabel")});nl.style.cssText="font-weight:600;font-size:11px;margin-bottom:2px;color:var(--text-muted)";let nrow=nm.createDiv();nrow.style.cssText="display:flex;gap:6px;align-items:center";let ni=nrow.createEl("input",{type:"text"});ni.value=this.file.basename;ni.style.cssText="flex:1;height:26px";this._nameInput=ni;let cbt=nrow.createEl("button",{cls:"clickable-icon"});Oe.setIcon(cbt,"clipboard");cbt.title=L("copyTagBtn");cbt.setAttr("aria-label",L("copyTagBtn"));cbt.onclick=()=>{let raw=ni.value.trim();if(!raw){new Oe.Notice(L("tagEmpty"));return}let tg=raw.normalize("NFD").replace(/[\u0300-\u036f]/g,"").split("/").map(sg=>sg.replace(/\s+/g,"_").replace(/[^A-Za-z0-9_]/g,"").toLowerCase()).filter(Boolean).join("/");if(!tg){new Oe.Notice(L("tagInvalid"));return}navigator.clipboard.writeText(tg);new Oe.Notice(L("tagCopied")+tg)};let body=this.contentEl.createDiv();body.style.cssText="max-height:48vh;overflow-y:auto;padding-right:2px";this._body=body;this._renderRows();let ft=this.contentEl.createDiv();ft.style.cssText="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;align-items:center";let dl=ft.createEl("button",{text:L("deleteNoteBtn")});dl.style.cssText="font-size:11px;padding:4px 10px;color:var(--text-error)";dl.onclick=()=>this._confirmDelete();let ap=ft.createEl("button",{text:L("addPropBtn")});ap.style.cssText="font-size:11px;padding:4px 10px";ap.onclick=()=>this._addProp();let sp=ft.createDiv();sp.style.flex="1";let sv=ft.createEl("button",{text:L("save"),cls:"mod-cta"});sv.style.cssText="font-size:11px;padding:4px 10px";sv.onclick=()=>this._save();let ca=ft.createEl("button",{text:L("cancel")});ca.style.cssText="font-size:11px;padding:4px 10px";ca.onclick=()=>this.close()}_renderRows(){let body=this._body;if(!body)return;body.empty();let keys=Object.keys(this.model);if(keys.length===0){let p=body.createEl("p",{text:L("addPropEmptyMsg")});p.style.cssText="color:var(--text-muted);font-style:italic;margin:8px 0";return}for(let k of keys)this._row(body,k)}_addProp(){let body=this._body;if(!body)return;let form=body.createDiv();form.style.cssText="margin-bottom:6px;padding:6px;border:1px dashed var(--background-modifier-border);border-radius:6px";let nameIn=form.createEl("input",{type:"text",placeholder:L("addPropName")});nameIn.style.cssText="width:100%;margin-bottom:4px;height:26px";let valIn=form.createEl("input",{type:"text",placeholder:L("addPropValue")});valIn.style.cssText="width:100%;margin-bottom:4px;height:26px";nameIn.focus();body.scrollTop=body.scrollHeight;let btns=form.createDiv();btns.style.cssText="display:flex;gap:6px;justify-content:flex-end";let ok=btns.createEl("button",{text:L("addPropConfirm"),cls:"mod-cta"});let no=btns.createEl("button",{text:L("cancel")});let errEl=form.createDiv();errEl.style.cssText="color:var(--text-error);font-size:11px;margin-top:4px;display:none";let close=()=>form.remove();no.onclick=close;ok.onclick=()=>{let key=nameIn.value.trim();if(!key||key==="position"||Object.prototype.hasOwnProperty.call(this.model,key)){errEl.textContent=L("addPropInvalid");errEl.style.display="block";return}this.model[key]=valIn.value;close();this._renderRows()}}_type(v){return typeof v=="boolean"?"bool":v instanceof Date?"date":Array.isArray(v)?"array":typeof v=="string"&&/^\d{4}-\d{2}-\d{2}$/.test(v)?"date":typeof v=="number"?"num":v!==null&&typeof v=="object"?"obj":"text"}_isWk(x){return typeof x=="string"&&/^\[\[.*\]\]$/.test(x.trim())}_widget(k){var t,e;let tm=this.app.metadataTypeManager,kl=String(k).toLowerCase(),w=(e=(t=tm==null?void 0:tm.properties)==null?void 0:t[kl])==null?void 0:e.widget;if(!w&&tm&&typeof tm.getAssignedWidget=="function")try{let g=tm.getAssignedWidget(k);typeof g=="string"&&(w=g)}catch(r){}return w||null}_bpSel(k){var t,e,r;let bp=(e=(t=this.app.plugins)==null?void 0:t.plugins)==null?void 0:e["better-properties"],cfg=(r=(e=bp==null?void 0:bp.settings)==null?void 0:e.propertySettings)==null?void 0:r[String(k).toLowerCase()],sel=cfg==null?void 0:cfg.select;if(!sel||sel.optionsType!=="manual"||!Array.isArray(sel.manualOptions))return null;let vals=sel.manualOptions.map(o=>o&&o.value!=null?String(o.value):"").filter(v=>v.length>0);return vals.length?vals:null}_row(host,k){let sel=this._widget(k)==="better-properties:select"?this._bpSel(k):null,t=sel?"select":this._type(this.model[k]),row=host.createDiv();row.style.cssText="margin-bottom:6px";let lb=row.createDiv({text:k});lb.style.cssText="font-weight:600;font-size:11px;margin-bottom:2px;color:var(--text-muted)";if(t=="select"){let cur=this.model[k]==null?"":String(this.model[k]),dd=row.createEl("select",{cls:"dropdown"});dd.style.width="100%";dd.createEl("option",{text:(BLG_LANG==="en"?"(empty)":"(vacio)"),value:""});for(let v of sel){let op=dd.createEl("option",{text:v,value:v});v===cur&&(op.selected=!0)}if(cur&&sel.indexOf(cur)<0){let op=dd.createEl("option",{text:cur+(BLG_LANG==="en"?" (current value)":" (valor actual)"),value:cur});op.selected=!0}dd.onchange=()=>this.model[k]=dd.value}else if(t=="bool"){let cb=row.createEl("input",{type:"checkbox"});cb.checked=!!this.model[k];cb.onchange=()=>this.model[k]=cb.checked}else if(t=="date"){let v=this.model[k],iso=v instanceof Date?v.toISOString().slice(0,10):v,inp=row.createEl("input",{type:"date"});inp.value=iso;inp.onchange=()=>this.model[k]=inp.value}else if(t=="array")this._arr(row,k);else if(t=="obj"){let inp=row.createEl("input",{type:"text"});inp.value=(BLG_LANG==="en"?"(object: not editable here)":"(objeto: no editable aqui)");inp.disabled=!0;inp.style.width="100%"}else{let inp=row.createEl("input",{type:"text"});inp.value=this.model[k]==null?"":String(this.model[k]);inp.style.width="100%";let isN=t=="num";inp.onchange=()=>{if(isN){let n=Number(inp.value);this.model[k]=inp.value.trim()!==""&&!isNaN(n)?n:inp.value}else this.model[k]=inp.value};this._isWk(this.model[k])&&this._sug(inp)}}_arr(row,k){let list=row.createDiv(),rebuild=()=>{list.empty();let ar=this.model[k],wk=ar.some(x=>this._isWk(x));ar.forEach((it,ix)=>{let li=list.createDiv();li.style.cssText="display:flex;gap:3px;align-items:center;margin-bottom:3px";let inp=li.createEl("input",{type:"text"});inp.value=it==null?"":String(it);inp.style.flex="1";inp.style.height="26px";inp.onchange=()=>ar[ix]=inp.value;wk?this._sug(inp):String(k).toLowerCase()==="tags"&&this._tagSug(inp,ar);let mk=(tx,fn)=>{let b=li.createEl("button",{text:tx});b.style.cssText="padding:0 4px";b.onclick=fn};mk("\u2191",()=>{if(ix>0){let tp=ar[ix-1];ar[ix-1]=ar[ix];ar[ix]=tp;rebuild()}});mk("\u2193",()=>{if(ix<ar.length-1){let tp=ar[ix+1];ar[ix+1]=ar[ix];ar[ix]=tp;rebuild()}});mk("\u00d7",()=>{ar.splice(ix,1);rebuild()})});let ad=list.createEl("button",{text:(BLG_LANG==="en"?"+ Add":"+ Agregar")});ad.style.cssText="margin-top:2px";ad.onclick=()=>{ar.push("");rebuild()}};rebuild()}_sug(inp){if(!Oe.AbstractInputSuggest)return;let app=this.app;new(class extends Oe.AbstractInputSuggest{getSuggestions(q){let m=String(q||"").replace(/^\s*\[\[/,"").replace(/\]\]\s*$/,"").toLowerCase();return m?app.vault.getMarkdownFiles().filter(f=>f.basename.toLowerCase().includes(m)).slice(0,20).map(f=>f.basename):[]}renderSuggestion(v,el){el.setText(v)}selectSuggestion(v){inp.value="[["+v+"]]";inp.dispatchEvent(new Event("change"));this.close()}})(app,inp)}_tagSug(inp,ar){if(!Oe.AbstractInputSuggest)return;let app=this.app,modal=this;let sug=new(class extends Oe.AbstractInputSuggest{getSuggestions(q){if(!modal._tagCache){let tg={};try{tg=app.metadataCache.getTags()||{}}catch(e){}modal._tagCache=Object.keys(tg).map(t=>{let b=t.replace(/^#/,"");return[b,tg[t],b.toLowerCase()]}).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]))}let m=String(q||"").trim().replace(/^#/,"").toLowerCase();let ex=Array.isArray(ar)?new Set(ar.map(x=>String(x).toLowerCase())):null;if(!m)return modal._tagCache.filter(e=>!(ex&&ex.has(e[2]))).slice(0,20);let p=[],sg=[];for(let e of modal._tagCache){if(ex&&ex.has(e[2]))continue;if(e[2].startsWith(m))p.push(e);else if(e[2].indexOf(m)>-1)sg.push(e)}return p.concat(sg).slice(0,20)}renderSuggestion(v,el){el.setText(v[0]);let s=el.createSpan({text:" "+v[1]});s.style.cssText="color:var(--text-muted);font-size:10px;margin-left:6px"}selectSuggestion(v){inp.value=v[0];inp.dispatchEvent(new Event("change"));this.close()}open(){this._o=!0;super.open()}close(){this._o=!1;super.close()}})(app,inp);inp.addEventListener("keydown",function(ev){if(ev.key!=="Tab"||!sug._o)return;let r=null;try{r=sug.getSuggestions(inp.value)}catch(e){}if(r&&typeof r.then==="function"){r.then(function(a){if(a&&a.length){sug.selectSuggestion(a[0]);inp.focus()}});ev.preventDefault();ev.stopPropagation()}else if(r&&r.length){ev.preventDefault();ev.stopPropagation();sug.selectSuggestion(r[0]);inp.focus()}})}_save(){var F0;let fm0=(F0=this.app.metadataCache.getFileCache(this.file))==null?void 0:F0.frontmatter;fm0=fm0||{};let nn0=this._nameInput?this._nameInput.value.trim():"";let _nv=v=>Array.isArray(v)?v.map(x=>typeof x=="string"?x.trim():x).filter(x=>x!=null&&String(x).length>0):v;let _eq=(a,b)=>{a=_nv(a);if(a instanceof Date||b instanceof Date)return a instanceof Date&&b instanceof Date&&a.getTime()===b.getTime();if(Array.isArray(a)||Array.isArray(b)){if(!Array.isArray(a)||!Array.isArray(b)||a.length!==b.length)return!1;for(let _i=0;_i<a.length;_i++)if(String(a[_i])!==String(b[_i]))return!1;return!0}return String(a)===String(b)};let _dirty=!!(nn0&&nn0!==this.file.basename);if(!_dirty){for(let k of Object.keys(this.model)){if(!_eq(this.model[k],fm0[k])){_dirty=!0;break}}}if(!_dirty){new Oe.Notice(L("noChanges"));this.close();return}this.app.fileManager.processFrontMatter(this.file,fm=>{for(let k of Object.keys(this.model)){let v=this.model[k];fm[k]=Array.isArray(v)?v.map(x=>typeof x=="string"?x.trim():x).filter(x=>x!=null&&String(x).length>0):v}}).then(async()=>{let nn=this._nameInput?this._nameInput.value.trim():"";if(nn&&nn!==this.file.basename){try{let np=this._validateNewName(nn);await this.app.fileManager.renameFile(this.file,np);new Oe.Notice(L("noteRenamed"))}catch(err){new Oe.Notice(L("renameError")+(err&&err.message?err.message:String(err)));return}}new Oe.Notice(L("propsSaved"));this.view&&this.view.resetHover&&this.view.resetHover();this.view&&this.view._scheduleRefresh&&this.view._scheduleRefresh(true);this.close()}).catch(e=>{new Oe.Notice(L("saveError")+(e&&e.message?e.message:e))})}_validateNewName(nn){if(!nn||!nn.trim())throw new Error(L("invalidName"));if(/[\\\/:*?"<>|]/.test(nn))throw new Error(L("invalidName"));var dir=this.file.parent?this.file.parent.path:"",np=dir?dir+"/"+nn+".md":nn+".md";if(this.app.vault.getAbstractFileByPath(np))throw new Error(L("nameExists"));return np}_confirmDelete(){new Vq(this.app,L("confirmDeleteMsg")(this.file.basename),async()=>{try{await this.app.vault.trash(this.file,false);new Oe.Notice(L("noteDeleted"));this.view&&this.view.resetHover&&this.view.resetHover();this.view&&this.view._scheduleRefresh&&this.view._scheduleRefresh(true);this.close()}catch(e){new Oe.Notice(L("saveError")+(e&&e.message?e.message:String(e)))}}).open()}onClose(){this.contentEl.empty()}};var BLGIconPicker=class extends Oe.Modal{constructor(e,r,a){super(e);this.file=r;this.view=a;this._allIcons=null;this._filtered=null}onOpen(){var self=this;this.titleEl.setText(L("iconPickerTitle"));var wrap=this.contentEl.createDiv();wrap.style.cssText="max-height:70vh;display:flex;flex-direction:column";var searchBar=wrap.createDiv();searchBar.style.cssText="margin-bottom:8px;display:flex;gap:6px";var searchInput=searchBar.createEl("input",{type:"text",placeholder:L("iconPickerSearch")});searchInput.style.cssText="flex:1;height:32px;padding:4px 8px";var removeBtn=searchBar.createEl("button",{text:L("iconRemove")});removeBtn.style.cssText="font-size:11px;padding:4px 10px;color:var(--text-error)";removeBtn.onclick=function(){if(!self.file)return;self.app.fileManager.processFrontMatter(self.file,function(fm){delete fm.icon}).then(function(){new Oe.Notice(L("iconRemoved"));if(self.view&&self.view.resetHover)self.view.resetHover();if(self.view&&self.view._scheduleRefresh)self.view._scheduleRefresh(true);if(self.view&&self.view.renderTagGraph)self.view.renderTagGraph();self.close()}).catch(function(e2){new Oe.Notice(L("iconSetError")+(e2&&e2.message?e2.message:String(e2)))})};var gridWrap=wrap.createDiv();gridWrap.style.cssText="flex:1;overflow-y:auto;max-height:55vh";var grid=gridWrap.createDiv();grid.style.cssText="display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:4px";var _lucide=["activity","air-vent","alarm-clock","alert-circle","alert-octagon","alert-triangle","align-center","align-justify","align-left","align-right","anchor","aperture","archive","archive-restore","arrow-big-down","arrow-big-left","arrow-big-right","arrow-big-up","arrow-down","arrow-down-circle","arrow-down-left","arrow-down-right","arrow-down-to-dot","arrow-down-to-line","arrow-left","arrow-left-circle","arrow-left-right","arrow-right","arrow-right-circle","arrow-up","arrow-up-circle","arrow-up-left","arrow-up-right","arrow-up-from-dot","arrow-up-to-line","asterisk","at-sign","award","axe","backpack","banknote","bar-chart","bar-chart-2","bar-chart-3","bar-chart-4","baseline","battery-charging","battery-full","battery-low","battery-medium","battery-warning","battery","beaker","bed","bed-double","beer","bell","bell-minus","bell-off","bell-plus","bell-ring","bike","binary","bitcoin","bluetooth","book","book-open","book-marked","book-copy","book-a","book-a-check","bookmark","bookmark-check","bookmark-minus","bookmark-plus","bookmark-x","bot","box","box-select","boxes","briefcase","brush","bug","building","building-2","bus","bus-front","cake","calculator","calendar","calendar-check","calendar-check-2","calendar-clock","calendar-days","calendar-heart","calendar-minus","calendar-minus-2","calendar-off","calendar-plus","calendar-range","calendar-search","calendar-x","calendar-x-2","camera","camera-off","carrot","cast","check","check-check","check-circle","check-circle-2","check-square","check-square-2","chef-hat","chevron-down","chevron-first","chevron-last","chevron-left","chevron-right","chevron-up","chevrons-down","chevrons-left","chevrons-right","chevrons-up","chrome","cigarette","circle","circle-dot","circle-ellipsis","circle-equal","circle-help","circle-minus","circle-off","circle-plus","circle-slash","circle-slash-2","circle-user","circle-user-round","circle-x","citrus","clipboard","clipboard-check","clipboard-copy","clipboard-list","clipboard-paste","clipboard-signature","clipboard-type","clipboard-x","clock","clock-1","clock-2","clock-3","clock-4","clock-5","clock-6","clock-7","clock-8","clock-9","clock-10","clock-11","clock-12","cloud","cloud-cog","cloud-drizzle","cloud-fog","cloud-hail","cloud-lightning","cloud-moon","cloud-moon-rain","cloud-off","cloud-rain","cloud-rain-wind","cloud-snow","cloud-sun","cloud-sun-rain","cloudy","clover","code","code-2","codepen","codesandbox","coffee","cog","cog-wheel","coins","columns","columns-2","columns-3","command","compass","component","concierge-bell","construction","contact","contrast","cookie","copy","copyleft","copyright","corner-down-left","corner-down-right","corner-left-down","corner-left-up","corner-right-down","corner-right-up","corner-up-left","corner-up-right","cpu","credit-card","croissant","crop","cross","crosshair","crown","cup-soda","currency","database","delete","diamond","dice-1","dice-2","dice-3","dice-4","dice-5","dice-6","dices","diff","disc","divide","divide-circle","divide-square","dollar-sign","download","download-cloud","dribbble","droplet","droplets","drumstick","ear","ear-off","edit","edit-2","edit-3","egg","equal","eraser","euro","expand","external-link","external-link-2","eye","eye-off","facebook","factory","fast-forward","feather","figma","file","file-archive","file-audio","file-audio-2","file-axis-3d","file-axis-4","file-badge","file-bar-chart","file-bar-chart-2","file-box","file-check","file-check-2","file-clock","file-code","file-code-2","file-cog","file-diff","file-digit","file-down","file-edit","file-heart","file-image","file-input","file-json","file-json-2","file-key","file-line","file-lock","file-lock-2","file-minus","file-minus-2","file-output","file-pen-line","file-pen","file-plus","file-plus-2","file-question","file-search","file-signature","file-spreadsheet","file-symlink","file-terminal","file-text","file-type","file-type-2","file-up","file-video","file-video-2","file-volume","file-volume-2","file-warning","file-x","file-x-2","files","film","filter","fingerprint","fish","flag","flag-off","flag-triangle-left","flag-triangle-right","flame","flashlight","flashlight-off","flask-conical","flask-round","flip-horizontal","flip-horizontal-2","flip-vertical","flip-vertical-2","flower","flower-2","focus","folder","folder-archive","folder-check","folder-clock","folder-closed","folder-cloud","folder-cog","folder-down","folder-edit","folder-git-2","folder-heart","folder-hidden","folder-home","folder-input","folder-kanban","folder-key","folder-lock","folder-minus","folder-open","folder-output","folder-pen","folder-plus","folder-root","folder-search","folder-settings","folder-shared","folder-shield","folder-sync","folder-tree","folder-up","folder-x","folders","forklift","form-input","forward","frame","framer","frown","fuel","function-square","gamepad","gamepad-2","gauge","gavel","gem","ghost","gift","git-branch","git-commit","git-commit-vertical","git-fork","git-merge","git-pull-request","git-pull-request-closed","git-pull-request-draft","glasses","globe","globe-2","grab","graduation-cap","grape","grid","grid-2","grip-horizontal","grip-vertical","hammer","hand","hand-metal","hard-drive","hard-hat","hash","haze","heading","heading-1","heading-2","heading-3","heading-4","heading-5","heading-6","headphones","headphone","heart","heart-crack","heart-handshake","heart-off","heart-pulse","help-circle","helping-hand","hexagon","highlighter","history","home","hop","hourglass","ice-cream","image","image-minus","image-off","image-plus","import","inbox","indent","indent-decrease","indent-increase","infinity","info","instagram","italic","japanese-yen","joystick","key","keyboard","keyboard-2","landmark","landmark-2","languages","laptop","laptop-2","lasso","layers","layout","layout-dashboard","layout-grid","layout-list","layout-panel-left","layout-panel-top","layout-template","leaf","library","life-buoy","lightbulb","lightbulb-off","line-chart","link","link-2","link-2-off","linkedin","list","list-checks","list-end","list-minus","list-music","list-ordered","list-plus","list-start","list-video","list-x","loader","loader-2","locate","locate-fixed","locate-off","lock","lock-unlock","log-in","log-out","luggage","magnet","magnifying-glass","mail","mail-check","mail-open","map","map-pin","map-pin-off","maximize","maximize-2","medal","megaphone","meh","memory","menu","message-circle","message-square","message-square-plus","message-square-reply","mic","mic-off","mic-2","microscope","microwave","milestone","minimize","minimize-2","minus","minus-circle","minus-square","monitor","monitor-check","monitor-cog","monitor-dot","monitor-down","monitor-off","monitor-pause","monitor-play","monitor-smartphone","monitor-speaker","monitor-stop","monitor-up","monitor-x","moon","moon-star","more-horizontal","more-vertical","mountain","mountain-snow","mouse","mouse-pointer","mouse-pointer-2","mouse-pointer-click","move","move-3d","move-diagonal","move-diagonal-2","move-horizontal","move-vertical","music","music-2","music-3","music-4","navigation","navigation-2","navigation-off","network","newspaper","nfc","notebook","notebook-pen","notebook-tabs","octagon","option","orbit","outdent","package","package-2","package-check","package-minus","package-open","package-plus","package-search","package-x","paintbrush","paintbrush-2","palette","palm","panel-bottom","panel-bottom-close","panel-left","panel-left-close","panel-left-open","panel-right","panel-right-close","panel-right-open","paperclip","paperclip-2","pause","pause-circle","pause-octagon","pause-octagon-off","pen-tool","pencil","pencil-line","pencil-ruler","pennant","percent","person-standing","phone","phone-call","phone-forwarded","phone-incoming","phone-missed","phone-off","phone-outgoing","pie-chart","piggy-bank","pin","pin-off","pipette","plane","play","play-circle","plug","plug-2","plug-zap","plus","plus-circle","plus-square","pocket","podcast","pointer","power","printer","puzzle","quote","radar","radio","radio-receiver","recycle","redo","redo-2","refresh-ccw","refresh-ccw-dot","refresh-cw","registered","repeat","repeat-1","reply","reply-all","rewind","rocket","rotate-3d","rotate-ccw","rotate-cw","route","router","rss","ruler","ruler-2","russian-ruble","save","scale","scan","scan-face","scan-line","scissors","screen-share","screen-share-off","scroll","search","search-check","selection","selection-background","send","send-horizontal","separator","server","server-cog","server-crash","server-off","settings","settings-2","share","share-2","sheet","shield","shield-alert","shield-check","shield-close","shield-off","shield-question","shirt","shopping-bag","shopping-cart","shovel","shower","shrink","shrub","shuffle","sidebar","sidebar-close","sidebar-open","sigma","signal","signal-high","signal-low","signal-medium","signal-zero","signature","signpost","sim-card","siren","skip-back","skip-forward","skull","slack","slash","slice","sliders","sliders-horizontal","smartphone","smile","smile-plus","snowflake","sofa","sort-asc","sort-desc","sound","sound-2","sound-wave","soup","space","spade","sparkle","sparkles","speaker","speech","spell-check","spell-check-2","split","spray-can","square","square-asterisk","square-code","square-dashed","square-dot","square-equal","square-slash","square-stack","squirrel","stamp","star","star-half","star-off","step-back","step-forward","sticker","sticky-note","stop","stop-circle","store","strikethrough","strikethrough-2","sun","sun-dim","sun-medium","sun-snow","sunrise","sunset","superscript","switch-camera","switch-horizontal","switch-horizontal-2","switch-vertical","switch-vertical-2","swords","syringe","table","table-2","tablet","tablet-smartphone","tag","tag-2","tags","target","target-2","tent","terminal","terminal-square","text","text-cursor","text-cursor-input","text-search","text-select","thermometer","thermometer-cold","thermometer-snowflake","thermometer-sun","thumbs-down","thumbs-up","ticket","timer","timer-off","timer-reset","toggle-left","toggle-right","tornado","toilet","touch","touchpad","toxic","train","train-front","train-track","tractor","traffic-cone","trending-down","trending-up","triangle","triangle-alert","triangle-right","trolley","trophy","truck","tv","tv-2","twitch","twitter","type","umbrella","umbrella-2","umbrella-off","underline","undo","undo-2","unlink","unlink-2","unlock","unlock-2","upload","upload-cloud","user","user-check","user-cog","user-minus","user-plus","users","utensils","uv","uv-sun","verified","vibrate","video","video-off","video-2","view","voicemail","volume","volume-1","volume-2","volume-x","vote","vote-2","wallet","wand","wand-2","wand-sparkles","watch","waves","waypoints","webhook","weight","whale","wifi","wifi-off","wind","wind-2","wine","wrench","x","x-circle","x-octagon","x-square","y","youtube","zap","zap-off","zap-nfc","zoom-in","zoom-out"];this._allIcons=[];for(var i=0;i<_lucide.length;i++){this._allIcons.push({name:_lucide[i],type:"lucide"})}try{var p=window.app&&window.app.plugins&&window.app.plugins.plugins&&window.app.plugins.plugins["obsidian-icon-folder"];if(p&&p.api){var allNames=p.api.getAllIconNames?p.api.getAllIconNames():[];if(allNames&&allNames.length){for(var j=0;j<allNames.length;j++){this._allIcons.push({name:allNames[j],type:"iconize"})}}}}catch(e){}var renderGrid=function(filterTxt){grid.empty();var lower=(filterTxt||"").toLowerCase();var items=[];for(var i2=0;i2<self._allIcons.length;i2++){if(!lower||self._allIcons[i2].name.toLowerCase().indexOf(lower)>=0){items.push(self._allIcons[i2])}}var max=Math.min(items.length,300);for(var k=0;k<max;k++){(function(ic){var cell=grid.createDiv();cell.style.cssText="display:flex;align-items:center;justify-content:center;width:36px;height:36px;cursor:pointer;border-radius:4px";cell.title=ic.name;if(ic.type==="lucide"){var el=(0,Oe.getIcon)(ic.name);if(el){var clone=el.cloneNode(true);clone.setAttribute("width","20");clone.setAttribute("height","20");cell.appendChild(clone)}}else if(ic.type==="iconize"){try{var p2=window.app.plugins.plugins["obsidian-icon-folder"];if(p2&&p2.api){var iconObj=p2.api.getIconByName?p2.api.getIconByName(ic.name):null;if(iconObj&&iconObj.svgElement){var div=cell.createDiv();div.style.cssText="display:flex;align-items:center;justify-content:center";div.innerHTML=iconObj.svgElement;var svg=div.querySelector("svg");if(svg){svg.setAttribute("width","20");svg.setAttribute("height","20")}}}}catch(e2){}}cell.onmouseenter=function(){cell.style.background="var(--background-modifier-hover)"};cell.onmouseleave=function(){cell.style.background=""};cell.onclick=function(){self._pick(ic)}})(items[k])}if(items.length>300){var more=grid.createDiv({text:L("iconPickerMore")(items.length)});more.style.cssText="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:8px;font-size:11px"}};renderGrid("");searchInput.oninput=function(){renderGrid(searchInput.value)};setTimeout(function(){searchInput.focus()},50)}_pick(ic){var self=this;if(!this.file)return;var iconValue=ic.name;this.app.fileManager.processFrontMatter(this.file,function(fm){fm.icon=iconValue}).then(function(){new Oe.Notice(L("iconSet"));if(self.view&&self.view.resetHover)self.view.resetHover();if(self.view&&self.view._scheduleRefresh)self.view._scheduleRefresh(true);if(self.view&&self.view.renderTagGraph)self.view.renderTagGraph();self.close()}).catch(function(e){new Oe.Notice(L("iconSetError")+(e&&e.message?e.message:String(e)))})}onClose(){this.contentEl.empty()}};var BlgTagPick=class extends Oe.FuzzySuggestModal{constructor(app,onPick){super(app);this.onPick=onPick;this.setPlaceholder(L("tagPickPlaceholder"));this.titleText=L("tagPickTitle")}onOpen(){super.onOpen();try{this.titleEl&&this.titleEl.setText(this.titleText)}catch(e){}}getItems(){let set=new Set,mc=this.app.metadataCache;let addAll=function(x){if(!x)return;set.add(x);let segs=x.split("/");for(let s of segs){if(s)set.add(s)}let acc="";for(let s of segs){acc=acc?acc+"/"+s:s;set.add(acc)}};for(let f of this.app.vault.getMarkdownFiles()){let c=mc.getFileCache(f);if(!c)continue;if(c.tags)for(let t of c.tags){addAll(t.tag.replace(/^#/,""))}let fm=c.frontmatter;if(fm&&fm.tags){let arr=Array.isArray(fm.tags)?fm.tags:[fm.tags];for(let t of arr){if(t==null)continue;addAll(String(t).replace(/^#/,"").trim())}}}return Array.from(set).sort((a,b)=>a.localeCompare(b))}getItemText(t){return "#"+t}onChooseItem(t){this.onPick&&this.onPick(t)}};var To=class extends Oe.ItemView{constructor(r,a){super(r);this.cy=null;this.currentPath=null;this.plugin=a}getViewType(){return ua}getDisplayText(){return this.plugin.tagView?L("tagViewTitle")(this.plugin.tagView.tag):this.plugin.session?L("viewSession"):L("viewLocal")}getIcon(){return this.plugin.tagView?"tag":this.plugin.session?"git-merge":"git-fork"}async onOpen(){let r=this.contentEl;r.empty(),r.addClass("blg-root"),this.titleEl=r.createDiv({cls:"blg-title"}),this.toolbarEl=r.createDiv({cls:"blg-toolbar"}),this.graphEl=r.createDiv({cls:"blg-graph"}),this.graphEl.style.position="relative",this.cy=hr({container:this.graphEl,style:this.buildStyle(),layout:{name:"null"},userZoomingEnabled:!1,boxSelectionEnabled:!1,autounselectify:!0}),this._sz={z:this.cy.zoom(),tz:this.cy.zoom(),running:!1},this.graphEl.addEventListener("wheel",e=>{e.preventDefault();this._tagFocusAnim&&(this._tagFocusAnim.stop(),this._tagFocusAnim=null),this._tagFocusArm=null;let t=-e.deltaY*.001,r=this.cy.zoom();this._sz.tz=Math.max(.1,Math.min(10,r*(1+t))),this._sz.running||(this._sz.running=!0,requestAnimationFrame(function l(){let a=this.cy.zoom(),n=this._sz.tz-a;Math.abs(n)<.001?(this.cy.zoom(this._sz.tz),this._sz.running=!1):(this.cy.zoom(a+n*.25),requestAnimationFrame(l.bind(this)))}.bind(this)))}),this.cy.on("tap","node",a=>{let ev=a.originalEvent;if(ev&&ev.shiftKey){this.toggleSel(a.target);return}let n=a.target.id(),i=this.app.vault.getAbstractFileByPath(n);/* BLG-DROPS: abrir nota movida */if(!(i instanceof Oe.TFile))i=globalThis.__BLG_DROPS&&globalThis.__BLG_DROPS.resolveFile(this,n);if(!(i instanceof Oe.TFile))return;/* BLG-TAG-FOCUS: en vista tag el primer click centra (ease-in-cubic) y el segundo abre */if(this.plugin.tagView&&!this.plugin.session){if(this._tagFocusArm!==n){let dr=this.plugin._blgDrops&&this.plugin._blgDrops.attached;if(dr&&dr.busy)return;this._tagFocusArm=n;this._sz&&(this._sz.running=!1);this._tagFocusAnim&&(this._tagFocusAnim.stop(),this._tagFocusAnim=null);let p=a.target.position(),z=Math.max(this.cy.zoom(),Math.min(Math.max(this.cy.zoom()*1.9,.7),2.2));this._tagFocusAnim=this.cy.animate({zoom:z,pan:{x:this.cy.width()/2-z*p.x,y:this.cy.height()/2-z*p.y}},{duration:400,easing:"ease-in-cubic",complete:()=>{this._tagFocusAnim=null;this._sz&&(this._sz.tz=this.cy.zoom(),this._sz.z=this.cy.zoom())}});return}this._tagFocusArm=null}this.app.workspace.getLeaf(!1).openFile(i)}),this.cy.on("tap",a=>{if(a.target!==this.cy)return;if(!this.cy.elements().length)return;this._tagFocusArm=null;this._sz&&(this._sz.running=!1);this.cy.animate({fit:{eles:this.cy.elements(),padding:60}},{duration:350,easing:"ease-in-out-cubic",complete:()=>{this._sz&&(this._sz.tz=this.cy.zoom())}})}),this.cy.on("cxttap","node",a=>{let n=a.target.id(),i=this.app.vault.getAbstractFileByPath(n);/* BLG-DROPS: resolver ID anterior tras mover */if(!(i instanceof Oe.TFile))i=globalThis.__BLG_DROPS&&globalThis.__BLG_DROPS.resolveFile(this,n);if(!(i instanceof Oe.TFile))return;let s=new Oe.Menu;s.addItem(o=>o.setTitle(L("ctxSewFrom")).setIcon("git-merge").onClick(()=>this.plugin.iniciarCosturaDesde(i)));s.addItem(o=>o.setTitle(L("ctxBookmark")).setIcon("bookmark").onClick(()=>{this.plugin.bookmark={path:i.path,name:i.basename},new Oe.Notice(L("noteMarked")(i.basename)),this.renderBookmark()}));let bm=this.plugin.bookmark;if(bm&&bm.path!==i.path){s.addItem(o=>o.setTitle(L("ctxSewToBookmark")(bm.name)).setIcon("git-merge").onClick(()=>{let pf=this.app.vault.getAbstractFileByPath(bm.path);if(!(pf instanceof Oe.TFile)){new Oe.Notice(L("bookmarkNotFound"));return}this.plugin.coserInmediata(pf,i)}))}s.addItem(o=>o.setTitle(L("ctxEditYaml")).setIcon("pencil").onClick(()=>{new Wq(this.app,i,this).open()}));this.plugin.aiClient&&this.plugin.aiClient.isConfigured()&&this.currentPath&&this.currentPath!==i.path&&s.addItem(o=>o.setTitle(L("ctxWhyRelated")).setIcon("sparkles").onClick(async()=>{let cf=this.app.vault.getAbstractFileByPath(this.currentPath);if(!(cf instanceof Oe.TFile))return;let nn=new Oe.Notice(L("analyzing"),0);try{let tx=await explainRelation(this.plugin,cf,i);nn.hide();new Oe.Notice(tx,15e3)}catch(err){nn.hide();new Oe.Notice(err&&err.message?err.message:String(err))}}));/* BLG-DROPS: Mover A */if(!this.plugin.session&&globalThis.__BLG_DROPS)globalThis.__BLG_DROPS.addMoveToMenu(s,{source:"graph",plugin:this.plugin,view:this,file:i});/* BLG-PIN: Fijar en pizarra */if(!this.plugin.session&&globalThis.__BLG_PINBOARD)globalThis.__BLG_PINBOARD.addPinMenu(s,{plugin:this.plugin,view:this,file:i});let u=a.originalEvent;s.showAtPosition({x:u.clientX,y:u.clientY})}),this.registerEvent(this.app.workspace.on("active-leaf-change",()=>{this.plugin.session||this._scheduleRefresh(!1)})),this.registerEvent(this.app.metadataCache.on("resolved",()=>{this.plugin.session||this._scheduleRefresh(!0)})),this.registerEvent(this.app.metadataCache.on("changed",file=>{if(this.plugin.session)return;this._invalidateIconCache(file);this._scheduleRefresh(!0)})),this._sel=[],this._selKey=e=>{if(e.key!=="Enter"||!this._sel||this._sel.length<2)return;if(document.body.querySelector(".modal-container"))return;let t=e.target;if(t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.tagName==="BUTTON"||t.isContentEditable))return;e.preventDefault(),e.stopPropagation(),this.relacionarSel()},document.addEventListener("keydown",this._selKey,!0),this.renderMode(),this.renderBookmark()}async onClose(){var r;this._pulseT&&clearTimeout(this._pulseT);this._stopPulse&&this._stopPulse();this._ttEl&&this._ttEl.remove(),this._ttEl=null,this._ttKey&&document.removeEventListener("keydown",this._ttKey,!0),this._ttKey=null,this._ttKey2&&document.removeEventListener("keydown",this._ttKey2,!0),this._ttKey2=null,this._ttWheel&&this.graphEl&&this.graphEl.removeEventListener("wheel",this._ttWheel,!0),this._ttWheel=null,this._ttMove&&this.graphEl&&this.graphEl.removeEventListener("mousemove",this._ttMove),this._ttMove=null,this._ttLeave&&this.graphEl&&this.graphEl.removeEventListener("mouseleave",this._ttLeave),this._selKey&&document.removeEventListener("keydown",this._selKey,!0),this._selKey=null,this._rfT&&(clearTimeout(this._rfT),this._rfT=null),this._rfForce=!1,(r=this.cy)==null||r.destroy(),this.cy=null}renderMode(){var r,a;this.cy&&((a=(r=this.leaf).updateHeader)==null||a.call(r),this.plugin.tagView?this.renderTagGraph():this.plugin.session?this.renderSewing():(this._noRf=!1,this.currentPath=null,this._lastCentralPath=null,this._lastSig=null,this.refreshLocal(!0)))}_scheduleRefresh(force=!1){this._rfForce=this._rfForce||force;this._rfT&&clearTimeout(this._rfT);this._rfT=setTimeout(()=>{this._rfT=null;let f=this._rfForce;this._rfForce=!1;if(this.plugin.session)return;this.plugin.tagView&&this.renderTagGraph?this.renderTagGraph():this.refreshLocal(f)},280)}_applyGraphEdges(c){if(!this.cy)return 0;let _w=new Map;for(let _el of c||[]){if(_el&&_el.data&&_el.data.source)_w.set(_el.data.id,_el)}let _rm=[];this.cy.edges().forEach(e=>{if(!_w.has(e.id()))_rm.push(e)});if(_rm.length)this.cy.remove(_rm);let _add=[],_n=0;for(let _el of _w.values()){let _ex=this.cy.getElementById(_el.data.id);if(_ex&&_ex.length){_ex.removeClass("dir bidir sewing g1 g2 tagedge");if(_el.classes){let _ca=_el.classes.split(" ");for(let _c of _ca)_c&&_ex.addClass(_c)}_ex.data(_el.data);_n++}else{_add.push(_el)}}if(_add.length){this.cy.add(_add);_n+=_add.length}return _n}_invalidateIconCache(file){if(!this._iconCache)return;if(file){var _pre=file.path+"|";for(var _k of Array.from(this._iconCache.keys())){if(_k===_pre||_k.indexOf(_pre)===0)this._iconCache.delete(_k)}}else{this._iconCache=new Map}}refreshLocal(r=!1){if(!this.cy||this.plugin.session||this._noRf)return;let a=this.app.workspace.getActiveFile();if(this.titleEl.setText(L("viewLocal")),this.toolbarEl.empty(),!a||a.extension!=="md"){this.currentPath=null;this._lastSig=null;this.cy.elements().remove();return}!r&&a.path===this.currentPath||(this.currentPath=a.path,this.renderLocalGraph(a))}_ensureCentralVisible(path){if(!this.cy||!path)return;var n=this.cy.getElementById(path);if(!n||!n.length)return;this.cy.batch(function(){n.removeClass("dim");n.addClass("central");n.style("opacity",1);if(n.hasClass("mag")){n.style("width",62);n.style("height",62)}else{n.style("width",42);n.style("height",42)}})}renderLocalActive(){if(!this.cy)return;this._noRf=!1;let a=this.plugin._lastMdFile;if(!(a instanceof Oe.TFile)||a.extension!=="md"){a=null;let mv=this.app.workspace.getActiveViewOfType(Oe.MarkdownView);mv&&mv.file&&(a=mv.file),a||(a=this.app.workspace.getActiveFile())}if(!(a instanceof Oe.TFile)||a.extension!=="md"){this.currentPath=null,this.cy.elements().remove(),this.titleEl.setText(L("viewLocal")),this.toolbarEl.empty();return}this.titleEl.setText(L("viewLocal")),this.toolbarEl.empty(),this.currentPath=a.path,this.renderLocalGraph(a)}renderLocalGraph(r,_relationsOnly){var y;if(!this.cy)return;let a=this.app.metadataCache.resolvedLinks,st=this.plugin.settings,xl=st.excludedFolders||[],mn=st.maxNodes||30;let isMd=p=>{for(let d of xl)if(p===d||p.startsWith(d+"/"))return!1;return p.endsWith(".md")};let i=g=>{var p;return Object.keys((p=a[g])!=null?p:{}).filter(isMd)};let _bc=new Set;for(let g in a){let lp=a[g];if(lp&&lp[r.path]&&isMd(g))_bc.add(g)}let u=new Set([...i(r.path),..._bc]);u.delete(r.path);let l=new Set([r.path,...u]),v=new Set;for(let g of u)for(let p of i(g))l.has(p)||v.add(p);for(let g in a){let lp=a[g];if(!lp||!isMd(g)||l.has(g))continue;for(let p in lp){if(u.has(p)){v.add(g);break}}}let f=new Set([r.path,...u,...v]);let n=new Map;for(let g in a){let lp=a[g];if(!lp)continue;for(let p in lp){if(f.has(p)&&isMd(p)&&isMd(g)){if(!n.has(p))n.set(p,new Set);n.get(p).add(g)}}}let s=g=>{var p;return Array.from((p=n.get(g))!=null?p:[]).filter(isMd)},c=[];if(f.size>mn){this._lastSig=null;this.cy.elements().remove();let e=this.graphEl.querySelector(".coser-overlimit");e||(e=this.graphEl.createDiv({cls:"coser-overlimit",text:(BLG_LANG==="en"?("This view cannot be processed: "+f.size+" nodes (max "+mn+")"):("Esta Vista No se Puede Procesar: "+f.size+" nodos (maximo "+mn+")"))}));return}let oe=this.graphEl.querySelector(".coser-overlimit");oe&&oe.remove();for(let g of f){let p=this.app.vault.getAbstractFileByPath(g),m=p instanceof Oe.TFile?p.basename:g.replace(/\.md$/,""),b=g===r.path?"central":u.has(g)?"gen1":"gen2",w=null,al=null;if(p instanceof Oe.TFile){let E=(y=this.app.metadataCache.getFileCache(p))==null?void 0:y.frontmatter;let _ck=p.path+"|"+(p.stat?p.stat.mtime:0);if(this._iconCache&&this._iconCache.has(_ck)){w=this._iconCache.get(_ck)}else{let C=E==null?void 0:E.icon;typeof C=="string"&&(w=_blgFmIcon(C,st.iconColor));if(!w)w=_blgResolveIcon(p,st,this.app.metadataCache);if(!this._iconCache)this._iconCache=new Map();if(w)this._iconCache.set(_ck,w)}if(u.has(g)&&E){let _av=E.aliases!=null?E.aliases:E.alias;_av!=null&&(al=Array.isArray(_av)?_av:[_av])}}let lb=m;c.push({data:{id:g,label:lb,bg:w,al:al},classes:w?`${b} has-icon`:b})}let _swc=new Map,_swl=g=>{var F;if(_swc.has(g))return _swc.get(g);let pf=this.app.vault.getAbstractFileByPath(g),ls=[];if(pf instanceof Oe.TFile){let fm=(F=this.app.metadataCache.getFileCache(pf))==null?void 0:F.frontmatter,sv=fm==null?void 0:fm.sewing;sv!=null&&(ls=Array.isArray(sv)?sv:[sv])}let out=new Set;for(let it of ls){if(typeof it!="string")continue;let mm=it.match(/\[\[([^\]|#]+)/),lt=(mm?mm[1]:it).trim();if(!lt)continue;let tf=this.app.metadataCache.getFirstLinkpathDest(lt,g);tf&&out.add(tf.path)}return _swc.set(g,out),out},_sw=(g,p)=>_swl(g).has(p);let h=new Set,d=(g,p,_forceSew)=>{var P,D,B,A;if(!f.has(g)||!f.has(p)||g===p)return;let m=((D=(P=a[g])==null?void 0:P[p])!=null?D:0)>0,b=((A=(B=a[p])==null?void 0:B[g])!=null?A:0)>0;if(!m&&!b&&!_forceSew)return;let[w,E]=g<p?[g,p]:[p,g],C=`${w}\0${E}`;if(h.has(C))return;h.add(C);let x=m&&b,T=m?g:g,k=m?p:p;let sj=x?_sw(w,E)||_sw(E,w):_sw(T,k);c.push({data:{id:C,source:x?w:T,target:x?E:k},classes:(x?"bidir":"dir")+(sj?" sewing":"")+(g===r.path||p===r.path?" g1":" g2")})};for(let g of f){for(let p of i(g))d(g,p);for(let p of s(g))d(p,g);for(let p of _swl(g))d(g,p,!0)}let _sig=JSON.stringify(c);var _centralChanged=!this._lastCentralPath||this._lastCentralPath!==r.path;if(_relationsOnly){if(_centralChanged)return false;let _nIds=new Set;for(let _el of c)if(!_el.data.source)_nIds.add(_el.data.id);let _same=this.cy.nodes().length===_nIds.size;if(_same)this.cy.nodes().forEach(n=>{if(!_nIds.has(n.id()))_same=false});if(!_same)return false;let _visual=true;for(let _el of c){if(_el.data.source)continue;let _ex=this.cy.getElementById(_el.data.id),_want=(_el.classes||"").split(" ");if(_ex.data("label")!==_el.data.label||_ex.data("bg")!==_el.data.bg||JSON.stringify(_ex.data("al")||null)!==JSON.stringify(_el.data.al||null)){_visual=false;break}for(let _cl of ["central","gen1","gen2","has-icon"]){if(_ex.hasClass(_cl)!==_want.includes(_cl)){_visual=false;break}}if(!_visual)break}if(!_visual)return false;this._lastSig=_sig;this._applyGraphEdges(c);this._resyncSelNodes();this._selChanged();return true}if(_sig===this._lastSig)return;this._lastSig=_sig;this._lastCentralPath=r.path;if(_centralChanged){this.cy.elements().remove(),this.cy.add(c),this.cy.layout({name:"concentric",minNodeSpacing:40,concentric:g=>g.id()===r.path?3:u.has(g.id())?2:1,levelWidth:()=>1}).run(),this.cy.fit(void 0,30),this._animIn(300)}else{var _nIds=new Set,_eIds=new Set;for(var _el of c){if(_el.data.source)_eIds.add(_el.data.id);else _nIds.add(_el.data.id)}var _rm=[];this.cy.nodes().forEach(function(n){if(!_nIds.has(n.id()))_rm.push(n)});this.cy.edges().forEach(function(e){if(!_eIds.has(e.id()))_rm.push(e)});if(_rm.length)this.cy.remove(_rm);var _add=[];for(var _el2 of c){var _ex=this.cy.getElementById(_el2.data.id);if(_ex&&_ex.length){if(_el2.data.source)_ex.removeClass("dir bidir sewing g1 g2 tagedge");else _ex.removeClass("central gen1 gen2 has-icon");if(_el2.classes){var _ca=_el2.classes.split(" ");for(var _ci=0;_ci<_ca.length;_ci++)_ex.addClass(_ca[_ci])}_ex.data(_el2.data)}else{_add.push(_el2)}}if(_add.length){var _added=this.cy.add(_add);_added.style("opacity",0);this.cy.layout({name:"concentric",minNodeSpacing:40,concentric:g=>g.id()===r.path?3:u.has(g.id())?2:1,levelWidth:()=>1}).run();this.cy.fit(void 0,30);_added.animate({style:{opacity:1}},{duration:300,easing:"ease-out"})}else{this.cy.fit(void 0,30)}}this._ensureCentralVisible(r.path);this._stopPulse&&this._stopPulse();this._pulseT&&clearTimeout(this._pulseT);var _selfL=this,_stL=st;this._pulseT=setTimeout(function(){if(_selfL.cy&&!_selfL.plugin.tagView&&!_selfL.plugin.session){_selfL._startLocalPulse(_stL)}},650);this._resyncSelNodes();this._selChanged();if(this._ttEl){this._ttEl.style.display="none";this._ttNode=null;this._hoverNode=null;this._aiMsg=null;this.cy&&this.cy.elements().removeClass("dim hl mag ehl")}if(!this._ttEl||!this._ttEl.parentNode){let _tt=document.createElement("div");_tt.className="coser-tooltip";_tt.style.cssText="position:fixed;display:none;background:"+((function(h,o){var m=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h);if(m){return"rgba("+parseInt(m[1],16)+","+parseInt(m[2],16)+","+parseInt(m[3],16)+","+o+")"}return"rgba(30,30,30,"+o+")"})(this.plugin.settings.tooltipBg||"#1e1e1e",(this.plugin.settings.tooltipBgOpacity!=null?this.plugin.settings.tooltipBgOpacity:1)))+";color:"+(this.plugin.settings.tooltipText||"#ddd")+";border:1px solid #555;border-radius:6px;padding:8px 12px;font-size:12px;max-height:170px;min-width:180px;max-width:280px;overflow-y:auto;overflow-x:auto;z-index:99999;pointer-events:none;line-height:1.5;white-space:pre-wrap;box-shadow:0 2px 10px rgba(0,0,0,.5)";document.body.appendChild(_tt);this._ttEl=_tt;let _ht=null;let _hideNow=()=>{_ht&&(clearTimeout(_ht),_ht=null),_tt.style.display="none"};let _hide=()=>{_ht&&clearTimeout(_ht),_ht=setTimeout(()=>{_ht=null,_tt.style.display="none"},120)};let _undim=()=>{this.cy&&this.cy.elements().removeClass("dim")};let _clearMag=()=>{_laserStop();if(this._hoverNode){this._hoverNode.removeClass("hl mag");this._hoverNode.connectedEdges().removeClass("ehl");this._hoverNode=null}};let _clearAll=()=>{_clearMag();this.cy&&this.cy.elements().removeClass("dim hl mag ehl")};let _lcEl=()=>{let c=this.graphEl.querySelector(".coser-laser");if(!c){c=document.createElement("canvas");c.className="coser-laser";c.style.cssText="position:absolute;left:0;top:0;pointer-events:none;z-index:99998";this.graphEl.appendChild(c)}return c};let _laserStop=()=>{if(this._laf!=null){cancelAnimationFrame(this._laf);this._laf=null}this._ltgt=null;_lh.length=0;let c=_lcEl(),ctx=c&&c.getContext("2d");ctx&&ctx.clearRect(0,0,c.width,c.height)};let _lh=[];let _laserStart=t=>{_laserStop();this._ltgt=t;let W=()=>{let c=_lcEl(),w=this.graphEl.clientWidth,h=this.graphEl.clientHeight;if(c.width!==w||c.height!==h){c.width=w;c.height=h}return c};let step=()=>{if(!this._ltgt)return;let c=W(),ctx=c.getContext("2d");if(!ctx){this._laf=requestAnimationFrame(step);return}ctx.clearRect(0,0,c.width,c.height);let n=this._ltgt;if(typeof n.renderedPosition!="function"||typeof n.renderedBoundingBox!="function"){this._laf=requestAnimationFrame(step);return}let S=this.plugin.settings||{},lc=S.laserColor||"#00e5ff",ls=S.laserSpeed||300,lb=S.laserStrength||14;let ctr=n.renderedPosition(),bb=n.renderedBoundingBox({includeLabels:!1,includeOverlays:!1}),cx=ctr.x,cy=ctr.y,rx=(bb.x2-bb.x1)/2,ry=(bb.y2-bb.y1)/2,r=Math.max(rx,ry)+3,ang=Date.now()/ls,px=cx+r*Math.cos(ang),py=cy+r*Math.sin(ang);_lh.unshift({x:px,y:py});if(_lh.length>14)_lh.pop();for(let i=0;i<_lh.length;i++){let p=_lh[i],a=1-i/_lh.length;ctx.globalAlpha=a*0.9;ctx.fillStyle=lc;ctx.shadowColor=lc;ctx.shadowBlur=lb*(1-i*0.06);ctx.beginPath();ctx.arc(p.x,p.y,4*(1-i*0.05),0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;ctx.shadowBlur=0;this._laf=requestAnimationFrame(step)};this._laf=requestAnimationFrame(step)};let _props=()=>{let ps=this.plugin.settings.tooltipProps;ps=Array.isArray(ps)&&ps.length?ps.slice():["aliases"];this.plugin.aiClient&&this.plugin.aiClient.isConfigured()&&ps.push("✨ ai");return ps};let _pval=(g,nm)=>{var F;let pf=this.app.vault.getAbstractFileByPath(g);if(!(pf instanceof Oe.TFile))pf=globalThis.__BLG_DROPS&&globalThis.__BLG_DROPS.resolveFile(this,g);if(!(pf instanceof Oe.TFile))return[];let fm=(F=this.app.metadataCache.getFileCache(pf))==null?void 0:F.frontmatter;if(!fm)return[];let v=fm[nm];nm==="aliases"&&v==null&&(v=fm.alias);if(v==null)return[];let ls=Array.isArray(v)?v:[v];return ls.filter(x=>x!=null&&String(x).length>0).map(x=>String(x))};this._ttIdx=0;this._ttNode=null;this._hoverNode=null;this._ttMx=null;this._ttMy=null;this._laf=null;this._ltgt=null;let _ttPos=()=>{let t=this._ttNode;if(!t)return;let pos=typeof t.renderedPosition=="function"?t.renderedPosition():null;if(!pos)return;let rect=this.graphEl.getBoundingClientRect();_tt.style.left=(rect.left+pos.x+25)+"px";_tt.style.top=(rect.top+pos.y-15)+"px"};let _ttIn=()=>{let t=this._ttNode;if(!t||this._ttMx==null)return!1;let bb=t.renderedBoundingBox({includeLabels:!1,includeOverlays:!1}),rc=this.graphEl.getBoundingClientRect(),mx=this._ttMx-rc.left,my=this._ttMy-rc.top;return mx>=bb.x1-4&&mx<=bb.x2+4&&my>=bb.y1-4&&my<=bb.y2+4};let _ttRender=()=>{let t=this._ttNode;if(!t){_hideNow();return}let ps=_props(),N=ps.length,ix=((this._ttIdx%N)+N)%N,nm=ps[ix];_tt.textContent="";let fn=t.id().split("/").pop().replace(/\.md$/,"");let fh=document.createElement("div");fh.style.cssText="font-weight:700;font-size:13px;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden";fh.textContent=fn;_tt.appendChild(fh);if(nm==="✨ ai"){let hd="✨ ai ("+(ix+1)+"/"+N+")"+(N>1?" ↑↓":"");let he=document.createElement("div");he.style.cssText="font-weight:600;color:#999;font-size:10px;margin-bottom:3px";he.textContent=hd;_tt.appendChild(he);let bd;if(this._aiMsg)bd=this._aiMsg;else{let pf=this.app.vault.getAbstractFileByPath(t.id());let hit=pf instanceof Oe.TFile?this.plugin.aiCache.get(AICache.keyFor(pf,"sum")):null;bd=hit||(BLG_LANG==="en"?"Press R to generate summary ✨":"Presiona R para generar resumen ✨")}_tt.appendChild(document.createTextNode(bd));if(!this._aiMsg){let ht2=document.createElement("div");ht2.style.cssText="color:#999;font-size:9px;margin-top:4px";ht2.textContent=(BLG_LANG==="en"?"R: generate · Shift+R: regenerate":"R: generar · Shift+R: regenerar");_tt.appendChild(ht2)}}else{let vals=_pval(t.id(),nm),hd=nm+" ("+(ix+1)+"/"+N+")"+(N>1?" ↑↓":""),bd=vals.length?vals.map(x=>"- "+x).join("\n"):"—";if(_pval(t.id(),ps[this._ttIdx]).length){let he=document.createElement("div");he.style.cssText="font-weight:600;color:#999;font-size:10px;margin-bottom:3px";he.textContent=hd;_tt.appendChild(he);_tt.appendChild(document.createTextNode(bd))}}let _hh=document.createElement("div");_hh.style.cssText="color:#777;font-size:9px;margin-top:6px;border-top:1px solid #333;padding-top:3px";_hh.textContent=(BLG_LANG==="en"?"S:toggle P:path I:icon O:open R:ai":"S:toggle P:ruta I:icono O:abrir R:ia");_tt.appendChild(_hh);_ttPos();_tt.style.display="block";_tt.scrollTop=0;_tt.scrollLeft=0;this._ttScr&&(this._ttScr.t=0,this._ttScr.c=0,this._ttScr.tx=0,this._ttScr.cx=0)};this.cy.on("mouseover","node",e=>{let t=e.target;if(!t||typeof t.isNode!="function"||!t.isNode()){_hideNow();return}let nb=t.closedNeighborhood();this.cy.elements().not(nb).addClass("dim");nb.removeClass("dim");if(this._hoverNode&&this._hoverNode!==t){this._hoverNode.removeClass("hl mag")}this._hoverNode=t;t.addClass("hl mag");t.connectedEdges().addClass("ehl");_laserStart(t);if(!this.plugin.settings.tooltipAllNodes&&!t.hasClass("gen1")){_hide();return}_ht&&(clearTimeout(_ht),_ht=null);let ps=_props(),fi=-1;for(let q=0;q<ps.length;q++)if(_pval(t.id(),ps[q]).length){fi=q;break}if(fi<0)fi=0;this._ttNode=t;this._ttIdx=fi;_ttRender()});this.cy.on("mouseout","node",e=>{if(e.target===this._hoverNode){_clearMag()}if(e.target===this._ttNode&&_tt.style.display!=="none"&&_ttIn())return;_undim(),_hide()});this.cy.on("zoom pan",()=>{this._ttNode&&_tt.style.display!=="none"?_ttPos():(_clearAll(),_hideNow())});this._ttLeave=()=>{_clearAll(),_hideNow()};this.graphEl.addEventListener("mouseleave",this._ttLeave);this._ttKey&&document.removeEventListener("keydown",this._ttKey,!0);this._ttKey=e=>{if(!this._ttEl)return;let _ae=document.activeElement;if(_ae&&(_ae.tagName==="INPUT"||_ae.tagName==="TEXTAREA"||_ae.isContentEditable||(_ae.closest&&_ae.closest(".cm-editor"))))return;let _over=this._ttNode&&_ttIn();let k=e.key;if(k==="s"||k==="S"){if(!_over)return;e.preventDefault();e.stopPropagation();if(this._ttEl.style.display==="none"){_ttRender()}else{_hideNow()}return}if(k==="p"||k==="P"){if(!_over||!this._ttNode)return;e.preventDefault();e.stopPropagation();let path=this._ttNode.id();let ok=false;try{let el=require("electron");if(el&&el.clipboard){el.clipboard.writeText(path);ok=true}}catch(_){}if(!ok){try{if(typeof navigator!=="undefined"&&navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(path);ok=true}}catch(_){}}new Oe.Notice(L("pathCopied"));return}if(k==="i"||k==="I"){if(!_over||!this._ttNode)return;e.preventDefault();e.stopPropagation();var _if=this.app.vault.getAbstractFileByPath(this._ttNode.id());if(_if instanceof Oe.TFile){if(e.shiftKey){var _self=this;this.app.fileManager.processFrontMatter(_if,function(fm){delete fm.icon}).then(function(){new Oe.Notice(L("iconRemoved"));_self.resetHover&&_self.resetHover();_self.refreshLocal&&_self.refreshLocal(true)}).catch(function(err){new Oe.Notice(L("iconSetError")+(err&&err.message?err.message:String(err)))})}else{new BLGIconPicker(this.app,_if,this).open()}}return}if(k==="o"||k==="O"){if(!_over||!this._ttNode)return;e.preventDefault();e.stopPropagation();var _of=this.app.vault.getAbstractFileByPath(this._ttNode.id());if(_of instanceof Oe.TFile){try{var _fp=this.app.vault.adapter.getFullPath(_of.path);require("electron").shell.showItemInFolder(_fp)}catch(err){new Oe.Notice(L("openLocError"))}}return}if(k==="r"||k==="R"){if(!_over)return;e.preventDefault();e.stopPropagation();let ps2=_props(),ai2=ps2.indexOf("✨ ai");if(ai2<0){new Oe.Notice(L("aiNotConfigured"));return}this._ttIdx=ai2;if(this._ttEl.style.display==="none"){_ttRender()}if(this._aiBusy){_ttRender();return}let pf2=this.app.vault.getAbstractFileByPath(this._ttNode.id());if(!(pf2 instanceof Oe.TFile))return;this._aiBusy=!0;let nd2=this._ttNode;this._aiMsg=L("generating");_ttRender();summarizeNote(this.plugin,pf2,e.shiftKey).then(()=>{this._aiBusy=!1;this._aiMsg=null;this._ttNode===nd2&&this._ttEl&&this._ttEl.style.display!=="none"&&_ttRender()}).catch(err=>{this._aiBusy=!1;this._aiMsg=null;new Oe.Notice(err&&err.message?err.message:String(err));this._ttNode===nd2&&this._ttEl&&this._ttEl.style.display!=="none"&&_ttRender()});return}if(this._ttEl.style.display==="none")return;if(k==="ArrowDown"){e.preventDefault();e.stopPropagation();this._ttIdx++;_ttRender()}else if(k==="ArrowUp"){e.preventDefault();e.stopPropagation();this._ttIdx--;_ttRender()}};document.addEventListener("keydown",this._ttKey,!0);this._ttMove&&this.graphEl.removeEventListener("mousemove",this._ttMove);this._ttMove=e=>{this._ttMx=e.clientX;this._ttMy=e.clientY;if(!this._ttEl||this._ttEl.style.display==="none"||!this._ttNode)return;if(_ttIn()){_ht&&(clearTimeout(_ht),_ht=null)}else{_undim();_hide()}};this.graphEl.addEventListener("mousemove",this._ttMove);this._ttWheel&&this.graphEl.removeEventListener("wheel",this._ttWheel,!0);this._ttScr={t:0,c:0,tx:0,cx:0,run:!1};this._ttWheel=e=>{let tt=this._ttEl;if(!tt||tt.style.display==="none")return;let hz=!!e.shiftKey,mx=hz?tt.scrollWidth-tt.clientWidth:tt.scrollHeight-tt.clientHeight;if(mx<=0)return;e.preventDefault();e.stopImmediatePropagation();let d=hz?(e.deltaY||e.deltaX):e.deltaY;e.deltaMode===1?d*=20:e.deltaMode===2&&(d*=hz?tt.clientWidth:tt.clientHeight);let s=this._ttScr;hz?s.tx=Math.max(0,Math.min(mx,s.tx+d*.45)):s.t=Math.max(0,Math.min(mx,s.t+d*.45));s.run||(s.run=!0,s.c=tt.scrollTop,s.cx=tt.scrollLeft,requestAnimationFrame(function st(){let el=this._ttEl;if(!el){s.run=!1;return}let n=s.t-s.c,nx=s.tx-s.cx,fin=!0;Math.abs(n)<.5?(s.c=s.t,el.scrollTop=s.t):(s.c+=n*.18,el.scrollTop=s.c,fin=!1);Math.abs(nx)<.5?(s.cx=s.tx,el.scrollLeft=s.tx):(s.cx+=nx*.18,el.scrollLeft=s.cx,fin=!1);fin?s.run=!1:requestAnimationFrame(st.bind(this))}.bind(this)))};this.graphEl.addEventListener("wheel",this._ttWheel,{capture:!0,passive:!1});}}resetHover(){this._ttNode=null,this._hoverNode=null,this._ttEl&&(this._ttEl.style.display="none"),this.cy&&this.cy.elements().removeClass("dim hl mag ehl")}toggleSel(t){if(!t||typeof t.isNode!="function"||!t.isNode())return;this._sel||(this._sel=[]);let id=t.id(),ix=this._sel.findIndex(s=>s.id===id);if(ix>=0){let s=this._sel[ix];if(s.src){s.src.delete("graph");if(s.src.size>0){this._selChanged();return}}this._sel.splice(ix,1),t.removeClass("sel")}else{let pf=this.app.vault.getAbstractFileByPath(id);/* BLG-DROPS: seleccionar nota movida */if(!(pf instanceof Oe.TFile))pf=globalThis.__BLG_DROPS&&globalThis.__BLG_DROPS.resolveFile(this,id);if(!(pf instanceof Oe.TFile))return;this._sel.push({id:id,path:pf.path,name:pf.basename,src:new Set(["graph"])}),t.addClass("sel")}this._selChanged()}_selChanged(){this.renderSelPanel();if(this.plugin.tagView&&this._syncTagButtons)this._syncTagButtons();if(this.plugin&&this.plugin._tagUpdateBtn)this.plugin._tagUpdateBtn()}_addSelNote(file,source){this._sel||(this._sel=[]);let ex=this._sel.find(s=>s.path===file.path);if(ex){if(!ex.src)ex.src=new Set();ex.src.add(source);if(this.cy){let nd=this.cy.getElementById(ex.id);nd&&nd.length&&nd.addClass("sel")}return false}this._sel.push({id:file.path,path:file.path,name:file.basename,src:new Set([source])});if(this.cy){let nd=this.cy.getElementById(file.path);nd&&nd.length&&nd.addClass("sel")}return true}_removeSelSource(source){if(!this._sel)return;for(let i=this._sel.length-1;i>=0;i--){let s=this._sel[i];if(s.src){s.src.delete(source);if(s.src.size>0)continue}if(this.cy){let nd=this.cy.getElementById(s.id);nd&&nd.length&&nd.removeClass("sel")}this._sel.splice(i,1)}this._selChanged()}_resyncSelNodes(){if(!this.cy)return;this.cy.nodes().removeClass("sel");if(!this._sel)return;for(let s of this._sel){let nd=this.cy.getElementById(s.id);nd&&nd.length&&nd.addClass("sel")}}clearSel(){this._sel=[],this.cy&&this.cy.nodes().removeClass("sel"),this._selChanged();if(this.plugin&&this.plugin._tagResetSel)this.plugin._tagResetSel()}renderSelPanel(){let r=this.graphEl.querySelector(".coser-selpanel");r&&r.remove();let a=this._sel||[];if(!a.length)return;let st=this.plugin.settings,n=this.graphEl.createDiv({cls:"coser-selpanel"});n.style.cssText="position:absolute;top:8px;right:8px;z-index:9998;background:rgba(30,30,30,.92);color:"+st.textColor+";border:1.5px solid "+(st.gen1Color||st.childColor)+";border-radius:10px;padding:8px 10px;font-size:12px;width:175px;display:flex;flex-direction:column;gap:5px;box-shadow:0 2px 10px rgba(0,0,0,.5)";["mousedown","mouseup","click","contextmenu","dblclick"].forEach(ev=>n.addEventListener(ev,e=>e.stopPropagation()));let h=n.createDiv({text:a.length+(BLG_LANG==="en"?(" selected"):(" seleccionado"+(a.length>1?"s":"")))});h.style.cssText="font-weight:600;font-size:10px;color:#999";let ls=n.createDiv();ls.style.cssText="display:flex;flex-direction:column;gap:2px;max-height:110px;overflow-y:auto";a.forEach((s,i)=>{let it=ls.createDiv({text:(i+1)+". "+s.name});it.style.cssText="white-space:nowrap;overflow:hidden;text-overflow:ellipsis";it.title=s.path});let row=n.createDiv();row.style.cssText="display:flex;gap:6px;justify-content:flex-end";let _bmPath=this.plugin.bookmark?this.plugin.bookmark.path:null;let _distinct=a.filter(s=>s.path!==_bmPath).length;if(a.length>1||(this.plugin.bookmark&&_distinct>=1)){let b=row.createEl("button",{text:(BLG_LANG==="en"?"Relate":"Relacionar"),cls:"mod-cta"});b.style.cssText="cursor:pointer;font-size:11px;padding:2px 8px";b.title=(BLG_LANG==="en"?"Enter also works":"Enter tambien funciona");b.onclick=()=>this.relacionarSel()}let c=row.createEl("button",{text:"\u00d7"});c.title=(BLG_LANG==="en"?"Clear selection":"Limpiar seleccion");c.style.cssText="cursor:pointer;font-size:11px;padding:2px 8px";c.onclick=()=>this.clearSel()}relacionarSel(){let a=(this._sel||[]).slice();let bm=this.plugin.bookmark,bmFile=bm?this.app.vault.getAbstractFileByPath(bm.path):null;if(bm&&bmFile instanceof Oe.TFile){let kids=a.filter(s=>s.path!==bmFile.path);if(kids.length===0){new Oe.Notice(L("noChildrenTag"));return}let bmNote={id:bmFile.path,path:bmFile.path,name:bmFile.basename};let pairs=kids.map(k=>[bmNote,k]);new Vq(this.app,(BLG_LANG==="en"?('Sew? Bookmark "'+bmFile.basename+'" will be the parent of '+kids.length+' note(s).'):('\u00bfRealizar costura? El bookmark "'+bmFile.basename+'" sera padre de '+kids.length+' nota(s).')),()=>this.coserPares(pairs)).open();return}if(a.length<2)return;this.resetHover();if(a.length===2){new Vq(this.app,(BLG_LANG==="en"?('Sew? "'+a[0].name+'" will be the parent of "'+a[1].name+'".'):('\u00bfRealizar costura? "'+a[0].name+'" sera padre de "'+a[1].name+'".')),()=>this.coserPares([[a[0],a[1]]])).open();return}let m=new Oe.Modal(this.app);m.titleEl.setText((BLG_LANG==="en"?("Relate "+a.length+" notes"):("Relacionar "+a.length+" notas")));let d=m.contentEl.createDiv();d.style.cssText="display:flex;flex-direction:column;gap:8px";let b1=d.createEl("button",{text:(BLG_LANG==="en"?('1. "'+a[0].name+'" as parent of all'):('1. "'+a[0].name+'" como padre de todas')),cls:"mod-cta"});b1.onclick=()=>{m.close();let ps=[];for(let i=1;i<a.length;i++)ps.push([a[0],a[i]]);this.coserPares(ps)};let b2=d.createEl("button",{text:(BLG_LANG==="en"?"2. Chain by order (1\u21922\u21923\u2026)":"2. En cadena por orden (1\u21922\u21923\u2026)")});b2.onclick=()=>{m.close();let ps=[];for(let i=0;i<a.length-1;i++)ps.push([a[i],a[i+1]]);this.coserPares(ps)};let b3=d.createEl("button",{text:L("cancel")});b3.onclick=()=>{this.resetHover(),m.close()};m.open()}async coserPares(ps){let n=0;this._noRf=!0;try{let _B=5;for(let _i=0;_i<ps.length;_i+=_B){let _batch=ps.slice(_i,_i+_B);await Promise.all(_batch.map(async pr=>{let fp=this.app.vault.getAbstractFileByPath(pr[0].path),fh=this.app.vault.getAbstractFileByPath(pr[1].path);if(fp instanceof Oe.TFile&&fh instanceof Oe.TFile){await this.plugin.coserInmediata(fp,fh,!0);n++}}))}}finally{this._noRf=!1}this.clearSel();this.resetHover();new Oe.Notice(L("sewBySelection")(n));if(this._scheduleRefresh){this._scheduleRefresh(!0)}else if(this.refreshLocal){this._lastSig=null;this.refreshLocal(!0)}}renderBookmark(){let r=this.graphEl.querySelector(".coser-bookmark");r&&r.remove();let a=this.plugin.bookmark;if(!a)return;let st=this.plugin.settings;let n=this.graphEl.createDiv({cls:"coser-bookmark"});n.style.cssText="position:absolute;top:8px;left:8px;z-index:9998;background:rgba(30,30,30,.92);color:"+st.textColor+";border:1.5px solid "+st.parentColor+";border-radius:10px;padding:10px 12px 8px;font-size:12px;width:160px;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 2px 10px rgba(0,0,0,.5)";let o=n.createEl("button",{text:"\u00d7"});o.title=(BLG_LANG==="en"?"Remove bookmark":"Quitar marca");o.style.cssText="position:absolute;top:2px;right:2px;cursor:pointer;background:transparent;border:none;color:#999;font-size:15px;line-height:1;padding:2px 6px";o.onclick=()=>{this.plugin.bookmark=null,this.renderBookmark()};let c=n.createDiv();c.style.cssText="width:36px;height:36px;border-radius:50%;background:"+st.parentColor+";display:flex;align-items:center;justify-content:center;flex:0 0 auto;cursor:pointer;box-shadow:0 0 "+(st.glow||0)+"px "+(st.glowColor||st.linkColor);c.title=(BLG_LANG==="en"?('Sew: "'+a.name+'" will be the parent of the active note'):('Coser: "'+a.name+'" sera padre de la nota activa'));let f=this.app.vault.getAbstractFileByPath(a.path);if(f instanceof Oe.TFile){let fm=this.app.metadataCache.getFileCache(f);fm=fm&&fm.frontmatter;if(fm&&typeof fm.icon=="string"){let ic=(0,Oe.getIcon)(fm.icon);ic&&(ic.setAttribute("stroke",st.bgColor),ic.setAttribute("width","20"),ic.setAttribute("height","20"),c.appendChild(ic))}c.onclick=()=>{let tg=this.plugin._tagSel||[];if(tg.length>0){let resolved=tg.map(t=>({tag:t,notes:this.plugin._tagNotesFor(t)})),sinNota=resolved.filter(r=>r.notes.length===0);sinNota.length&&new Oe.Notice(L("tagsNoNote")(sinNota.map(r=>r.tag).join(", ")));let uniq=new Map,sameTags=new Set,dupTags=new Set;for(let r of resolved){let kept=0,sameHit=!1,dupHit=!1;for(let nf of r.notes){if(nf.path===f.path){sameHit=!0;continue}if(this.plugin._yaCosido(f,nf)){dupHit=!0;continue}uniq.has(nf.path)||uniq.set(nf.path,nf),kept++}kept===0&&r.notes.length>0&&(sameHit&&sameTags.add(r.tag),dupHit&&dupTags.add(r.tag))}let rejSame=[...sameTags],rejDup=[...dupTags];let children=[...uniq.values()];if(children.length===0){new Oe.Notice(L("noNewChildren"));rejSame.length&&new Oe.Notice(L("ignoredSameNote")(rejSame.join(", ")));rejDup.length&&new Oe.Notice(L("omittedExisting")(rejDup.join(", ")));return}new Vq(this.app,(BLG_LANG==="en"?("Sew "+children.length+" note(s) from the tags as children of \""+a.name+"\"?"):("\u00bfCoser "+children.length+" nota(s) de los tags como hijas de \""+a.name+"\"?")),async()=>{let n=0;for(let h of children){await this.plugin.coserInmediata(f,h);n++}new Oe.Notice(L("sewnFromBookmark")(a.name)+" \u2192 "+n+L("notesSuffix"));rejSame.length&&new Oe.Notice(L("ignoredSameNote")(rejSame.join(", ")));rejDup.length&&new Oe.Notice(L("omittedExisting")(rejDup.join(", ")));this.plugin._tagResetSel&&this.plugin._tagResetSel()}).open();return}let h=this.app.workspace.getActiveFile();if(!h||h.extension!=="md"){new Oe.Notice(L("noActiveToSew"));return}if(h.path===f.path){new Oe.Notice(L("activeIsBookmark"));return}new Vq(this.app,(BLG_LANG==="en"?('Sew? "'+a.name+'" will be the parent of "'+h.basename+'".'):('\u00bfDesea realizar costura? "'+a.name+'" sera padre de "'+h.basename+'".')),()=>this.plugin.coserInmediata(f,h)).open()}}let s=n.createSpan({text:a.name});s.style.cssText="text-align:center;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap";s.title=a.path}renderTagGraph(){
   if(!this.cy||!this.plugin.tagView)return;
   var self=this,st=this.plugin.settings,tag=this.plugin.tagView.tag;
   this._stopPulse&&this._stopPulse();
+  this._tagSearchQ="";this._tagSearchCache=null;
   this._noRf=true;this._lastSig=null;
-  this.currentPath=null;
+  this.currentPath=null;this._tagFocusArm=null;this._tagFocusAnim&&(this._tagFocusAnim.stop(),this._tagFocusAnim=null);
   // clean overlays from other modes
   var _ov=this.graphEl.querySelector(".coser-overlimit");_ov&&_ov.remove();
   var _sp=this.graphEl.querySelector(".coser-selpanel");_sp&&_sp.remove();
@@ -626,6 +642,22 @@ function _blgResolveIcon(file,settings,mc,ink){var _ic=ink||settings.iconColor;v
   this._tagClearBtn.onclick=function(){self.clearSel()};
   this._tagCountEl=this.toolbarEl.createEl("span",{cls:"blg-tagcount"});
   this._tagCountEl.style.cssText="align-self:center;font-size:11px;color:"+(st.textColor||"#ddd")+";opacity:.7";
+  // BLG-TAG-SEARCH: buscador compacto con x integrada (minima invasion)
+  var _sw=this.toolbarEl.createDiv({cls:"blg-tag-search"});
+  this._tagSearchInput=_sw.createEl("input",{type:"text",placeholder:L("tagSearchPlaceholder")});
+  this._tagSearchInput.setAttribute("aria-label",L("tagSearchPlaceholder"));
+  var _clr=_sw.createEl("button",{text:"\u00d7",cls:"blg-tag-search-clear"});
+  _clr.setAttribute("aria-label",L("tagSearchClear"));_clr.title=L("tagSearchClear");
+  this._tagSearchCount=_sw.createEl("span",{cls:"blg-tag-search-count"});
+  this._tagSearchCache=null;this._tagSearchQ="";
+  var _sin=this._tagSearchInput;
+  _clr.onclick=function(){self._clearTagSearch()};
+  _sin.addEventListener("input",function(){self._tagSearchResetInteraction();self._applyTagSearch(_sin.value)});
+  _sin.addEventListener("keydown",function(e){
+    if(e.key==="Escape"&&_sin.value){_sin.value="";self._tagSearchResetInteraction();self._applyTagSearch("");e.preventDefault();e.stopPropagation()}
+    e.stopPropagation();
+  });
+  _clr.addEventListener("keydown",function(e){e.stopPropagation()});
   // collect notes with tag or subtag
   var wanted=tag.replace(/^#/,""),mc=this.app.metadataCache,files=[];
   var matches=function(x){x=x.replace(/^#/,"");if(x===wanted)return true;if(x.indexOf(wanted+"/")===0)return true;var seg=x.split("/"),w=wanted.split("/"),wl=w.length;for(var i=0;i+wl<=seg.length;i++){var ok=true;for(var j=0;j<wl;j++){if(seg[i+j]!==w[j]){ok=false;break}}if(ok)return true}return false};
@@ -649,7 +681,7 @@ function _blgResolveIcon(file,settings,mc,ink){var _ic=ink||settings.iconColor;v
   var pathSet=new Set(files.map(function(f){return f.path}));
   var els=[];var iconInk=_blgContrastColor(st.bgColor);
   for(var _n of files){
-    var fm=(mc.getFileCache(_n)||{}).frontmatter,icon=fm&&typeof fm.icon==="string"?Xm(fm.icon,iconInk):null;if(!icon)icon=_blgResolveIcon(_n,st,mc,iconInk);
+    var fm=(mc.getFileCache(_n)||{}).frontmatter,icon=fm&&typeof fm.icon==="string"?_blgFmIcon(fm.icon,iconInk):null;if(!icon)icon=_blgResolveIcon(_n,st,mc,iconInk);
     var ct2=_n.stat&&_n.stat.ctime||0,fresh=(ct2-minT)/span;/*0 old..1 new*/
     var base=floor+(1-floor)*fresh;/*age opacity base*/
     var col=st.tagSingleColor?(st.tagNodeSingleColor||"#4aa8ff"):mix(fresh);
@@ -667,7 +699,7 @@ function _blgResolveIcon(file,settings,mc,ink){var _ic=ink||settings.iconColor;v
   var RL=mc.resolvedLinks||{};
   for(let src2 of files){let tgts=RL[src2.path];if(!tgts)continue;for(let dst in tgts){if(pathSet.has(dst))pushEdge(src2.path,dst,"tagedge")}}
   // 2) sewing relationships (dashed) — take priority visually
-  for(let sf of files){let tg=this._sewingTargets?this._sewingTargets(sf):new Set();tg.forEach(function(tp){pushEdge(sf.path,tp,"tagedge sewing")})}
+  for(let sf of files){let tg=this.plugin._sewingTargets?this.plugin._sewingTargets(sf):new Set();tg.forEach(function(tp){pushEdge(sf.path,tp,"tagedge sewing")})}
   // render
   this.cy.elements().remove();
   this.cy.add(els);
@@ -693,6 +725,73 @@ function _blgResolveIcon(file,settings,mc,ink){var _ic=ink||settings.iconColor;v
   this._pulseT=setTimeout(function(){self2.cy&&self2.plugin.tagView&&self2._startPulse(st)},1050);
 }
 
+// BLG-TAG-SEARCH: mismo criterio que el buscador del mapa mental (blg-tag-
+// mindmap.js matchLabel + subrama completa): substring case-insensitive sobre
+// el nombre visible (ultimo segmento) de cada rama del tag; las notas de la
+// rama que coincide y de TODOS sus descendientes quedan resaltadas (glow),
+// el resto de nodos y aristas se atenuan. No mueve nodos ni toca el zoom.
+_tagSearchNorm(s){return String(s==null?"":s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase()}
+_tagSearchSplit(t){var raw=String(t||"").replace(/^#/,"").split("/"),out=[];for(var i=0;i<raw.length;i++){var s=raw[i].trim();if(s)out.push(s)}return out}
+_tagSearchMatchSeg(segs,wsegs){if(!wsegs.length||segs.length<wsegs.length)return false;for(var k=0;k+wsegs.length<=segs.length;k++){var ok=true;for(var m=0;m<wsegs.length;m++){if(segs[k+m]!==wsegs[m]){ok=false;break}}if(ok)return true}return false}
+_clearTagSearch(silent){
+  this._tagSearchResetInteraction();
+  if(this._tagSearchInput)this._tagSearchInput.value="";
+  this._applyTagSearch("");
+  if(!silent&&this._tagSearchInput)this._tagSearchInput.focus();
+}
+// BLG-TAG-SEARCH: cancela hover/enfoque pendientes al CAMBIAR la query (un
+// nodo que pasa a oculto puede no recibir nunca su mouseout). Separado de
+// _applyTagSearch: re-aplicar el filtro no debe romper el 2o clic (abrir).
+_tagSearchResetInteraction(){
+  this._tagFocusAnim&&(this._tagFocusAnim.stop(),this._tagFocusAnim=null);this._tagFocusArm=null;
+  this._hoverNode=null;if(this.cy)this.cy.elements().removeClass("dim hl mag ehl");
+  if(this._ttEl)this._ttEl.style.display="none";
+}
+_applyTagSearch(q){
+  if(!this.cy||!this.plugin.tagView)return;
+  q=this._tagSearchNorm(q&&q.trim());
+  this._tagSearchQ=q;
+  var cy=this.cy,countEl=this._tagSearchCount,plug=this.plugin;
+  var restore=function(){cy.batch(function(){cy.elements().removeClass("tagsearch-dim tagsearch-hit");cy.nodes(".tagnode").forEach(function(n){n.style("opacity",n.data("agebase")==null?1:n.data("agebase"));n.style("underlay-opacity",0);n.style("underlay-padding",0);n.removeStyle("underlay-color");n.removeStyle("width");n.removeStyle("height");n.removeStyle("text-opacity");n.removeStyle("events");n.removeStyle("text-events")});cy.edges(".tagedge").forEach(function(e){e.removeStyle("opacity");e.removeStyle("events")})})};
+  if(!q){restore();if(countEl)countEl.setText("");return}
+  // cache por vista-tag: rama coincidente por nota (los literales no cambian
+  // durante la vida de esta vista; un re-render la reconstruye).
+  if(!this._tagSearchCache){
+    var wanted=plug.tagView.tag.replace(/^#/,""),wsegs=this._tagSearchSplit(wanted),mc=this.app.metadataCache,map=new Map();
+    cy.nodes(".tagnode").forEach(function(n){
+      var f=plug.app.vault.getAbstractFileByPath(n.id());if(!f)return;
+      var c=mc.getFileCache(f),hits=[];
+      if(c&&c.tags)for(var i=0;i<c.tags.length;i++)hits.push(String(c.tags[i].tag).replace(/^#/,""));
+      if(c&&c.frontmatter&&c.frontmatter.tags!=null){var arr=Array.isArray(c.frontmatter.tags)?c.frontmatter.tags:[c.frontmatter.tags];for(var j=0;j<arr.length;j++){if(arr[j]==null)continue;hits.push(String(arr[j]).replace(/^#/,"").trim())}}
+      var branches=[];
+      for(var h=0;h<hits.length;h++){var segs=this._tagSearchSplit(hits[h]);if(!this._tagSearchMatchSeg(segs,wsegs))continue;for(var k=0;k<segs.length;k++){var nm=this._tagSearchNorm(segs[k]);if(nm&&branches.indexOf(nm)===-1)branches.push(nm)}}
+      map.set(n.id(),branches);
+    },this);
+    this._tagSearchCache=map;
+  }
+  var matchIds=new Set();
+  this._tagSearchCache.forEach(function(branches,id){for(var i=0;i<branches.length;i++){if(branches[i].indexOf(q)!==-1){matchIds.add(id);return}}});
+  // El aspecto/interaccion los fija la STYLESHEET via clases (visibility:
+  // hidden + events:no en tagsearch-dim; glow/tamano en tagsearch-hit), de
+  // modo que ni el pulso, ni el hover, ni las animaciones de camara puedan
+  // deshacer el filtro mientras haya texto. Aqui solo se alternan clases y
+  // se limpian restos inline (pulso, hover, edad) que competirian con ellas.
+  cy.batch(function(){
+    cy.elements().removeClass("tagsearch-dim tagsearch-hit");
+    cy.nodes(".tagnode").forEach(function(n){
+      var on=matchIds.has(n.id());
+      n.toggleClass("tagsearch-hit",on);n.toggleClass("tagsearch-dim",!on);
+      n.removeStyle("opacity");n.removeStyle("underlay-opacity");n.removeStyle("underlay-padding");n.removeStyle("underlay-color");n.removeStyle("width");n.removeStyle("height");n.removeStyle("text-opacity");n.removeStyle("events");n.removeStyle("text-events");
+    });
+    cy.edges(".tagedge").forEach(function(e){
+      var on=matchIds.has(e.source().id())&&matchIds.has(e.target().id());
+      e.toggleClass("tagsearch-dim",!on);
+      e.removeStyle("opacity");e.removeStyle("events");
+    });
+  });
+  if(countEl)countEl.setText(matchIds.size?L("tagSearchMatches")(matchIds.size):L("tagSearchNone"));
+}
+
 _syncTagButtons(){
   if(!this.plugin.tagView)return;
   var n=(this._sel||[]).length;
@@ -716,7 +815,7 @@ _startPulse(st){
     var ph=((now-t0)/speed);
     cy.batch(function(){
       nodes.forEach(function(nd,i){
-        if(nd.hasClass("dim")||nd.hasClass("sel")||nd.hasClass("hl"))return;
+        if(nd.hasClass("dim")||nd.hasClass("sel")||nd.hasClass("hl")||nd.hasClass("tagsearch-dim")||nd.hasClass("tagsearch-hit"))return;
         var base=nd.data("agebase");if(base==null)base=1;
         var phase=nd.data("pulsePhase");if(phase==null)phase=i*0.35;
         var ndSpeed=nd.data("pulseSpeed");if(ndSpeed==null)ndSpeed=speed;
@@ -741,6 +840,7 @@ _startPulse(st){
   raf=requestAnimationFrame(step);
   this._stopPulse=function(){running=false;if(raf!=null){cancelAnimationFrame(raf);raf=null}
     if(self.cy){self.cy.batch(function(){nodes.forEach(function(nd){var b=nd.data("agebase");nd.style("opacity",b==null?1:b);if(nd.hasClass("has-icon")){nd.style("underlay-opacity",0);nd.style("underlay-padding",0)}})})}
+    if(self._tagSearchQ)self._applyTagSearch(self._tagSearchQ);
     self._stopPulse=function(){};
   };
 }
@@ -788,14 +888,14 @@ _wireTagInteractions(st){
   var _tt=document.createElement("div");_tt.className="coser-tooltip";
   _tt.style.cssText="position:fixed;display:none;background:"+toRgba(st.tooltipBg||"#1e1e1e",(st.tooltipBgOpacity!=null?st.tooltipBgOpacity:1))+";color:"+(st.tooltipText||"#ddd")+";border:1px solid #555;border-radius:6px;padding:8px 12px;font-size:12px;max-height:170px;min-width:180px;max-width:280px;overflow:auto;z-index:99999;pointer-events:none;line-height:1.5;white-space:pre-wrap;box-shadow:0 2px 10px rgba(0,0,0,.5)";
   document.body.appendChild(_tt);this._ttEl=_tt;
-  var pval=function(path,nm){var pf=self.app.vault.getAbstractFileByPath(path);if(!(pf instanceof Oe.TFile))return[];var fm=(self.app.metadataCache.getFileCache(pf)||{}).frontmatter;if(!fm)return[];var v=fm[nm];if(nm==="aliases"&&v==null)v=fm.alias;if(v==null)return[];var ls=Array.isArray(v)?v:[v];return ls.filter(function(x){return x!=null&&String(x).length>0}).map(function(x){return String(x)})};
+  var pval=function(path,nm){var pf=self.app.vault.getAbstractFileByPath(path);if(!(pf instanceof Oe.TFile))pf=globalThis.__BLG_DROPS&&globalThis.__BLG_DROPS.resolveFile(self,path);if(!(pf instanceof Oe.TFile))return[];var fm=(self.app.metadataCache.getFileCache(pf)||{}).frontmatter;if(!fm)return[];var v=fm[nm];if(nm==="aliases"&&v==null)v=fm.alias;if(v==null)return[];var ls=Array.isArray(v)?v:[v];return ls.filter(function(x){return x!=null&&String(x).length>0}).map(function(x){return String(x)})};
   var props=function(){var ps=self.plugin.settings.tooltipProps;ps=Array.isArray(ps)&&ps.length?ps.slice():["aliases"];return ps};
   var render=function(node){var ps=props(),path=node.id(),name=path.split("/").pop().replace(/\.md$/,"");_tt.textContent="";var head=document.createElement("div");head.textContent=name;head.style.cssText="font-weight:600;margin-bottom:4px";_tt.appendChild(head);var any=false;ps.forEach(function(nm){var vals=pval(path,nm);if(!vals.length)return;any=true;var line=document.createElement("div");line.textContent=nm+": "+vals.join(", ");_tt.appendChild(line)});if(!any){var e=document.createElement("div");e.style.opacity="0.6";e.textContent="\u2014";_tt.appendChild(e)}};
   var place=function(node){var pos=typeof node.renderedPosition==="function"?node.renderedPosition():null;if(!pos)return;var rect=self.graphEl.getBoundingClientRect();_tt.style.left=(rect.left+pos.x+25)+"px";_tt.style.top=(rect.top+pos.y-15)+"px"};
   self._hoverNode=null;
   cy.on("mouseover","node",function(ev){var n=ev.target;self._hoverNode=n;cy.elements().addClass("dim");n.removeClass("dim");n.connectedEdges().removeClass("dim");n.connectedEdges().connectedNodes().removeClass("dim");n.addClass("hl mag");n.connectedEdges().addClass("ehl");if(st.tooltipAllNodes){render(n);place(n);_tt.style.display="block"}});
   cy.on("mouseout","node",function(ev){var n=ev.target;self._hoverNode=null;n.removeClass("hl mag");n.connectedEdges().removeClass("ehl");cy.elements().removeClass("dim");_tt.style.display="none"});
-  this._ttLeave=function(){self._hoverNode=null;cy.elements().removeClass("dim hl mag ehl");_tt.style.display="none"};
+  this._ttLeave=function(){self._hoverNode=null;cy.elements().removeClass("dim hl mag ehl");if(self._tagSearchQ)self._applyTagSearch(self._tagSearchQ);_tt.style.display="none"};
   this.graphEl.addEventListener("mouseleave",this._ttLeave);
   this._ttKey2&&document.removeEventListener("keydown",this._ttKey2,!0);
   var _copyPath2=function(path){var ok=false;try{var el=require("electron");if(el&&el.clipboard){el.clipboard.writeText(path);ok=true}}catch(_){}if(!ok){try{if(typeof navigator!=="undefined"&&navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(path);ok=true}}catch(_){}}};
@@ -803,7 +903,7 @@ _wireTagInteractions(st){
   document.addEventListener("keydown",this._ttKey2,!0);
 }
 
-renderSewing(){if(!this.cy||!this.plugin.session)return;let r=this.plugin.session;this.titleEl.setText(L("sewTitleFrom")(r.parentName)),this.toolbarEl.empty();let a=this.toolbarEl.createEl("button",{text:L("sewToolbar"),cls:"mod-cta"});a.onclick=()=>this.plugin.realizarCosturas();let n=this.toolbarEl.createEl("button",{text:L("cancel")});n.onclick=()=>this.plugin.cancelarCostura();let st=this.plugin.settings,_pbg=null,_pf=this.app.vault.getAbstractFileByPath(r.parentPath);if(_pf instanceof Oe.TFile){let _pe=(this.app.metadataCache.getFileCache(_pf)||{}).frontmatter,_pc=_pe==null?void 0:_pe.icon;typeof _pc=="string"&&(_pbg=Xm(_pc,st.iconColor));if(!_pbg)_pbg=_blgResolveIcon(_pf,st,this.app.metadataCache)}let i=[];i.push({data:{id:r.parentPath,label:r.parentName,bg:_pbg},classes:_pbg?"central has-icon":"central"});for(let s of r.children)i.push({data:{id:s.path,label:s.name},classes:"gen1"}),i.push({data:{id:`${r.parentPath}\0${s.path}`,source:r.parentPath,target:s.path},classes:"dir g1"});this.cy.elements().remove(),this.cy.add(i),this.cy.layout({name:"concentric",minNodeSpacing:40,concentric:s=>s.id()===r.parentPath?2:1,levelWidth:()=>1}).run(),this.cy.fit(void 0,30),this._animIn()}_animIn(dur){if(!this.cy)return;var cy=this.cy,d=dur||520,cx=0,cy0=0,n=cy.nodes(),k=n.length||1;n.forEach(function(no){var p=no.position();cx+=p.x;cy0+=p.y});cx/=k;cy0/=k;cy.batch(function(){n.forEach(function(no){var p=no.position(),ox=p.x,oy=p.y;no.style("opacity",0);no.position({x:cx+(ox-cx)*.12,y:cy0+(oy-cy0)*.12});var dl=Math.random()*90;no.delay(dl).animate({position:{x:ox,y:oy},style:{opacity:1}},{duration:d,easing:"cubic-bezier(0.34, 1.56, 0.64, 1)"})});cy.edges().forEach(function(ed){ed.style("opacity",0);ed.delay(90).animate({style:{opacity:1}},{duration:d*.7,easing:"ease-out"})})})}_animInTag(dur){if(!this.cy)return;var cy=this.cy,d=dur||520,n=cy.nodes();if(!n||!n.length)return;var cx=0,cy0=0,k=n.length;n.forEach(function(no){var p=no.position();cx+=p.x;cy0+=p.y});cx/=k;cy0/=k;var maxR=1;n.forEach(function(no){var p=no.position();var r=Math.hypot(p.x-cx,p.y-cy0);if(r>maxR)maxR=r});cy.batch(function(){n.forEach(function(no){var tgt=no.data("agebase");if(tgt==null)tgt=1;var bw=no.data("basew");if(bw==null)bw=26;var p=no.position(),r=Math.hypot(p.x-cx,p.y-cy0);var dl=180+(r/maxR)*260;no.style("opacity",0);no.style("width",bw*0.82);no.style("height",bw*0.82);no.delay(dl).animate({style:{opacity:tgt,width:bw,height:bw}},{duration:d,easing:"ease-out"})});cy.edges().forEach(function(ed){ed.style("opacity",0);ed.delay(360).animate({style:{opacity:1}},{duration:d*.8,easing:"ease-out"})})})}updateSewingLive(){this.plugin.session&&this.renderSewing()}applyLiveStyle(){this.cy&&(this.cy.style(this.buildStyle()),this.graphEl.style.backgroundColor=this.plugin.settings.bgColor)}buildStyle(){let r=this.plugin.settings;this.titleEl&&(this.titleEl.style.background=r.titleBg||"",this.titleEl.style.color=r.titleText||"");return this.graphEl.style.backgroundColor=r.bgColor,[{selector:"node",style:{label:"data(label)",color:r.textColor,"text-valign":"bottom","text-margin-y":4,"font-size":10,"background-color":r.childColor,width:28,height:28,"underlay-color":r.glowColor||r.linkColor,"underlay-padding":r.glow,"underlay-opacity":r.glowOpacity!=null?r.glowOpacity:Math.min(1,r.opacity*.6),"underlay-shape":"ellipse","transition-property":"width height font-size underlay-padding underlay-opacity","transition-duration":"0.3s","transition-timing-function":"ease-out"}},{selector:"node.central",style:{"background-color":r.parentColor,width:42,height:42,"font-size":12}},{selector:"node.gen1",style:{"background-color":r.gen1Color||r.childColor}},{selector:"node.gen2",style:{opacity:.7,"background-color":r.gen2Color||r.childColor}},{selector:"node.has-icon",style:{"background-image":"data(bg)","background-fit":"contain","background-clip":"node","background-opacity":0}},{selector:"edge.dir",style:{width:1.5,"line-color":r.linkColor,"target-arrow-color":r.linkColor,"target-arrow-shape":"triangle","curve-style":"bezier","arrow-scale":1.3,opacity:r.opacity}},{selector:"edge.bidir",style:{width:2,"line-color":r.linkColor,"source-arrow-color":r.linkColor,"target-arrow-color":r.linkColor,"source-arrow-shape":"triangle","target-arrow-shape":"triangle","curve-style":"bezier","arrow-scale":1.3,opacity:r.opacity}},{selector:"edge.sewing",style:{"line-style":"dashed"}},{selector:"edge.g1",style:r.g1Curve>0?{"curve-style":"unbundled-bezier","control-point-distances":[r.g1Curve],"control-point-weights":[.5]}:{"curve-style":"straight"}},{selector:"edge.g2",style:r.g2Curve>0?{"curve-style":"unbundled-bezier","control-point-distances":[r.g2Curve],"control-point-weights":[.5]}:{"curve-style":"straight"}},{selector:"node.sel",style:{"border-width":3,"border-color":r.parentColor}},{selector:"node.tagnode",style:{width:26,height:26,"underlay-color":r.glowColor||r.linkColor,"underlay-padding":0,"underlay-opacity":0,"underlay-shape":"ellipse","transition-property":"underlay-padding underlay-opacity width height","transition-duration":"0.25s"}},{selector:"node.tagnode.sel",style:{"border-width":3,"border-color":r.tagSelColor||r.parentColor,"border-opacity":1}},{selector:"edge.tagedge",style:{width:1.5,"line-color":r.linkColor,"line-style":"solid","target-arrow-color":r.linkColor,"target-arrow-shape":"triangle","curve-style":"bezier","arrow-scale":1.1,opacity:(r.opacity||1)*.75}},{selector:"edge.tagedge.sewing",style:{"line-style":"dashed",width:2,"line-color":r.parentColor||r.linkColor,"target-arrow-color":r.parentColor||r.linkColor,opacity:(r.opacity||1)*.9}},{selector:".dim",style:{opacity:.12,"transition-property":"opacity","transition-duration":"0.15s"}},{selector:"node.hl",style:{"underlay-color":r.hoverColor||r.parentColor,"underlay-padding":Math.max(6,r.glow),"underlay-opacity":.85,"underlay-shape":"ellipse"}},{selector:"node.mag",style:{width:48,height:48,"font-size":14}},{selector:"node.central.mag",style:{width:62,height:62,"font-size":16}},{selector:"edge.ehl",style:{width:3,"line-color":r.hoverColor||r.parentColor,"target-arrow-color":r.hoverColor||r.parentColor,"source-arrow-color":r.hoverColor||r.parentColor,opacity:1,"transition-property":"width opacity line-color","transition-duration":"0.2s"}}]}},Jn=class extends Oe.Plugin{constructor(){super(...arguments);this.session=null;this.bookmark=null;this._lastMdFile=null;this.tagView=null}_trackMd(){let f=this.app.workspace.getActiveFile();f&&f instanceof Oe.TFile&&f.extension==="md"&&(this._lastMdFile=f)}_blgAutoRender(){if(this.tagView||this.session)return;let v=this.getView();if(!v||!v.cy||!v.refreshLocal)return;let f=this.app.workspace.getActiveFile();if(f&&f instanceof Oe.TFile&&f.extension==="md"){try{let empty=v.cy.nodes().length===0;let changed=v.currentPath!==f.path;if(empty||changed){v._noRf=false;v._lastSig=null;v.refreshLocal(!0)}}catch(e){}}}_buildAiClient(){this.aiClient=new AIClient({provider:this.settings.aiProvider,apiKey:this.settings.aiApiKey,model:this.settings.aiModel||void 0,maxTokens:this.settings.aiMaxTokens||200})}async onload(){document.body.querySelectorAll(".coser-tooltip").forEach(e=>e.remove()),await this.loadSettings(),this.aiCache=new AICache(this,200),this.settings.aiPersistCache&&await this.aiCache.load(),this._buildAiClient(),this.registerView(ua,r=>new To(r,this)),this._trackMd(),this.registerEvent(this.app.workspace.on("file-open",()=>this._trackMd())),this.registerEvent(this.app.workspace.on("active-leaf-change",()=>{this._trackMd()})),this.addRibbonIcon("git-fork",L("ribbonOpen"),()=>{this.activateView()}),this.addCommand({id:"abrir-vista-local",name:L("ribbonOpen"),callback:()=>this.activateView()}),this.addCommand({id:"sew-from-this-note",name:L("cmdSewName"),callback:()=>this.iniciarCostura()}),this.addCommand({id:"coser-a",name:(BLG_LANG==="en"?"Sew to active note":"Coser a"),callback:()=>this.coserA()}),this.addCommand({id:"filter-by-tag-view",name:L("cmdTagViewName"),callback:()=>this.abrirVistaTag()}),this.addCommand({id:"copiar-prompt-agente",name:(BLG_LANG==="en"?"Copy agent MCP prompt":"Copiar prompt de agente MCP"),callback:()=>this.copyAgentPrompt()}),this.addSettingTab(new So(this.app,this)),this._tagHookInit()}onunload(){this.settings&&this.settings.aiPersistCache&&this.aiCache&&this.aiCache.save(),this._tagHookTeardown()}_tagHookInit(){this._tagSel=[],this._tagElByTag=new Map,this._tagCleanups=[],this._tagBtn=null,this._tagSelStyle=e=>{let s=this.settings;e.style.backgroundColor=s.tagSelBg,e.style.borderRadius="4px",e.style.color=s.tagSelText,e.querySelectorAll("*").forEach(c=>c.style.color=s.tagSelText)},this._tagDeselStyle=e=>{e.style.backgroundColor="",e.style.borderRadius="",e.style.color="",e.querySelectorAll("*").forEach(c=>c.style.color="")},this._tagResetSel=()=>{let v=this.getView();for(let t of this._tagSel){let e=this._tagElByTag.get(t);e&&this._tagDeselStyle(e);v&&v._removeSelSource&&v._removeSelSource("tag:"+t)}this._tagSel.length=0,this._tagElByTag.clear(),this._tagUpdateBtn()},this._tagUpdateBtn=()=>{let b=this._tagBtn;if(!b)return;let v=this.getView();let n=v&&v._sel?v._sel.length:0;let bm=this.bookmark;let distinct=v&&v._sel?v._sel.filter(s=>!bm||s.path!==bm.path).length:0;let show=(distinct>=2)||(bm&&distinct>=1);if(show){b.style.display="block";b.textContent="\u{1FAA1} "+(BLG_LANG==="en"?("Sew "+n+" Note"+(n>1?"s":"")):("Coser "+n+" Nota"+(n>1?"s":"")))}else b.style.display="none"},this._tagNotesFor=tag=>{let wanted=tag.replace(/^#/,"");return this.app.vault.getMarkdownFiles().filter(f=>{let c=this.app.metadataCache.getFileCache(f),tg=[...(c&&c.tags?c.tags.map(x=>x.tag.replace(/^#/,"")):[]),...(c&&c.frontmatter&&Array.isArray(c.frontmatter.tags)?c.frontmatter.tags:c&&c.frontmatter&&c.frontmatter.tags?[c.frontmatter.tags]:[])];return tg.includes(wanted)})},this._tagCoser=async()=>{let v=this.getView();let a=v&&v._sel?v._sel.slice():[];if(!a.length)return;if(this.session){let parentPath=this.session.parentPath,seen=new Set(this.session.children.map(c=>c.path)),added=0;for(let s of a){if(s.path===parentPath)continue;if(seen.has(s.path))continue;seen.add(s.path),this.session.children.push({path:s.path,name:s.name}),added++}v&&v.updateSewingLive&&v.updateSewingLive();new Oe.Notice((BLG_LANG==="en"?("Added to session: "+added+" children. Use \"Sewing\" to apply."):("A\u00f1adidos a la sesi\u00f3n: "+added+" hijos. Usa \"Realizar Costuras\" para aplicar.")));v&&v.clearSel&&v.clearSel();return}v&&v.relacionarSel&&v.relacionarSel()},this._tagBuildBtn=()=>{if(this._tagBtn)return;let b=document.createElement("button");b.textContent="\u{1FAA1} "+(BLG_LANG==="en"?"Sew Notes":"Coser Notas");let s=this.settings;Object.assign(b.style,{position:"fixed",bottom:"30px",right:"30px",zIndex:"9999",padding:"12px 20px",backgroundColor:s.tagSelBg,color:s.tagSelText,border:"none",borderRadius:"8px",fontWeight:"600",fontSize:"14px",cursor:"pointer",boxShadow:"0 4px 14px rgba(0,0,0,0.4)",display:"none",transition:"transform 0.1s"}),b.onmouseenter=()=>b.style.transform="scale(1.05)",b.onmouseleave=()=>b.style.transform="scale(1)",b.onclick=()=>this._tagCoser(),document.body.appendChild(b),this._tagBtn=b},this._tagAttachLeaves=()=>{for(let leaf of this.app.workspace.getLeavesOfType("tag")){let containerEl=leaf.view&&leaf.view.containerEl;if(!containerEl||containerEl.dataset.coserTagHook)continue;containerEl.dataset.coserTagHook="1";let handler=evt=>{if(!evt.shiftKey)return;let tagEl=evt.target.closest(".tag-pane-tag");if(!tagEl)return;if(evt.preventDefault(),evt.stopImmediatePropagation(),evt.stopPropagation(),evt.type!=="click")return;let tagText=tagEl.querySelector("[data-tag-value]");if(tagText=tagText?tagText.getAttribute("data-tag-value"):null,!tagText)return;let idx=this._tagSel.indexOf(tagText);if(idx!==-1){this._tagSel.splice(idx,1),this._tagDeselStyle(tagEl),this._tagElByTag.delete(tagText);let v=this.getView();v&&v._removeSelSource&&v._removeSelSource("tag:"+tagText)}else{this._tagSel.push(tagText),this._tagElByTag.set(tagText,tagEl),this._tagSelStyle(tagEl);let v=this.getView();if(v&&v._addSelNote){let notes=this._tagNotesFor(tagText);for(let nf of notes)v._addSelNote(nf,"tag:"+tagText);v._selChanged&&v._selChanged()}}this._tagUpdateBtn()};containerEl.addEventListener("mousedown",handler,{capture:!0}),containerEl.addEventListener("click",handler,{capture:!0}),this._tagCleanups.push(()=>{containerEl.removeEventListener("mousedown",handler,{capture:!0}),containerEl.removeEventListener("click",handler,{capture:!0}),delete containerEl.dataset.coserTagHook})}},this._tagBuildBtn(),this._tagAttachLeaves(),this.registerEvent(this.app.workspace.on("layout-change",()=>this._tagAttachLeaves())),this.registerEvent(this.app.workspace.on("active-leaf-change",()=>this._tagAttachLeaves()))}_tagHookTeardown(){this._tagCleanups&&this._tagCleanups.forEach(fn=>fn()),this._tagCleanups=[],this._tagBtn&&(this._tagBtn.remove(),this._tagBtn=null),this._tagSel&&(this._tagSel.length=0),this._tagElByTag&&this._tagElByTag.clear()}_tagApplyColors(){if(this._tagBtn){let s=this.settings;this._tagBtn.style.backgroundColor=s.tagSelBg,this._tagBtn.style.color=s.tagSelText}if(this._tagElByTag)for(let[,el]of this._tagElByTag)this._tagSelStyle(el)}_sewingTargets(file){let out=new Set;if(!(file instanceof Oe.TFile))return out;let fm=this.app.metadataCache.getFileCache(file);fm=fm&&fm.frontmatter;let sv=fm&&fm.sewing;if(sv==null)return out;let ls=Array.isArray(sv)?sv:[sv];for(let it of ls){if(typeof it!="string")continue;let mm=it.match(/\[\[([^\]|#]+)/),lt=(mm?mm[1]:it).trim();if(!lt)continue;let tf=this.app.metadataCache.getFirstLinkpathDest(lt,file.path);tf&&out.add(tf.path)}return out}_yaCosido(a,b){if(!(a instanceof Oe.TFile)||!(b instanceof Oe.TFile))return!1;return this._sewingTargets(a).has(b.path)||this._sewingTargets(b).has(a.path)}async activateView(){let{workspace:r}=this.app,a=r.getLeavesOfType(ua)[0];if(!a){let n=r.getRightLeaf(!1);if(!n)return;a=n,await a.setViewState({type:ua,active:!0})}r.revealLeaf(a)}async abrirVistaTag(){if(this.session){new Oe.Notice(L("sessionActive"));return}let self=this;new BlgTagPick(this.app,function(tag){self.tagView={tag:tag};self.activateView().then(function(){var v=self.getView();v&&v.renderMode&&v.renderMode()})}).open()}salirVistaTag(){this.tagView=null;let v=this.getView();v&&v.renderMode&&v.renderMode()}getView(){let r=this.app.workspace.getLeavesOfType(ua)[0];return r?r.view:null}iniciarCostura(){let r=this.app.workspace.getActiveFile();if(!r||r.extension!=="md"){new Oe.Notice(L("onlyMarkdownOpen"));return}this.session={parentPath:r.path,parentName:r.basename,children:[]},this.activateView().then(()=>{var a;(a=this.getView())==null||a.renderMode()}),new Oe.Notice(L("sewStarted")(r.basename))}iniciarCosturaDesde(r){if(!r||r.extension!=="md"){new Oe.Notice(L("onlyMarkdownFrom"));return}if(this.session){new Oe.Notice(L("sessionActive"));return}this.session={parentPath:r.path,parentName:r.basename,children:[]},this.activateView().then(()=>{var a;(a=this.getView())==null||a.renderMode()}),new Oe.Notice(L("sewStarted")(r.basename))}coserA(){var a;let bm=this.bookmark;if(bm){let bmFile=this.app.vault.getAbstractFileByPath(bm.path);if(!(bmFile instanceof Oe.TFile)){new Oe.Notice(L("bookmarkNotFound"));return}let r2=this.app.workspace.getActiveFile();if(!r2||r2.extension!=="md"){new Oe.Notice(L("openMarkdownToSew"));return}if(r2.path===bmFile.path){new Oe.Notice(L("activeIsBookmark"));return}new Vq(this.app,(BLG_LANG==="en"?('Sew? "'+bm.name+'" will be the parent of "'+r2.basename+'".'):('\u00bfDesea realizar costura? "'+bm.name+'" sera padre de "'+r2.basename+'".')),()=>this.coserInmediata(bmFile,r2)).open();return}if(!this.session){new Oe.Notice(L("noActiveSessions"));return}let r=this.app.workspace.getActiveFile();if(!r||r.extension!=="md"){new Oe.Notice(L("openMarkdownToSew"));return}if(r.path===this.session.parentPath){new Oe.Notice(L("cannotSewParentSelf"));return}if(this.session.children.some(n=>n.path===r.path)){new Oe.Notice(L("alreadySewn"));return}this.session.children.push({path:r.path,name:r.basename}),(a=this.getView())==null||a.updateSewingLive(),new Oe.Notice((BLG_LANG==="en"?('Sewn "'+r.basename+'".'):('Cosida "'+r.basename+'".')))}async coserInmediata(r,a,skipRefresh){var i;await this.app.fileManager.processFrontMatter(r,s=>{let o=Array.isArray(s.sewing)?s.sewing.slice():s.sewing?[s.sewing]:[],u=new Set(o.map(l=>String(l)));u.add(`[[${a.basename}]]`),s.sewing=Array.from(u)});let n=`${Qf(r.basename)}/sewing/${Qf(a.basename)}`;await this.app.fileManager.processFrontMatter(a,s=>{let o=Array.isArray(s.tags)?s.tags.slice():s.tags?[s.tags]:[];o.includes(n)||o.push(n),s.tags=o});if(!skipRefresh){new Oe.Notice(L("sewDone")(r.basename,a.basename)),(i=this.getView())==null||i.refreshLocal(!0)}}async realizarCosturas(){var i;if(!this.session){new Oe.Notice(L("noActiveSessions"));return}let r=this.session;if(r.children.length===0){new Oe.Notice(L("noChildrenToSew"));return}let a=this.app.vault.getAbstractFileByPath(r.parentPath);if(!(a instanceof Oe.TFile)){new Oe.Notice(L("parentNotFound")),this.cancelarCostura();return}await this.app.fileManager.processFrontMatter(a,s=>{let o=Array.isArray(s.sewing)?s.sewing.slice():s.sewing?[s.sewing]:[],u=new Set(o.map(l=>String(l)));for(let l of r.children)u.add(`[[${l.name}]]`);s.sewing=Array.from(u)});let n=Qf(r.parentName);let _B=5;for(let _i=0;_i<r.children.length;_i+=_B){let _batch=r.children.slice(_i,_i+_B);await Promise.all(_batch.map(async s=>{let o=this.app.vault.getAbstractFileByPath(s.path);if(!(o instanceof Oe.TFile))return;let u=Qf(s.name),l=`${n}/sewing/${u}`;await this.app.fileManager.processFrontMatter(o,v=>{let f=Array.isArray(v.tags)?v.tags.slice():v.tags?[v.tags]:[];f.includes(l)||f.push(l),v.tags=f})}))}new Oe.Notice(L("sewsApplied")(r.children.length)),this.session=null;let vv=this.getView();vv&&(vv._noRf=!1,vv.currentPath=null,vv._lastSig=null,setTimeout(()=>vv.renderMode(),0))}cancelarCostura(){this.session=null,new Oe.Notice(L("sewCancelled"));let v=this.getView();v&&(v._noRf=!1,v.currentPath=null,v._lastSig=null,setTimeout(()=>v.renderMode(),0))}copyAgentPrompt(){let st=this.settings||{},port=st.mcpPort||27125,token=st.mcpToken;if(!token){new Oe.Notice(L("aiNotConfigured"));return}let prompt=L("agentPromptText").replace("{{port}}",port).replace("{{token}}",token);let ok=!1;try{let el=require("electron");if(el&&el.clipboard){el.clipboard.writeText(prompt);ok=!0}}catch(_){}if(!ok){try{if(typeof navigator!=="undefined"&&navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(prompt);ok=!0}}catch(_){}}if(!ok){let m=new Oe.Modal(this.app);m.titleEl.setText((BLG_LANG==="en"?"Copy this prompt manually":"Copia este prompt manualmente"));let c=m.contentEl;c.createEl("p",{text:(BLG_LANG==="en"?"Select the text below and press Ctrl+C.":"Selecciona el texto y presiona Ctrl+C.")});let ta=c.createEl("textarea");ta.value=prompt;ta.style.cssText="width:100%;height:240px;font-family:monospace;font-size:12px";ta.readOnly=!0;let b=c.createEl("button",{text:"OK",cls:"mod-cta"});b.style.cssText="margin-top:8px";b.onclick=()=>m.close();m.open()}else{new Oe.Notice((BLG_LANG==="en"?"Agent prompt copied to clipboard.":"Prompt de agente copiado al portapapeles."))}}async loadSettings(){this.settings=Object.assign({},Jf,await this.loadData()),blgSetLang(this.settings.uiLang||"es"),this.settings.iconColor||(this.settings.iconColor=this.settings.textColor),this.settings.glowColor||(this.settings.glowColor=this.settings.linkColor),this.settings.gen1Color||(this.settings.gen1Color=this.settings.childColor),this.settings.gen2Color||(this.settings.gen2Color=this.settings.childColor),this.settings.g1Curve==null&&(this.settings.g1Curve=0),this.settings.g2Curve==null&&(this.settings.g2Curve=0),this.settings.tagSelBg||(this.settings.tagSelBg="#ffd633"),this.settings.tagSelText||(this.settings.tagSelText="#1a1a1a")}async saveSettings(){var r;await this.saveData(this.settings),this._buildAiClient&&this._buildAiClient(),(r=this.getView())==null||r.applyLiveStyle(),this._tagApplyColors&&this._tagApplyColors()}},So=class extends Oe.PluginSettingTab{constructor(e,r){super(e,r),this.plugin=r}display(){let{containerEl:_c}=this;_c.empty();_c.createEl("h2",{text:L("h2Title")});let _nav=_c.createDiv({cls:"blg-settings-tabs"});let _panels=_c.createDiv({cls:"blg-settings-panels"});let _cats=[{k:"general",t:BLG_LANG==="en"?"General":"General"},{k:"colors",t:BLG_LANG==="en"?"Colors":"Colores"},{k:"tag",t:BLG_LANG==="en"?"Tag View":"Vista Tag"},{k:"tooltip",t:BLG_LANG==="en"?"Tooltip":"Tooltip"},{k:"fx",t:BLG_LANG==="en"?"Visual FX":"Efectos"},{k:"ai",t:BLG_LANG==="en"?"AI":"IA"}];let _pan={};for(let _i=0;_i<_cats.length;_i++){let _k=_cats[_i].k,_b=_nav.createEl("button",{cls:"blg-settings-tab",text:_cats[_i].t}),_p=_panels.createDiv({cls:"blg-settings-panel"});_b.addEventListener("click",()=>{for(let _j=0;_j<_cats.length;_j++){_pan[_cats[_j].k].p.removeClass("active");_pan[_cats[_j].k].b.removeClass("active");}_p.addClass("active");_b.addClass("active");this.plugin.settings.lastSettingsTab=_k;this.plugin.saveSettings();});_pan[_k]={p:_p,b:_b};}let e;let r=(a,n,i)=>{new Oe.Setting(e).setName(a).setDesc(n).addColorPicker(s=>s.setValue(this.plugin.settings[i]).onChange(async o=>{this.plugin.settings[i]=o,await this.plugin.saveSettings()}))};e=_pan["general"].p;new Oe.Setting(e).setName(L("setLangName")).setDesc(L("setLangDesc")).addDropdown(dd=>{dd.addOption("en","English");dd.addOption("es","Español");dd.setValue(this.plugin.settings.uiLang||"es").onChange(async v=>{this.plugin.settings.uiLang=v;blgSetLang(v);await this.plugin.saveSettings();var _v=this.plugin.getView&&this.plugin.getView();_v&&_v.renderMode&&_v.renderMode();this.display()})});new Oe.Setting(e).setName(L("n_maxNodes")).setDesc(L("d_maxNodes")).addSlider(a=>a.setLimits(10,200,5).setValue(this.plugin.settings.maxNodes).setDynamicTooltip().onChange(async n=>{this.plugin.settings.maxNodes=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_folders")).setDesc(L("d_folders")).addText(a=>a.setValue((this.plugin.settings.excludedFolders||[]).join(", ")).onChange(async n=>{this.plugin.settings.excludedFolders=n.split(",").map(p=>p.trim()).filter(p=>p),await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_reset")).setDesc(L("d_reset")).addButton(a=>a.setButtonText(L("btnReset")).setWarning().onClick(async()=>{this.plugin.settings=Object.assign({},Jf),await this.plugin.saveSettings(),this.display()}));new Oe.Setting(e).setName((BLG_LANG==="en"?"MCP: copy agent prompt":"MCP: copiar prompt de agente")).setDesc((BLG_LANG==="en"?"Copies a ready-to-paste prompt with your real MCP token to the clipboard.":"Copia al portapapeles un prompt listo para pegar con tu token MCP real.")).addButton(a=>a.setButtonText((BLG_LANG==="en"?"Copy prompt":"Copiar prompt")).setCta().onClick(()=>this.plugin.copyAgentPrompt()));e=_pan["colors"].p;r(L("n_bg"),L("d_bg"),"bgColor"),r(L("n_parent"),L("d_parent"),"parentColor"),r(L("n_gen1"),L("d_gen1"),"gen1Color"),r(L("n_gen2"),L("d_gen2"),"gen2Color"),r(L("n_link"),L("d_link"),"linkColor"),r(L("n_glow"),L("d_glow"),"glowColor"),r(L("n_text"),L("d_text"),"textColor");new Oe.Setting(e).setName(L("n_iconColor")).setDesc(L("d_iconColor")).addColorPicker(s=>s.setValue(this.plugin.settings.iconColor||this.plugin.settings.textColor||"#dddddd").onChange(async o=>{this.plugin.settings.iconColor=o,await this.plugin.saveSettings();var _v=this.plugin.getView&&this.plugin.getView();if(_v){_v._iconCache=new Map();if(_v.plugin.tagView&&_v.renderTagGraph){_v.renderTagGraph()}else if(_v.plugin.session&&_v.updateSewingLive){_v.updateSewingLive()}else if(_v.renderLocalActive){_v.renderLocalActive()}}}));e=_pan["tag"].p;r(L("n_tagSelBg"),L("d_tagSelBg"),"tagSelBg"),r(L("n_tagSelText"),L("d_tagSelText"),"tagSelText"),r(L("n_tagNew"),L("d_tagNew"),"tagNodeNew"),r(L("n_tagOld"),L("d_tagOld"),"tagNodeOld"),r(L("n_tagSelCol"),L("d_tagSelCol"),"tagSelColor");new Oe.Setting(e).setName(L("n_tagFloor")).setDesc(L("d_tagFloor")).addSlider(function(a){return a.setLimits(0,1,.05).setValue(this.plugin.settings.tagAgeFloor!=null?this.plugin.settings.tagAgeFloor:.35).setDynamicTooltip().onChange(async function(n){this.plugin.settings.tagAgeFloor=n;await this.plugin.saveSettings()}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_tagPulse")).setDesc(L("d_tagPulse")).addToggle(function(t){return t.setValue(this.plugin.settings.tagPulse!==false).onChange(async function(v){this.plugin.settings.tagPulse=v;await this.plugin.saveSettings();var _v=this.plugin.getView&&this.plugin.getView();_v&&this.plugin.tagView&&_v.renderTagGraph&&_v.renderTagGraph()}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_tagSingleColor")).setDesc(L("d_tagSingleColor")).addToggle(function(t){return t.setValue(this.plugin.settings.tagSingleColor===true).onChange(async function(v){this.plugin.settings.tagSingleColor=v;await this.plugin.saveSettings();var _v=this.plugin.getView&&this.plugin.getView();_v&&this.plugin.tagView&&_v.renderTagGraph&&_v.renderTagGraph()}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_tagNodeSingleColor")).setDesc(L("d_tagNodeSingleColor")).addColorPicker(function(t){return t.setValue(this.plugin.settings.tagNodeSingleColor||"#4aa8ff").onChange(async function(v){this.plugin.settings.tagNodeSingleColor=v;await this.plugin.saveSettings();var _v=this.plugin.getView&&this.plugin.getView();_v&&this.plugin.tagView&&_v.renderTagGraph&&_v.renderTagGraph()}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_tagPulseSpeed")).setDesc(L("d_tagPulseSpeed")).addSlider(function(t){return t.setLimits(400,8000,100).setValue(this.plugin.settings.tagPulseSpeed||2200).setDynamicTooltip().onChange(async function(v){this.plugin.settings.tagPulseSpeed=v;await this.plugin.saveSettings()}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_tagPulseOpacity")).setDesc(L("d_tagPulseOpacity")).addSlider(function(t){return t.setLimits(0,1,0.05).setValue(this.plugin.settings.tagPulseOpacity!=null?this.plugin.settings.tagPulseOpacity:0.35).setDynamicTooltip().onChange(async function(v){this.plugin.settings.tagPulseOpacity=v;await this.plugin.saveSettings()}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_tagPulseGlow")).setDesc(L("d_tagPulseGlow")).addSlider(function(t){return t.setLimits(0,1,0.05).setValue(this.plugin.settings.tagPulseGlow!=null?this.plugin.settings.tagPulseGlow:0.40).setDynamicTooltip().onChange(async function(v){this.plugin.settings.tagPulseGlow=v;await this.plugin.saveSettings()}.bind(this))}.bind(this));e=_pan["tooltip"].p;new Oe.Setting(e).setName(L("n_ttProps")).setDesc(L("d_ttProps")).addTextArea(a=>{a.setPlaceholder(L("ph_ttProps")).setValue((this.plugin.settings.tooltipProps||[]).join("\n")).onChange(async n=>{this.plugin.settings.tooltipProps=n.split("\n").map(p=>p.trim()).filter(p=>p),await this.plugin.saveSettings()}),a.inputEl.rows=4});r(L("n_ttBg"),L("d_ttBg"),"tooltipBg"),r(L("n_ttText"),L("d_ttText"),"tooltipText");new Oe.Setting(e).setName(L("n_ttOpac")).setDesc(L("d_ttOpac")).addSlider(a=>a.setLimits(0,1,0.05).setValue(this.plugin.settings.tooltipBgOpacity!=null?this.plugin.settings.tooltipBgOpacity:1).setDynamicTooltip().onChange(async n=>{this.plugin.settings.tooltipBgOpacity=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_ttAll")).setDesc(L("d_ttAll")).addToggle(a=>a.setValue(this.plugin.settings.tooltipAllNodes!==!1).onChange(async n=>{this.plugin.settings.tooltipAllNodes=n,await this.plugin.saveSettings()}));e=_pan["fx"].p;new Oe.Setting(e).setName(L("n_brillo")).setDesc(L("d_brillo")).addSlider(a=>a.setLimits(0,40,1).setValue(this.plugin.settings.glow).setDynamicTooltip().onChange(async n=>{this.plugin.settings.glow=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_opac")).setDesc(L("d_opac")).addSlider(a=>a.setLimits(0,1,.05).setValue(this.plugin.settings.opacity).setDynamicTooltip().onChange(async n=>{this.plugin.settings.opacity=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_glowOpac")).setDesc(L("d_glowOpac")).addSlider(a=>a.setLimits(0,1,.05).setValue(this.plugin.settings.glowOpacity!=null?this.plugin.settings.glowOpacity:0.6).setDynamicTooltip().onChange(async n=>{this.plugin.settings.glowOpacity=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_g1c")).setDesc(L("d_g1c")).addSlider(a=>a.setLimits(0,120,5).setValue(this.plugin.settings.g1Curve||0).setDynamicTooltip().onChange(async n=>{this.plugin.settings.g1Curve=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_g2c")).setDesc(L("d_g2c")).addSlider(a=>a.setLimits(0,120,5).setValue(this.plugin.settings.g2Curve||0).setDynamicTooltip().onChange(async n=>{this.plugin.settings.g2Curve=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_localPulse")).setDesc(L("d_localPulse")).addToggle(function(t){return t.setValue(this.plugin.settings.localPulse!==false).onChange(async function(v){this.plugin.settings.localPulse=v;await this.plugin.saveSettings();var _v=this.plugin.getView&&this.plugin.getView();if(_v&&!_v.plugin.tagView&&!_v.plugin.session){_v._stopPulse&&_v._stopPulse();if(v){_v._pulseT&&clearTimeout(_v._pulseT);_v._pulseT=setTimeout(function(){_v.cy&&_v._startLocalPulse&&_v._startLocalPulse(_v.plugin.settings)},100)}}}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_localPulseSpeed")).setDesc(L("d_localPulseSpeed")).addSlider(function(t){return t.setLimits(400,6000,100).setValue(this.plugin.settings.localPulseSpeed||1800).setDynamicTooltip().onChange(async function(v){this.plugin.settings.localPulseSpeed=v;await this.plugin.saveSettings()}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_localPulseSize")).setDesc(L("d_localPulseSize")).addSlider(function(t){return t.setLimits(1,2,0.05).setValue(this.plugin.settings.localPulseSize!=null?this.plugin.settings.localPulseSize:1.15).setDynamicTooltip().onChange(async function(v){this.plugin.settings.localPulseSize=v;await this.plugin.saveSettings()}.bind(this))}.bind(this));r(L("n_hover"),L("d_hover"),"hoverColor");r(L("n_laserColor"),L("d_laserColor"),"laserColor");new Oe.Setting(e).setName(L("n_laserSpeed")).setDesc(L("d_laserSpeed")).addSlider(a=>a.setLimits(50,1500,25).setValue(this.plugin.settings.laserSpeed||300).setDynamicTooltip().onChange(async n=>{this.plugin.settings.laserSpeed=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_laserStr")).setDesc(L("d_laserStr")).addSlider(a=>a.setLimits(0,40,1).setValue(this.plugin.settings.laserStrength||14).setDynamicTooltip().onChange(async n=>{this.plugin.settings.laserStrength=n,await this.plugin.saveSettings()}));r(L("n_titleBg"),L("d_titleBg"),"titleBg"),r(L("n_titleText"),L("d_titleText"),"titleText");e=_pan["ai"].p;e.createEl("h3",{text:(BLG_LANG==="en"?"AI (optional)":"IA (opcional)")});new Oe.Setting(e).setName(L("n_provider")).setDesc(L("d_provider")).addDropdown(a=>{for(let k of Object.keys(AI_PROVIDERS))a.addOption(k,AI_PROVIDERS[k].label);a.setValue(this.plugin.settings.aiProvider||"openrouter").onChange(async n=>{this.plugin.settings.aiProvider=n,await this.plugin.saveSettings(),this.display()})});new Oe.Setting(e).setName(L("n_apiKey")).setDesc(L("d_apiKey")).addText(a=>{a.inputEl.type="password",a.setValue(this.plugin.settings.aiApiKey||"").onChange(async n=>{this.plugin.settings.aiApiKey=n.trim(),await this.plugin.saveSettings()})});new Oe.Setting(e).setName(L("n_model")).setDesc(L("d_model")).addText(a=>{let p=AI_PROVIDERS[this.plugin.settings.aiProvider];a.setPlaceholder(p?p.defaultModel:"").setValue(this.plugin.settings.aiModel||"").onChange(async n=>{this.plugin.settings.aiModel=n.trim(),await this.plugin.saveSettings()})});new Oe.Setting(e).setName(L("n_maxTokens")).setDesc(L("d_maxTokens")).addSlider(a=>a.setLimits(50,500,25).setValue(this.plugin.settings.aiMaxTokens||200).setDynamicTooltip().onChange(async n=>{this.plugin.settings.aiMaxTokens=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_prompt")).setDesc(L("d_prompt")).addTextArea(a=>{a.setPlaceholder(L("summaryPrompt")),a.setValue(this.plugin.settings.aiPrompt||"").onChange(async n=>{this.plugin.settings.aiPrompt=n,await this.plugin.saveSettings()}),a.inputEl.rows=4});new Oe.Setting(e).setName(L("n_persist")).setDesc(L("d_persist")).addToggle(a=>a.setValue(!!this.plugin.settings.aiPersistCache).onChange(async n=>{this.plugin.settings.aiPersistCache=n,await this.plugin.saveSettings(),n&&await this.plugin.aiCache.load()}));new Oe.Setting(e).setName(L("n_cacheSec")).setDesc(L("d_cacheSec")).addButton(a=>a.setButtonText(L("btnClearCache")).onClick(async()=>{await this.plugin.aiCache.clear(),new Oe.Notice(L("aiCacheCleared"))})).addButton(a=>a.setButtonText(L("btnTestKey")).setCta().onClick(async()=>{new Oe.Notice(L("testing"));try{await this.plugin.aiClient.complete(BLG_LANG==="en"?"Reply only: ok":"Responde solo: ok");new Oe.Notice(L("testOk"))}catch(err){new Oe.Notice(L("errPrefix")+(err&&err.message?err.message:err))}}));let _last=this.plugin.settings.lastSettingsTab||"general";if(!_pan[_last])_last="general";_pan[_last].p.addClass("active");_pan[_last].b.addClass("active");}};
+renderSewing(){if(!this.cy||!this.plugin.session)return;let r=this.plugin.session;this.titleEl.setText(L("sewTitleFrom")(r.parentName)),this.toolbarEl.empty();let a=this.toolbarEl.createEl("button",{text:L("sewToolbar"),cls:"mod-cta"});a.onclick=()=>this.plugin.realizarCosturas();let n=this.toolbarEl.createEl("button",{text:L("cancel")});n.onclick=()=>this.plugin.cancelarCostura();let st=this.plugin.settings,_pbg=null,_pf=this.app.vault.getAbstractFileByPath(r.parentPath);if(_pf instanceof Oe.TFile){let _pe=(this.app.metadataCache.getFileCache(_pf)||{}).frontmatter,_pc=_pe==null?void 0:_pe.icon;typeof _pc=="string"&&(_pbg=_blgFmIcon(_pc,st.iconColor));if(!_pbg)_pbg=_blgResolveIcon(_pf,st,this.app.metadataCache)}let i=[];i.push({data:{id:r.parentPath,label:r.parentName,bg:_pbg},classes:_pbg?"central has-icon":"central"});for(let s of r.children)i.push({data:{id:s.path,label:s.name},classes:"gen1"}),i.push({data:{id:`${r.parentPath}\0${s.path}`,source:r.parentPath,target:s.path},classes:"dir g1"});this.cy.elements().remove(),this.cy.add(i),this.cy.layout({name:"concentric",minNodeSpacing:40,concentric:s=>s.id()===r.parentPath?2:1,levelWidth:()=>1}).run(),this.cy.fit(void 0,30),this._animIn()}_animIn(dur){if(!this.cy)return;var cy=this.cy,d=dur||520,cx=0,cy0=0,n=cy.nodes(),k=n.length||1;n.forEach(function(no){var p=no.position();cx+=p.x;cy0+=p.y});cx/=k;cy0/=k;cy.batch(function(){n.forEach(function(no){var p=no.position(),ox=p.x,oy=p.y;no.style("opacity",0);no.position({x:cx+(ox-cx)*.12,y:cy0+(oy-cy0)*.12});var dl=Math.random()*90;no.delay(dl).animate({position:{x:ox,y:oy},style:{opacity:1}},{duration:d,easing:"cubic-bezier(0.34, 1.56, 0.64, 1)"})});cy.edges().forEach(function(ed){ed.style("opacity",0);ed.delay(90).animate({style:{opacity:1}},{duration:d*.7,easing:"ease-out"})})})}_animInTag(dur){if(!this.cy)return;var cy=this.cy,d=dur||520,n=cy.nodes();if(!n||!n.length)return;var cx=0,cy0=0,k=n.length;n.forEach(function(no){var p=no.position();cx+=p.x;cy0+=p.y});cx/=k;cy0/=k;var maxR=1;n.forEach(function(no){var p=no.position();var r=Math.hypot(p.x-cx,p.y-cy0);if(r>maxR)maxR=r});cy.batch(function(){n.forEach(function(no){var tgt=no.data("agebase");if(tgt==null)tgt=1;var bw=no.data("basew");if(bw==null)bw=26;var p=no.position(),r=Math.hypot(p.x-cx,p.y-cy0);var dl=180+(r/maxR)*260;no.style("opacity",0);no.style("width",bw*0.82);no.style("height",bw*0.82);no.delay(dl).animate({style:{opacity:tgt,width:bw,height:bw}},{duration:d,easing:"ease-out"})});cy.edges().forEach(function(ed){ed.style("opacity",0);ed.delay(360).animate({style:{opacity:1}},{duration:d*.8,easing:"ease-out"})})})}updateSewingLive(){this.plugin.session&&this.renderSewing()}applyLiveStyle(){this.cy&&(this.cy.style(this.buildStyle()),this.graphEl.style.backgroundColor=this.plugin.settings.bgColor)}buildStyle(){let r=this.plugin.settings;this.titleEl&&(this.titleEl.style.background=r.titleBg||"",this.titleEl.style.color=r.titleText||"");return this.graphEl.style.backgroundColor=r.bgColor,[{selector:"node",style:{label:"data(label)",color:r.textColor,"text-valign":"bottom","text-margin-y":4,"font-size":10,"background-color":r.childColor,width:28,height:28,"underlay-color":r.glowColor||r.linkColor,"underlay-padding":r.glow,"underlay-opacity":r.glowOpacity!=null?r.glowOpacity:Math.min(1,r.opacity*.6),"underlay-shape":"ellipse","transition-property":"width height font-size underlay-padding underlay-opacity","transition-duration":"0.3s","transition-timing-function":"ease-out"}},{selector:"node.central",style:{"background-color":r.parentColor,width:42,height:42,"font-size":12}},{selector:"node.gen1",style:{"background-color":r.gen1Color||r.childColor}},{selector:"node.gen2",style:{opacity:.7,"background-color":r.gen2Color||r.childColor}},{selector:"node.has-icon",style:{"background-image":"data(bg)","background-fit":"contain","background-clip":"node","background-opacity":0}},{selector:"edge.dir",style:{width:1.5,"line-color":r.linkColor,"target-arrow-color":r.linkColor,"target-arrow-shape":"triangle","curve-style":"bezier","arrow-scale":1.3,opacity:r.opacity}},{selector:"edge.bidir",style:{width:2,"line-color":r.linkColor,"source-arrow-color":r.linkColor,"target-arrow-color":r.linkColor,"source-arrow-shape":"triangle","target-arrow-shape":"triangle","curve-style":"bezier","arrow-scale":1.3,opacity:r.opacity}},{selector:"edge.sewing",style:{"line-style":"dashed"}},{selector:"edge.g1",style:r.g1Curve>0?{"curve-style":"unbundled-bezier","control-point-distances":[r.g1Curve],"control-point-weights":[.5]}:{"curve-style":"straight"}},{selector:"edge.g2",style:r.g2Curve>0?{"curve-style":"unbundled-bezier","control-point-distances":[r.g2Curve],"control-point-weights":[.5]}:{"curve-style":"straight"}},{selector:"node.sel",style:{"border-width":3,"border-color":r.parentColor}},{selector:"node.tagnode",style:{width:26,height:26,"underlay-color":r.glowColor||r.linkColor,"underlay-padding":0,"underlay-opacity":0,"underlay-shape":"ellipse","transition-property":"underlay-padding underlay-opacity width height","transition-duration":"0.25s"}},{selector:"node.tagnode.sel",style:{"border-width":3,"border-color":r.tagSelColor||r.parentColor,"border-opacity":1}},{selector:"edge.tagedge",style:{width:1.5,"line-color":r.linkColor,"line-style":"solid","target-arrow-color":r.linkColor,"target-arrow-shape":"triangle","curve-style":"bezier","arrow-scale":1.1,opacity:(r.opacity||1)*.75}},{selector:"edge.tagedge.sewing",style:{"line-style":"dashed",width:2,"line-color":r.parentColor||r.linkColor,"target-arrow-color":r.parentColor||r.linkColor,opacity:(r.opacity||1)*.9}},{selector:".dim",style:{opacity:.12,"transition-property":"opacity","transition-duration":"0.15s"}},{selector:"node.tagsearch-dim",style:{visibility:"hidden",events:"no","text-events":"no"}},{selector:"edge.tagsearch-dim",style:{visibility:"hidden",events:"no"}},{selector:"node.tagsearch-hit",style:{opacity:1,width:34,height:34,"underlay-color":r.hoverColor||r.parentColor,"underlay-padding":Math.max(10,(r.glow||8)*1.8),"underlay-opacity":.85}},{selector:"node.hl",style:{"underlay-color":r.hoverColor||r.parentColor,"underlay-padding":Math.max(6,r.glow),"underlay-opacity":.85,"underlay-shape":"ellipse"}},{selector:"node.mag",style:{width:48,height:48,"font-size":14}},{selector:"node.central.mag",style:{width:62,height:62,"font-size":16}},{selector:"edge.ehl",style:{width:3,"line-color":r.hoverColor||r.parentColor,"target-arrow-color":r.hoverColor||r.parentColor,"source-arrow-color":r.hoverColor||r.parentColor,opacity:1,"transition-property":"width opacity line-color","transition-duration":"0.2s"}}]}},Jn=class extends Oe.Plugin{constructor(){super(...arguments);this.session=null;this.bookmark=null;this._lastMdFile=null;this.tagView=null}_trackMd(){let f=this.app.workspace.getActiveFile();f&&f instanceof Oe.TFile&&f.extension==="md"&&(this._lastMdFile=f)}_blgAutoRender(){if(this.tagView||this.session)return;let v=this.getView();if(!v||!v.cy||!v.refreshLocal)return;let f=this.app.workspace.getActiveFile();if(f&&f instanceof Oe.TFile&&f.extension==="md"){try{let empty=v.cy.nodes().length===0;let changed=v.currentPath!==f.path;if(empty||changed){v._noRf=false;v._lastSig=null;v.refreshLocal(!0)}}catch(e){}}}_buildAiClient(){this.aiClient=new AIClient({provider:this.settings.aiProvider,apiKey:this.settings.aiApiKey,model:this.settings.aiModel||void 0,maxTokens:this.settings.aiMaxTokens||200})}async onload(){document.body.querySelectorAll(".coser-tooltip").forEach(e=>e.remove()),await this.loadSettings(),this.aiCache=new AICache(this,200),this.settings.aiPersistCache&&await this.aiCache.load(),this._buildAiClient(),this.registerView(ua,r=>new To(r,this)),this._trackMd(),this.registerEvent(this.app.workspace.on("file-open",()=>this._trackMd())),this.registerEvent(this.app.workspace.on("active-leaf-change",()=>{this._trackMd()})),this.addRibbonIcon("git-fork",L("ribbonOpen"),()=>{this.activateView()}),this.addCommand({id:"abrir-vista-local",name:L("ribbonOpen"),callback:()=>this.activateView()}),this.addCommand({id:"sew-from-this-note",name:L("cmdSewName"),callback:()=>this.iniciarCostura()}),this.addCommand({id:"coser-a",name:(BLG_LANG==="en"?"Sew to active note":"Coser a"),callback:()=>this.coserA()}),this.addCommand({id:"filter-by-tag-view",name:L("cmdTagViewName"),callback:()=>this.abrirVistaTag()}),this.addCommand({id:"copiar-prompt-agente",name:(BLG_LANG==="en"?"Copy agent MCP prompt":"Copiar prompt de agente MCP"),callback:()=>this.copyAgentPrompt()}),this.addSettingTab(new So(this.app,this)),this._tagHookInit()}onunload(){this.settings&&this.settings.aiPersistCache&&this.aiCache&&this.aiCache.save(),this._tagHookTeardown()}_tagHookInit(){this._tagSel=[],this._tagElByTag=new Map,this._tagCleanups=[],this._tagBtn=null,this._tagSelStyle=e=>{let s=this.settings;e.style.backgroundColor=s.tagSelBg,e.style.borderRadius="4px",e.style.color=s.tagSelText,e.querySelectorAll("*").forEach(c=>c.style.color=s.tagSelText)},this._tagDeselStyle=e=>{e.style.backgroundColor="",e.style.borderRadius="",e.style.color="",e.querySelectorAll("*").forEach(c=>c.style.color="")},this._tagResetSel=()=>{let v=this.getView();for(let t of this._tagSel){let e=this._tagElByTag.get(t);e&&this._tagDeselStyle(e);v&&v._removeSelSource&&v._removeSelSource("tag:"+t)}this._tagSel.length=0,this._tagElByTag.clear(),this._tagUpdateBtn()},this._tagUpdateBtn=()=>{let b=this._tagBtn;if(!b)return;let v=this.getView();let n=v&&v._sel?v._sel.length:0;let bm=this.bookmark;let distinct=v&&v._sel?v._sel.filter(s=>!bm||s.path!==bm.path).length:0;let show=(distinct>=2)||(bm&&distinct>=1);if(show){b.style.display="block";b.textContent="\u{1FAA1} "+(BLG_LANG==="en"?("Sew "+n+" Note"+(n>1?"s":"")):("Coser "+n+" Nota"+(n>1?"s":"")))}else b.style.display="none"},this._tagNotesFor=tag=>{let wanted=tag.replace(/^#/,"");return this.app.vault.getMarkdownFiles().filter(f=>{let c=this.app.metadataCache.getFileCache(f),tg=[...(c&&c.tags?c.tags.map(x=>x.tag.replace(/^#/,"")):[]),...(c&&c.frontmatter&&Array.isArray(c.frontmatter.tags)?c.frontmatter.tags:c&&c.frontmatter&&c.frontmatter.tags?[c.frontmatter.tags]:[])];return tg.includes(wanted)})},this._tagCoser=async()=>{let v=this.getView();let a=v&&v._sel?v._sel.slice():[];if(!a.length)return;if(this.session){let parentPath=this.session.parentPath,seen=new Set(this.session.children.map(c=>c.path)),added=0;for(let s of a){if(s.path===parentPath)continue;if(seen.has(s.path))continue;seen.add(s.path),this.session.children.push({path:s.path,name:s.name}),added++}v&&v.updateSewingLive&&v.updateSewingLive();new Oe.Notice((BLG_LANG==="en"?("Added to session: "+added+" children. Use \"Sewing\" to apply."):("A\u00f1adidos a la sesi\u00f3n: "+added+" hijos. Usa \"Realizar Costuras\" para aplicar.")));v&&v.clearSel&&v.clearSel();return}v&&v.relacionarSel&&v.relacionarSel()},this._tagBuildBtn=()=>{if(this._tagBtn)return;let b=document.createElement("button");b.textContent="\u{1FAA1} "+(BLG_LANG==="en"?"Sew Notes":"Coser Notas");let s=this.settings;Object.assign(b.style,{position:"fixed",bottom:"30px",right:"30px",zIndex:"9999",padding:"12px 20px",backgroundColor:s.tagSelBg,color:s.tagSelText,border:"none",borderRadius:"8px",fontWeight:"600",fontSize:"14px",cursor:"pointer",boxShadow:"0 4px 14px rgba(0,0,0,0.4)",display:"none",transition:"transform 0.1s"}),b.onmouseenter=()=>b.style.transform="scale(1.05)",b.onmouseleave=()=>b.style.transform="scale(1)",b.onclick=()=>this._tagCoser(),document.body.appendChild(b),this._tagBtn=b},this._tagAttachLeaves=()=>{for(let leaf of this.app.workspace.getLeavesOfType("tag")){let containerEl=leaf.view&&leaf.view.containerEl;if(!containerEl||containerEl.dataset.coserTagHook)continue;containerEl.dataset.coserTagHook="1";let handler=evt=>{if(!evt.shiftKey)return;let tagEl=evt.target.closest(".tag-pane-tag");if(!tagEl)return;if(evt.preventDefault(),evt.stopImmediatePropagation(),evt.stopPropagation(),evt.type!=="click")return;let tagText=tagEl.querySelector("[data-tag-value]");if(tagText=tagText?tagText.getAttribute("data-tag-value"):null,!tagText)return;let idx=this._tagSel.indexOf(tagText);if(idx!==-1){this._tagSel.splice(idx,1),this._tagDeselStyle(tagEl),this._tagElByTag.delete(tagText);let v=this.getView();v&&v._removeSelSource&&v._removeSelSource("tag:"+tagText)}else{this._tagSel.push(tagText),this._tagElByTag.set(tagText,tagEl),this._tagSelStyle(tagEl);let v=this.getView();if(v&&v._addSelNote){let notes=this._tagNotesFor(tagText);for(let nf of notes)v._addSelNote(nf,"tag:"+tagText);v._selChanged&&v._selChanged()}}this._tagUpdateBtn()};containerEl.addEventListener("mousedown",handler,{capture:!0}),containerEl.addEventListener("click",handler,{capture:!0}),this._tagCleanups.push(()=>{containerEl.removeEventListener("mousedown",handler,{capture:!0}),containerEl.removeEventListener("click",handler,{capture:!0}),delete containerEl.dataset.coserTagHook})}},this._tagBuildBtn(),this._tagAttachLeaves(),this.registerEvent(this.app.workspace.on("layout-change",()=>this._tagAttachLeaves())),this.registerEvent(this.app.workspace.on("active-leaf-change",()=>this._tagAttachLeaves()))}_tagHookTeardown(){this._tagCleanups&&this._tagCleanups.forEach(fn=>fn()),this._tagCleanups=[],this._tagBtn&&(this._tagBtn.remove(),this._tagBtn=null),this._tagSel&&(this._tagSel.length=0),this._tagElByTag&&this._tagElByTag.clear()}_tagApplyColors(){if(this._tagBtn){let s=this.settings;this._tagBtn.style.backgroundColor=s.tagSelBg,this._tagBtn.style.color=s.tagSelText}if(this._tagElByTag)for(let[,el]of this._tagElByTag)this._tagSelStyle(el)}_sewingTargets(file){let out=new Set;if(!(file instanceof Oe.TFile))return out;let fm=this.app.metadataCache.getFileCache(file);fm=fm&&fm.frontmatter;let sv=fm&&fm.sewing;if(sv==null)return out;let ls=Array.isArray(sv)?sv:[sv];for(let it of ls){if(typeof it!="string")continue;let mm=it.match(/\[\[([^\]|#]+)/),lt=(mm?mm[1]:it).trim();if(!lt)continue;let tf=this.app.metadataCache.getFirstLinkpathDest(lt,file.path);tf&&out.add(tf.path)}return out}_yaCosido(a,b){if(!(a instanceof Oe.TFile)||!(b instanceof Oe.TFile))return!1;return this._sewingTargets(a).has(b.path)||this._sewingTargets(b).has(a.path)}async activateView(){let{workspace:r}=this.app,a=r.getLeavesOfType(ua)[0];if(!a){let n=r.getRightLeaf(!1);if(!n)return;a=n,await a.setViewState({type:ua,active:!0})}r.revealLeaf(a)}async abrirVistaTag(){if(this.session){new Oe.Notice(L("sessionActive"));return}let self=this;new BlgTagPick(this.app,function(tag){self.tagView={tag:tag};self.activateView().then(function(){var v=self.getView();v&&v.renderMode&&v.renderMode()})}).open()}salirVistaTag(){this.tagView=null;let v=this.getView();v&&v.renderMode&&v.renderMode()}getView(){let r=this.app.workspace.getLeavesOfType(ua)[0];return r?r.view:null}iniciarCostura(){let r=this.app.workspace.getActiveFile();if(!r||r.extension!=="md"){new Oe.Notice(L("onlyMarkdownOpen"));return}this.session={parentPath:r.path,parentName:r.basename,children:[]},this.activateView().then(()=>{var a;(a=this.getView())==null||a.renderMode()}),new Oe.Notice(L("sewStarted")(r.basename))}iniciarCosturaDesde(r){if(!r||r.extension!=="md"){new Oe.Notice(L("onlyMarkdownFrom"));return}if(this.session){new Oe.Notice(L("sessionActive"));return}this.session={parentPath:r.path,parentName:r.basename,children:[]},this.activateView().then(()=>{var a;(a=this.getView())==null||a.renderMode()}),new Oe.Notice(L("sewStarted")(r.basename))}coserA(){var a;let bm=this.bookmark;if(bm){let bmFile=this.app.vault.getAbstractFileByPath(bm.path);if(!(bmFile instanceof Oe.TFile)){new Oe.Notice(L("bookmarkNotFound"));return}let r2=this.app.workspace.getActiveFile();if(!r2||r2.extension!=="md"){new Oe.Notice(L("openMarkdownToSew"));return}if(r2.path===bmFile.path){new Oe.Notice(L("activeIsBookmark"));return}new Vq(this.app,(BLG_LANG==="en"?('Sew? "'+bm.name+'" will be the parent of "'+r2.basename+'".'):('\u00bfDesea realizar costura? "'+bm.name+'" sera padre de "'+r2.basename+'".')),()=>this.coserInmediata(bmFile,r2)).open();return}if(!this.session){new Oe.Notice(L("noActiveSessions"));return}let r=this.app.workspace.getActiveFile();if(!r||r.extension!=="md"){new Oe.Notice(L("openMarkdownToSew"));return}if(r.path===this.session.parentPath){new Oe.Notice(L("cannotSewParentSelf"));return}if(this.session.children.some(n=>n.path===r.path)){new Oe.Notice(L("alreadySewn"));return}this.session.children.push({path:r.path,name:r.basename}),(a=this.getView())==null||a.updateSewingLive(),new Oe.Notice((BLG_LANG==="en"?('Sewn "'+r.basename+'".'):('Cosida "'+r.basename+'".')))}async coserInmediata(r,a,skipRefresh){var i;await this.app.fileManager.processFrontMatter(r,s=>{let o=Array.isArray(s.sewing)?s.sewing.slice():s.sewing?[s.sewing]:[],u=new Set(o.map(l=>String(l)));u.add(`[[${a.basename}]]`),s.sewing=Array.from(u)});let n=`${Qf(r.basename)}/sewing/${Qf(a.basename)}`;await this.app.fileManager.processFrontMatter(a,s=>{let o=Array.isArray(s.tags)?s.tags.slice():s.tags?[s.tags]:[];o.includes(n)||o.push(n),s.tags=o});if(!skipRefresh){new Oe.Notice(L("sewDone")(r.basename,a.basename)),(i=this.getView())==null||i._scheduleRefresh(!0)}}async realizarCosturas(){var i;if(!this.session){new Oe.Notice(L("noActiveSessions"));return}let r=this.session;if(r.children.length===0){new Oe.Notice(L("noChildrenToSew"));return}let a=this.app.vault.getAbstractFileByPath(r.parentPath);if(!(a instanceof Oe.TFile)){new Oe.Notice(L("parentNotFound")),this.cancelarCostura();return}await this.app.fileManager.processFrontMatter(a,s=>{let o=Array.isArray(s.sewing)?s.sewing.slice():s.sewing?[s.sewing]:[],u=new Set(o.map(l=>String(l)));for(let l of r.children)u.add(`[[${l.name}]]`);s.sewing=Array.from(u)});let n=Qf(r.parentName);let _B=5;for(let _i=0;_i<r.children.length;_i+=_B){let _batch=r.children.slice(_i,_i+_B);await Promise.all(_batch.map(async s=>{let o=this.app.vault.getAbstractFileByPath(s.path);if(!(o instanceof Oe.TFile))return;let u=Qf(s.name),l=`${n}/sewing/${u}`;await this.app.fileManager.processFrontMatter(o,v=>{let f=Array.isArray(v.tags)?v.tags.slice():v.tags?[v.tags]:[];f.includes(l)||f.push(l),v.tags=f})}))}new Oe.Notice(L("sewsApplied")(r.children.length)),this.session=null;let vv=this.getView();vv&&(vv._noRf=!1,vv.currentPath=null,vv._lastSig=null,setTimeout(()=>vv.renderMode(),0))}cancelarCostura(){this.session=null,new Oe.Notice(L("sewCancelled"));let v=this.getView();v&&(v._noRf=!1,v.currentPath=null,v._lastSig=null,setTimeout(()=>v.renderMode(),0))}copyAgentPrompt(){let st=this.settings||{},port=st.mcpPort||27125,token=st.mcpToken;if(!token){new Oe.Notice(L("aiNotConfigured"));return}let prompt=L("agentPromptText").replace("{{port}}",port).replace("{{token}}",token);let ok=!1;try{let el=require("electron");if(el&&el.clipboard){el.clipboard.writeText(prompt);ok=!0}}catch(_){}if(!ok){try{if(typeof navigator!=="undefined"&&navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(prompt);ok=!0}}catch(_){}}if(!ok){let m=new Oe.Modal(this.app);m.titleEl.setText((BLG_LANG==="en"?"Copy this prompt manually":"Copia este prompt manualmente"));let c=m.contentEl;c.createEl("p",{text:(BLG_LANG==="en"?"Select the text below and press Ctrl+C.":"Selecciona el texto y presiona Ctrl+C.")});let ta=c.createEl("textarea");ta.value=prompt;ta.style.cssText="width:100%;height:240px;font-family:monospace;font-size:12px";ta.readOnly=!0;let b=c.createEl("button",{text:"OK",cls:"mod-cta"});b.style.cssText="margin-top:8px";b.onclick=()=>m.close();m.open()}else{new Oe.Notice((BLG_LANG==="en"?"Agent prompt copied to clipboard.":"Prompt de agente copiado al portapapeles."))}}async loadSettings(){this.settings=Object.assign({},Jf,await this.loadData()),blgSetLang(this.settings.uiLang||"es"),this.settings.iconColor||(this.settings.iconColor=this.settings.textColor),this.settings.glowColor||(this.settings.glowColor=this.settings.linkColor),this.settings.gen1Color||(this.settings.gen1Color=this.settings.childColor),this.settings.gen2Color||(this.settings.gen2Color=this.settings.childColor),this.settings.g1Curve==null&&(this.settings.g1Curve=0),this.settings.g2Curve==null&&(this.settings.g2Curve=0),this.settings.tagSelBg||(this.settings.tagSelBg="#ffd633"),this.settings.tagSelText||(this.settings.tagSelText="#1a1a1a")}async saveSettings(){var r;await this.saveData(this.settings),this._buildAiClient&&this._buildAiClient(),(r=this.getView())==null||r.applyLiveStyle(),this._tagApplyColors&&this._tagApplyColors()}},So=class extends Oe.PluginSettingTab{constructor(e,r){super(e,r),this.plugin=r}display(){let{containerEl:_c}=this;_c.empty();_c.createEl("h2",{text:L("h2Title")});let _nav=_c.createDiv({cls:"blg-settings-tabs"});let _panels=_c.createDiv({cls:"blg-settings-panels"});let _cats=[{k:"general",t:BLG_LANG==="en"?"General":"General"},{k:"colors",t:BLG_LANG==="en"?"Colors":"Colores"},{k:"tag",t:BLG_LANG==="en"?"Tag View":"Vista Tag"},{k:"tooltip",t:BLG_LANG==="en"?"Tooltip":"Tooltip"},{k:"fx",t:BLG_LANG==="en"?"Visual FX":"Efectos"},{k:"ai",t:BLG_LANG==="en"?"AI":"IA"}];let _pan={};for(let _i=0;_i<_cats.length;_i++){let _k=_cats[_i].k,_b=_nav.createEl("button",{cls:"blg-settings-tab",text:_cats[_i].t}),_p=_panels.createDiv({cls:"blg-settings-panel"});_b.addEventListener("click",()=>{for(let _j=0;_j<_cats.length;_j++){_pan[_cats[_j].k].p.removeClass("active");_pan[_cats[_j].k].b.removeClass("active");}_p.addClass("active");_b.addClass("active");this.plugin.settings.lastSettingsTab=_k;this.plugin.saveSettings();});_pan[_k]={p:_p,b:_b};}let e;let r=(a,n,i)=>{new Oe.Setting(e).setName(a).setDesc(n).addColorPicker(s=>s.setValue(this.plugin.settings[i]).onChange(async o=>{this.plugin.settings[i]=o,await this.plugin.saveSettings()}))};e=_pan["general"].p;new Oe.Setting(e).setName(L("setLangName")).setDesc(L("setLangDesc")).addDropdown(dd=>{dd.addOption("en","English");dd.addOption("es","Español");dd.setValue(this.plugin.settings.uiLang||"es").onChange(async v=>{this.plugin.settings.uiLang=v;blgSetLang(v);await this.plugin.saveSettings();var _v=this.plugin.getView&&this.plugin.getView();_v&&_v.renderMode&&_v.renderMode();this.display()})});new Oe.Setting(e).setName(L("n_maxNodes")).setDesc(L("d_maxNodes")).addSlider(a=>a.setLimits(10,200,5).setValue(this.plugin.settings.maxNodes).setDynamicTooltip().onChange(async n=>{this.plugin.settings.maxNodes=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_folders")).setDesc(L("d_folders")).addText(a=>a.setValue((this.plugin.settings.excludedFolders||[]).join(", ")).onChange(async n=>{this.plugin.settings.excludedFolders=n.split(",").map(p=>p.trim()).filter(p=>p),await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_reset")).setDesc(L("d_reset")).addButton(a=>a.setButtonText(L("btnReset")).setWarning().onClick(async()=>{this.plugin.settings=Object.assign({},Jf),await this.plugin.saveSettings(),this.display()}));new Oe.Setting(e).setName((BLG_LANG==="en"?"MCP: copy agent prompt":"MCP: copiar prompt de agente")).setDesc((BLG_LANG==="en"?"Copies a ready-to-paste prompt with your real MCP token to the clipboard.":"Copia al portapapeles un prompt listo para pegar con tu token MCP real.")).addButton(a=>a.setButtonText((BLG_LANG==="en"?"Copy prompt":"Copiar prompt")).setCta().onClick(()=>this.plugin.copyAgentPrompt()));e=_pan["colors"].p;r(L("n_bg"),L("d_bg"),"bgColor"),r(L("n_parent"),L("d_parent"),"parentColor"),r(L("n_gen1"),L("d_gen1"),"gen1Color"),r(L("n_gen2"),L("d_gen2"),"gen2Color"),r(L("n_link"),L("d_link"),"linkColor"),r(L("n_glow"),L("d_glow"),"glowColor"),r(L("n_text"),L("d_text"),"textColor");new Oe.Setting(e).setName(L("n_iconColor")).setDesc(L("d_iconColor")).addColorPicker(s=>s.setValue(this.plugin.settings.iconColor||this.plugin.settings.textColor||"#dddddd").onChange(async o=>{this.plugin.settings.iconColor=o,await this.plugin.saveSettings();var _v=this.plugin.getView&&this.plugin.getView();if(_v){_v._iconCache=new Map();if(_v.plugin.tagView&&_v.renderTagGraph){_v.renderTagGraph()}else if(_v.plugin.session&&_v.updateSewingLive){_v.updateSewingLive()}else if(_v.renderLocalActive){_v.renderLocalActive()}}}));e=_pan["tag"].p;r(L("n_tagSelBg"),L("d_tagSelBg"),"tagSelBg"),r(L("n_tagSelText"),L("d_tagSelText"),"tagSelText"),r(L("n_tagNew"),L("d_tagNew"),"tagNodeNew"),r(L("n_tagOld"),L("d_tagOld"),"tagNodeOld"),r(L("n_tagSelCol"),L("d_tagSelCol"),"tagSelColor");new Oe.Setting(e).setName(L("n_tagFloor")).setDesc(L("d_tagFloor")).addSlider(function(a){return a.setLimits(0,1,.05).setValue(this.plugin.settings.tagAgeFloor!=null?this.plugin.settings.tagAgeFloor:.35).setDynamicTooltip().onChange(async function(n){this.plugin.settings.tagAgeFloor=n;await this.plugin.saveSettings()}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_tagPulse")).setDesc(L("d_tagPulse")).addToggle(function(t){return t.setValue(this.plugin.settings.tagPulse!==false).onChange(async function(v){this.plugin.settings.tagPulse=v;await this.plugin.saveSettings();var _v=this.plugin.getView&&this.plugin.getView();_v&&this.plugin.tagView&&_v.renderTagGraph&&_v.renderTagGraph()}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_tagSingleColor")).setDesc(L("d_tagSingleColor")).addToggle(function(t){return t.setValue(this.plugin.settings.tagSingleColor===true).onChange(async function(v){this.plugin.settings.tagSingleColor=v;await this.plugin.saveSettings();var _v=this.plugin.getView&&this.plugin.getView();_v&&this.plugin.tagView&&_v.renderTagGraph&&_v.renderTagGraph()}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_tagNodeSingleColor")).setDesc(L("d_tagNodeSingleColor")).addColorPicker(function(t){return t.setValue(this.plugin.settings.tagNodeSingleColor||"#4aa8ff").onChange(async function(v){this.plugin.settings.tagNodeSingleColor=v;await this.plugin.saveSettings();var _v=this.plugin.getView&&this.plugin.getView();_v&&this.plugin.tagView&&_v.renderTagGraph&&_v.renderTagGraph()}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_tagPulseSpeed")).setDesc(L("d_tagPulseSpeed")).addSlider(function(t){return t.setLimits(400,8000,100).setValue(this.plugin.settings.tagPulseSpeed||2200).setDynamicTooltip().onChange(async function(v){this.plugin.settings.tagPulseSpeed=v;await this.plugin.saveSettings()}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_tagPulseOpacity")).setDesc(L("d_tagPulseOpacity")).addSlider(function(t){return t.setLimits(0,1,0.05).setValue(this.plugin.settings.tagPulseOpacity!=null?this.plugin.settings.tagPulseOpacity:0.35).setDynamicTooltip().onChange(async function(v){this.plugin.settings.tagPulseOpacity=v;await this.plugin.saveSettings()}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_tagPulseGlow")).setDesc(L("d_tagPulseGlow")).addSlider(function(t){return t.setLimits(0,1,0.05).setValue(this.plugin.settings.tagPulseGlow!=null?this.plugin.settings.tagPulseGlow:0.40).setDynamicTooltip().onChange(async function(v){this.plugin.settings.tagPulseGlow=v;await this.plugin.saveSettings()}.bind(this))}.bind(this));e=_pan["tooltip"].p;new Oe.Setting(e).setName(L("n_ttProps")).setDesc(L("d_ttProps")).addTextArea(a=>{a.setPlaceholder(L("ph_ttProps")).setValue((this.plugin.settings.tooltipProps||[]).join("\n")).onChange(async n=>{this.plugin.settings.tooltipProps=n.split("\n").map(p=>p.trim()).filter(p=>p),await this.plugin.saveSettings()}),a.inputEl.rows=4});r(L("n_ttBg"),L("d_ttBg"),"tooltipBg"),r(L("n_ttText"),L("d_ttText"),"tooltipText");new Oe.Setting(e).setName(L("n_ttOpac")).setDesc(L("d_ttOpac")).addSlider(a=>a.setLimits(0,1,0.05).setValue(this.plugin.settings.tooltipBgOpacity!=null?this.plugin.settings.tooltipBgOpacity:1).setDynamicTooltip().onChange(async n=>{this.plugin.settings.tooltipBgOpacity=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_ttAll")).setDesc(L("d_ttAll")).addToggle(a=>a.setValue(this.plugin.settings.tooltipAllNodes!==!1).onChange(async n=>{this.plugin.settings.tooltipAllNodes=n,await this.plugin.saveSettings()}));e=_pan["fx"].p;new Oe.Setting(e).setName(L("n_brillo")).setDesc(L("d_brillo")).addSlider(a=>a.setLimits(0,40,1).setValue(this.plugin.settings.glow).setDynamicTooltip().onChange(async n=>{this.plugin.settings.glow=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_opac")).setDesc(L("d_opac")).addSlider(a=>a.setLimits(0,1,.05).setValue(this.plugin.settings.opacity).setDynamicTooltip().onChange(async n=>{this.plugin.settings.opacity=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_glowOpac")).setDesc(L("d_glowOpac")).addSlider(a=>a.setLimits(0,1,.05).setValue(this.plugin.settings.glowOpacity!=null?this.plugin.settings.glowOpacity:0.6).setDynamicTooltip().onChange(async n=>{this.plugin.settings.glowOpacity=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_g1c")).setDesc(L("d_g1c")).addSlider(a=>a.setLimits(0,120,5).setValue(this.plugin.settings.g1Curve||0).setDynamicTooltip().onChange(async n=>{this.plugin.settings.g1Curve=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_g2c")).setDesc(L("d_g2c")).addSlider(a=>a.setLimits(0,120,5).setValue(this.plugin.settings.g2Curve||0).setDynamicTooltip().onChange(async n=>{this.plugin.settings.g2Curve=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_localPulse")).setDesc(L("d_localPulse")).addToggle(function(t){return t.setValue(this.plugin.settings.localPulse!==false).onChange(async function(v){this.plugin.settings.localPulse=v;await this.plugin.saveSettings();var _v=this.plugin.getView&&this.plugin.getView();if(_v&&!_v.plugin.tagView&&!_v.plugin.session){_v._stopPulse&&_v._stopPulse();if(v){_v._pulseT&&clearTimeout(_v._pulseT);_v._pulseT=setTimeout(function(){_v.cy&&_v._startLocalPulse&&_v._startLocalPulse(_v.plugin.settings)},100)}}}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_localPulseSpeed")).setDesc(L("d_localPulseSpeed")).addSlider(function(t){return t.setLimits(400,6000,100).setValue(this.plugin.settings.localPulseSpeed||1800).setDynamicTooltip().onChange(async function(v){this.plugin.settings.localPulseSpeed=v;await this.plugin.saveSettings()}.bind(this))}.bind(this));new Oe.Setting(e).setName(L("n_localPulseSize")).setDesc(L("d_localPulseSize")).addSlider(function(t){return t.setLimits(1,2,0.05).setValue(this.plugin.settings.localPulseSize!=null?this.plugin.settings.localPulseSize:1.15).setDynamicTooltip().onChange(async function(v){this.plugin.settings.localPulseSize=v;await this.plugin.saveSettings()}.bind(this))}.bind(this));r(L("n_hover"),L("d_hover"),"hoverColor");r(L("n_laserColor"),L("d_laserColor"),"laserColor");new Oe.Setting(e).setName(L("n_laserSpeed")).setDesc(L("d_laserSpeed")).addSlider(a=>a.setLimits(50,1500,25).setValue(this.plugin.settings.laserSpeed||300).setDynamicTooltip().onChange(async n=>{this.plugin.settings.laserSpeed=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_laserStr")).setDesc(L("d_laserStr")).addSlider(a=>a.setLimits(0,40,1).setValue(this.plugin.settings.laserStrength||14).setDynamicTooltip().onChange(async n=>{this.plugin.settings.laserStrength=n,await this.plugin.saveSettings()}));r(L("n_titleBg"),L("d_titleBg"),"titleBg"),r(L("n_titleText"),L("d_titleText"),"titleText");e=_pan["ai"].p;e.createEl("h3",{text:(BLG_LANG==="en"?"AI (optional)":"IA (opcional)")});new Oe.Setting(e).setName(L("n_provider")).setDesc(L("d_provider")).addDropdown(a=>{for(let k of Object.keys(AI_PROVIDERS))a.addOption(k,AI_PROVIDERS[k].label);a.setValue(this.plugin.settings.aiProvider||"openrouter").onChange(async n=>{this.plugin.settings.aiProvider=n,await this.plugin.saveSettings(),this.display()})});new Oe.Setting(e).setName(L("n_apiKey")).setDesc(L("d_apiKey")).addText(a=>{a.inputEl.type="password",a.setValue(this.plugin.settings.aiApiKey||"").onChange(async n=>{this.plugin.settings.aiApiKey=n.trim(),await this.plugin.saveSettings()})});new Oe.Setting(e).setName(L("n_model")).setDesc(L("d_model")).addText(a=>{let p=AI_PROVIDERS[this.plugin.settings.aiProvider];a.setPlaceholder(p?p.defaultModel:"").setValue(this.plugin.settings.aiModel||"").onChange(async n=>{this.plugin.settings.aiModel=n.trim(),await this.plugin.saveSettings()})});new Oe.Setting(e).setName(L("n_maxTokens")).setDesc(L("d_maxTokens")).addSlider(a=>a.setLimits(50,500,25).setValue(this.plugin.settings.aiMaxTokens||200).setDynamicTooltip().onChange(async n=>{this.plugin.settings.aiMaxTokens=n,await this.plugin.saveSettings()}));new Oe.Setting(e).setName(L("n_prompt")).setDesc(L("d_prompt")).addTextArea(a=>{a.setPlaceholder(L("summaryPrompt")),a.setValue(this.plugin.settings.aiPrompt||"").onChange(async n=>{this.plugin.settings.aiPrompt=n,await this.plugin.saveSettings()}),a.inputEl.rows=4});new Oe.Setting(e).setName(L("n_persist")).setDesc(L("d_persist")).addToggle(a=>a.setValue(!!this.plugin.settings.aiPersistCache).onChange(async n=>{this.plugin.settings.aiPersistCache=n,await this.plugin.saveSettings(),n&&await this.plugin.aiCache.load()}));new Oe.Setting(e).setName(L("n_cacheSec")).setDesc(L("d_cacheSec")).addButton(a=>a.setButtonText(L("btnClearCache")).onClick(async()=>{await this.plugin.aiCache.clear(),new Oe.Notice(L("aiCacheCleared"))})).addButton(a=>a.setButtonText(L("btnTestKey")).setCta().onClick(async()=>{new Oe.Notice(L("testing"));try{await this.plugin.aiClient.complete(BLG_LANG==="en"?"Reply only: ok":"Responde solo: ok");new Oe.Notice(L("testOk"))}catch(err){new Oe.Notice(L("errPrefix")+(err&&err.message?err.message:err))}}));let _last=this.plugin.settings.lastSettingsTab||"general";if(!_pan[_last])_last="general";_pan[_last].p.addClass("active");_pan[_last].b.addClass("active");}};
 /*! Bundled license information:
 
 cytoscape/dist/cytoscape.esm.mjs:
@@ -1143,7 +1243,7 @@ cytoscape/dist/cytoscape.esm.mjs:
       },
       /* ===== NUEVA HERRAMIENTA: estado de la vista actual del plugin ===== */
       blg_get_current_view: {
-        description: "Detecta qué está viendo el usuario en el plugin Better Local Graph AHORA MISMO: vista local (nota central), vista de tag (Tag View con un tag concreto y selección) o sesión de costura (sewing). Úsalo PRIMERO cuando el usuario diga 'la vista actual', 'lo que estoy viendo', 'trae lo que tengo en pantalla', 'esta vista' o pida trabajar con lo que ve sin nombrar un archivo. No modifica nada; solo lee el estado. Después, según el modo devuelto, usa la herramienta adecuada: mode='local' → blg_get_active_note_relations; mode='tag' → blg_get_tag_graph con current:true o con el tag devuelto; mode='sewing' → usa los datos de sewing de la respuesta.",
+        description: "Detecta qué está viendo el usuario en el plugin Better Local Graph AHORA MISMO: vista local (nota central), vista de tag (Tag View con un tag concreto y selección), pizarra de notas fijadas (pin board) o sesión de costura (sewing). Úsalo PRIMERO cuando el usuario diga 'la vista actual', 'lo que estoy viendo', 'trae lo que tengo en pantalla', 'esta vista' o pida trabajar con lo que ve sin nombrar un archivo. No modifica nada; solo lee el estado. Después, según el modo devuelto, usa la herramienta adecuada: mode='local' → blg_get_active_note_relations; mode='tag' → blg_get_tag_graph con current:true o con el tag devuelto; mode='pinboard' → blg_pin_board con action:'get'; mode='sewing' → usa los datos de sewing de la respuesta.",
         inputSchema: { type: "object", properties: {} },
         handler: function () {
           var view = plugin.getView && plugin.getView();
@@ -1162,6 +1262,23 @@ cytoscape/dist/cytoscape.esm.mjs:
           function activeIsBookmarkFn(activePath) {
             if (!bmInfo || !activePath) return false;
             return activePath === bmInfo.path;
+          }
+
+          // --- pizarra de notas fijadas (cubre la vista local/tag) ---
+          var pinH = plugin._blgPin && plugin._blgPin.attached;
+          if (pinH && typeof pinH.active === "function" && pinH.active()) {
+            result.mode = "pinboard";
+            var pbCards = (plugin.settings && plugin.settings.pinBoard && plugin.settings.pinBoard.cards) || {};
+            result.pinnedCount = Object.keys(pbCards).length;
+            var pbSel = (typeof pinH.selected === "function") ? pinH.selected() : [];
+            result.selectedNotes = pbSel.map(function (p) {
+              var pf = app.vault.getAbstractFileByPath(p);
+              return { path: p, basename: pf ? pf.basename : p.replace(/\.md$/, "").split("/").pop() };
+            });
+            result.selectionCount = result.selectedNotes.length;
+            result.bookmark = bmInfo;
+            result.message = "El usuario está viendo la pizarra de notas fijadas (pin board). Usa la herramienta blg_pin_board con action:'get' para leer su estado completo o con open/close/pin/unpin/focus/fit para manipularla.";
+            return result;
           }
 
           // --- sesión de costura ---
@@ -1324,6 +1441,115 @@ cytoscape/dist/cytoscape.esm.mjs:
 
           if (args.includeContent) result.content = await app.vault.cachedRead(active);
           return result;
+        }
+      },
+
+      /* ===== pizarra de notas fijadas (pin board) ===== */
+      blg_pin_board: {
+        description: "Gestiona la pizarra de notas fijadas (pin board) de Better Local Graph: el tablero visual donde el usuario fija notas como tarjetas conectadas por costuras. Acciones: 'get' = estado completo (¿activa?, tarjetas con posición/carpeta/disponibilidad, selección, cámara y aristas de costura entre tarjetas) — funciona con la pizarra cerrada; 'open' = abre el panel BLG si hace falta y ACTIVA la pizarra en pantalla; 'close' = sale de la pizarra conservando pines y distribución; 'pin' = fija notas nuevas (no duplica ni mueve las existentes); 'unpin' = quita notas de la pizarra (NO borra las notas ni sus costuras; sirve también para tarjetas cuya nota ya no existe); 'focus' = activa la pizarra si hace falta y centra la cámara en la tarjeta; 'fit' = encuadra todas las tarjetas. Úsala cuando el usuario diga 'mi pizarra', 'lo que tengo pineado/fijado', 'fija esta nota', 'quítala de la pizarra' o pida verla en pantalla. Si una referencia es ambigua (varias notas con el mismo nombre) se devuelven los candidatos sin elegir ninguno: pide al usuario que precise la ruta. Las costuras entre tarjetas se crean con blg_sew, no aquí.",
+        inputSchema: { type: "object", required: ["action"], properties: {
+          action: { type: "string", enum: ["get", "open", "close", "pin", "unpin", "focus", "fit"], description: "Operación a ejecutar." },
+          notes: { type: "array", items: { type: "string" }, description: "Requerido para pin/unpin/focus: rutas, basenames o wikilinks (focus usa solo el primero)." }
+        } },
+        handler: async function (args) {
+          args = args || {};
+          var api = (typeof globalThis !== "undefined") && globalThis.__BLG_PINBOARD;
+          if (!api || typeof api.boardState !== "function") throw { code: -32603, message: "El módulo de la pizarra no está disponible en esta sesión de Obsidian." };
+          var action = String(args.action || "").toLowerCase().trim();
+          var refs = Array.isArray(args.notes) ? args.notes.filter(function (s) { return s != null && String(s).trim(); }) : [];
+          /* Resolución estricta: ruta exacta (con o sin .md), basename ÚNICO y,
+             como último recurso, el resolvedor de Obsidian. Un basename con
+             varias notas NO se elige: se reporta ambiguo con candidatos. */
+          function resolveStrict(ref) {
+            var Oe2 = require("obsidian");
+            var r = String(ref || "").trim().replace(/^\[\[|\]\]$/g, "");
+            if (!r) return { file: null };
+            var f = app.vault.getAbstractFileByPath(r);
+            if (f instanceof Oe2.TFile) return { file: f };
+            f = app.vault.getAbstractFileByPath(r + ".md");
+            if (f instanceof Oe2.TFile) return { file: f };
+            var low = r.toLowerCase(), matches = [];
+            var all = app.vault.getMarkdownFiles();
+            for (var i = 0; i < all.length; i++) if (all[i].basename.toLowerCase() === low) matches.push(all[i].path);
+            if (matches.length === 1) return { file: app.vault.getAbstractFileByPath(matches[0]) };
+            if (matches.length > 1) return { file: null, ambiguous: matches };
+            f = app.metadataCache.getFirstLinkpathDest(r, "");
+            if (f) return { file: f };
+            return { file: null };
+          }
+          /* Para unpin/focus la nota puede ya no existir: también se resuelve
+             contra las rutas pineadas (exacta o basename único). */
+          function resolvePinned(ref) {
+            var got = resolveStrict(ref);
+            if (got.file) return { path: got.file.path };
+            var r = String(ref || "").trim().replace(/^\[\[|\]\]$/g, "");
+            var pinned = api.boardState(plugin).cards.map(function (c) { return c.path; });
+            if (pinned.indexOf(r) >= 0) return { path: r };
+            if (pinned.indexOf(r + ".md") >= 0) return { path: r + ".md" };
+            var low = r.toLowerCase();
+            var matches = pinned.filter(function (p) { return p.replace(/\.md$/i, "").split("/").pop().toLowerCase() === low; });
+            if (matches.length === 1) return { path: matches[0] };
+            if (matches.length > 1) return { path: null, ambiguous: matches };
+            if (got.ambiguous) return { path: null, ambiguous: got.ambiguous };
+            return { path: null };
+          }
+          async function ensureOpen() {
+            var opened = await api.openBoard(plugin);
+            if (!opened) throw { code: -32603, message: "No se pudo activar la pizarra: el panel Better Local Graph no está disponible." };
+          }
+          switch (action) {
+            case "get":
+              return api.boardState(plugin);
+            case "open": {
+              await ensureOpen();
+              return { ok: true, active: true, pinnedCount: api.boardState(plugin).pinnedCount };
+            }
+            case "close":
+              api.closeBoard(plugin);
+              return { ok: true, active: false };
+            case "fit": {
+              await ensureOpen();
+              if (!api.fitBoard(plugin)) throw { code: -32603, message: "No se pudo encuadrar la pizarra." };
+              return { ok: true };
+            }
+            case "focus": {
+              if (!refs.length) throw { code: -32602, message: "focus requiere 'notes' con la nota a enfocar" };
+              var fp = resolvePinned(refs[0]);
+              if (fp.ambiguous) return { ok: false, error: "ambiguous", ref: String(refs[0]), candidates: fp.ambiguous };
+              if (!fp.path) throw { code: -32602, message: "No hay ninguna tarjeta pineada para: " + refs[0] };
+              await ensureOpen();
+              if (!api.focusCard(plugin, fp.path)) throw { code: -32603, message: "No se pudo enfocar la tarjeta: " + fp.path };
+              return { ok: true, focused: fp.path };
+            }
+            case "pin": {
+              if (!refs.length) throw { code: -32602, message: "pin requiere 'notes' (array de rutas o nombres)" };
+              var pinned = [], already = [], notFound = [], ambiguous = [];
+              refs.forEach(function (r) {
+                var got = resolveStrict(r);
+                if (got.ambiguous) { ambiguous.push({ ref: String(r), candidates: got.ambiguous }); return; }
+                if (!got.file) { notFound.push(String(r)); return; }
+                if (api.isPinned(plugin, got.file.path)) { already.push(got.file.path); return; }
+                api.pin(plugin, got.file); pinned.push(got.file.path);
+              });
+              return { ok: !notFound.length && !ambiguous.length, pinned: pinned, alreadyPinned: already,
+                notFound: notFound, ambiguous: ambiguous, pinnedCount: api.boardState(plugin).pinnedCount };
+            }
+            case "unpin": {
+              if (!refs.length) throw { code: -32602, message: "unpin requiere 'notes' (array de rutas o nombres)" };
+              var unpinned = [], notPinned = [], notFound2 = [], ambiguous2 = [];
+              refs.forEach(function (r) {
+                var got = resolvePinned(r);
+                if (got.ambiguous) { ambiguous2.push({ ref: String(r), candidates: got.ambiguous }); return; }
+                if (!got.path) { notFound2.push(String(r)); return; }
+                if (!api.isPinned(plugin, got.path)) { notPinned.push(got.path); return; }
+                api.unpin(plugin, got.path); unpinned.push(got.path);
+              });
+              return { ok: !notFound2.length && !ambiguous2.length, unpinned: unpinned, notPinned: notPinned,
+                notFound: notFound2, ambiguous: ambiguous2, pinnedCount: api.boardState(plugin).pinnedCount };
+            }
+            default:
+              throw { code: -32602, message: "action desconocida: '" + action + "'. Usa get|open|close|pin|unpin|focus|fit." };
+          }
         }
       },
     };
@@ -2835,13 +3061,22 @@ cytoscape/dist/cytoscape.esm.mjs:
     if (!oldSegs.length) return;
     var newSegs = newParts;
     var newTag = newSegs.join("/");
-    if (String(oldTag).toLowerCase() === newTag.toLowerCase()) { new Oe.Notice(T(lang, "unchanged")); return; }
+    // Guarda "sin cambios" EXACTA (case-sensitive): un rename de solo
+    // mayúsculas/minúsculas (Electricidad → electricidad) SÍ debe proceder;
+    // Obsidian trata los tags case-insensitive, así que es un re-casing del
+    // mismo tag, no una fusión.
+    if (String(oldTag) === newTag) { new Oe.Notice(T(lang, "unchanged")); return; }
     var exists = false;
     try {
       var all = app.metadataCache.getTags();
       var nlower = newTag.toLowerCase();
+      var olower = String(oldTag).toLowerCase();
       for (var k in all) {
         var kl = String(k).replace(/^#/, "").toLowerCase();
+        // Excluir el propio tag de origen y sus descendientes: para Obsidian
+        // son el mismo tag (case-insensitive) y forman parte de la rama que
+        // se renombra; no son una colisión, so pena de aviso de fusión espurio.
+        if (kl === olower || kl.indexOf(olower + "/") === 0) continue;
         if (kl === nlower || kl.indexOf(nlower + "/") === 0) { exists = true; break; }
       }
     } catch (e) {}
@@ -3378,6 +3613,14 @@ cytoscape/dist/cytoscape.esm.mjs:
                 }).open();
             });
         });
+        // BLG-DROPS: solo notas DIRECTAS del payload de este nodo-tag.
+        if (typeof globalThis !== "undefined" && globalThis.__BLG_DROPS) {
+          globalThis.__BLG_DROPS.addMoveToMenu(menu, {
+            source: "mindmap", plugin: self.plugin, tag: tag, lang: lang,
+            files: (g.__data__.payload && g.__data__.payload.files) || [],
+            onDone: function () { self._scheduleRebuild(); }
+          });
+        }
         menu.showAtPosition({ x: e.clientX, y: e.clientY });
       });
     }
@@ -3571,5 +3814,2749 @@ cytoscape/dist/cytoscape.esm.mjs:
         }
       });
     } catch (e) { try { console.warn("[BLG Mindmap] error registrando el comando", e); } catch (_) {} }
+  };
+})();
+/* ============================================================
+   Better Local Graph — Pizarra de notas fijadas (inyectado).
+   Añadir este módulo DESPUÉS de blg-tag-mindmap.js y ANTES de
+   blg-folder-drops.js al regenerar main.js (drops debe quedar
+   al final: test-folder-drops.js exige paridad marker→EOF).
+   Desktop únicamente. Estado visual en settings.pinBoard (data.json);
+   las relaciones creadas desde el board usan costuras reales del plugin.
+   La pizarra es un MODO del mismo panel de BLG (no ItemView ni
+   modal): cubre el área del grafo y se sale con el mismo botón.
+   Refresco incremental: fijar/desfijar/editar parchea UNA
+   tarjeta y sus aristas; jamás reconstruye el grafo ni mueve
+   otras tarjetas o la cámara.
+   ============================================================ */
+(function () {
+  "use strict";
+  var PLUGIN_PROTO;
+  try { PLUGIN_PROTO = module.exports && module.exports.default && module.exports.default.prototype; } catch (_) { return; }
+  if (!PLUGIN_PROTO) return;
+  var Oe;
+  try { Oe = require("obsidian"); } catch (_) { return; } // móvil
+
+  var pluginInstance = null, warned = false;
+  function warn(e) { if (!warned) { warned = true; try { console.warn("[BLG PinBoard]", e); } catch (_) {} } }
+  function T(key) { return typeof L === "function" ? L(key) : key; }
+  function msg(key) { var x = T(key); return typeof x === "function" ? x.apply(null, Array.prototype.slice.call(arguments, 1)) : x; }
+  function notice(key) { new Oe.Notice(msg.apply(null, arguments)); }
+  function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+  function svg(tag, parent, attrs) {
+    var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { el.setAttribute(k, attrs[k]); });
+    if (parent) parent.appendChild(el);
+    return el;
+  }
+
+  var CARD_W = 220, CARD_H_EST = 150, SPOT_GAP = 26;
+  var DEFAULT_DATE_FONT = '"Segoe Print", "Bradley Hand", "Comic Sans MS", cursive';
+  var DEFAULT_DATE_COLOR = "#8b6f47";
+
+  /* Colores persistidos: solo hex de 6 dígitos (lo que emite el color picker). */
+  function normalizeColor(v) {
+    var s = String(v || "").trim();
+    return /^#[0-9a-f]{6}$/i.test(s) ? s.toLowerCase() : null;
+  }
+  function edgeKey(from, to) { return from + "\0" + to; }
+  /* Selección ordenada: 2 = primera→segunda; N = primera padre de todas o cadena. */
+  function relationPairs(paths, mode) {
+    var raw = Array.isArray(paths) ? paths : [];
+    var ps = raw.filter(function (p, i) { return typeof p === "string" && p && raw.indexOf(p) === i; });
+    var out = [];
+    if (ps.length < 2) return out;
+    if (ps.length === 2) return [[ps[0], ps[1]]];
+    if (mode === "chain") {
+      for (var i = 0; i < ps.length - 1; i++) out.push([ps[i], ps[i + 1]]);
+    } else {
+      for (var j = 1; j < ps.length; j++) out.push([ps[0], ps[j]]);
+    }
+    return out;
+  }
+  /* Misma semántica que el tooltip de la vista tag: aliases→alias, escalares
+      como lista, valores vacíos omitidos, orden de la configuración. */
+  function tooltipFieldNames(settings) {
+    var ps = settings && settings.tooltipProps;
+    return Array.isArray(ps) && ps.length ? ps.slice() : ["aliases"];
+  }
+  function frontmatterValues(fm, name) {
+    if (!fm || !name) return [];
+    var v = fm[name];
+    if (name === "aliases" && v == null) v = fm.alias;
+    if (v == null) return [];
+    var ls = Array.isArray(v) ? v : [v];
+    return ls.filter(function (x) { return x != null && String(x).length > 0; }).map(function (x) { return String(x); });
+  }
+  function formatMtime(mtime, lang) {
+    var d = new Date(+mtime || 0);
+    if (!(d.getTime() > 0)) return "—";
+    try {
+      return new Intl.DateTimeFormat(lang === "en" ? "en" : "es", { dateStyle: "medium", timeStyle: "short" }).format(d);
+    } catch (_) {
+      return d.toLocaleString();
+    }
+  }
+  function dateFont(settings) {
+    var f = String(settings && settings.pinDateFont || "").trim();
+    return f || DEFAULT_DATE_FONT;
+  }
+  function dateColor(settings) { return normalizeColor(settings && settings.pinDateColor) || DEFAULT_DATE_COLOR; }
+
+  /* ---------- utilidades puras (testeables en Node) ---------- */
+
+  /* Pan que mantiene el punto del mundo bajo el cursor al pasar de z0 a z1
+     (misma matemática que el zoom anclado de las gotas). */
+  function anchorPan(pan, z0, z1, ax, ay) {
+    var mx = (ax - pan.x) / z0, my = (ay - pan.y) / z0;
+    return { x: ax - mx * z1, y: ay - my * z1 };
+  }
+  /* Curva S horizontal entre dos puntos (mismo estilo que el mapa mental). */
+  function sewCurve(x1, y1, x2, y2) {
+    var mx = (x1 + x2) / 2;
+    return "M" + x1 + "," + y1 + " C" + mx + "," + y1 + " " + mx + "," + y2 + " " + x2 + "," + y2;
+  }
+  /* Punto sobre el borde de un rect (centrado en cx,cy, tamaño w×h, margen de
+     4px) en la dirección de (tx,ty): la arista nace en el borde de la tarjeta. */
+  function borderPoint(cx, cy, w, h, tx, ty) {
+    var dx = tx - cx, dy = ty - cy;
+    if (!dx && !dy) return { x: cx, y: cy };
+    var hw = w / 2 + 4, hh = h / 2 + 4;
+    var sx = dx ? hw / Math.abs(dx) : Infinity;
+    var sy = dy ? hh / Math.abs(dy) : Infinity;
+    var s = Math.min(sx, sy);
+    return { x: cx + dx * s, y: cy + dy * s };
+  }
+  /* Estado persistido: versión + cámara + tarjetas {ruta:{x,y,z,color?}},
+     estilos por arista y color propio del board. Limpia valores corruptos
+     sin borrar silenciosamente lo rescatable. */
+  function normalizeState(raw) {
+    var st = { version: 1, camera: null, nextZ: 1, cards: {}, edgeStyles: {}, boardColor: null };
+    if (!raw || typeof raw !== "object") return st;
+    if (raw.camera && typeof raw.camera === "object") {
+      var c = raw.camera, x = +c.x, y = +c.y, z = +c.z;
+      if (isFinite(x) && isFinite(y) && isFinite(z) && z > 0) st.camera = { x: x, y: y, z: clamp(z, 0.2, 4) };
+    }
+    st.boardColor = normalizeColor(raw.boardColor);
+    var cards = raw.cards && typeof raw.cards === "object" ? raw.cards : {};
+    Object.keys(cards).forEach(function (p) {
+      var e = cards[p];
+      if (!e || typeof e !== "object") return;
+      var x = +e.x, y = +e.y, z = Math.round(+e.z);
+      if (!isFinite(x) || !isFinite(y)) return;
+      if (!isFinite(z) || z < 1) z = 1;
+      st.cards[p] = { x: x, y: y, z: z };
+      var color = normalizeColor(e.color);
+      if (color) st.cards[p].color = color;
+      st.nextZ = Math.max(st.nextZ, z + 1);
+    });
+    var styles = raw.edgeStyles && typeof raw.edgeStyles === "object" ? raw.edgeStyles : {};
+    Object.keys(styles).forEach(function (k) {
+      var v = styles[k];
+      if (!k || k.indexOf("\0") < 0 || !v || typeof v !== "object") return;
+      var out = {};
+      var color = normalizeColor(v.color);
+      if (color) out.color = color;
+      if (v.dash === "solid" || v.dash === "dash") out.dash = v.dash;
+      if (Object.keys(out).length) st.edgeStyles[k] = out;
+    });
+    return st;
+  }
+  /* Renombrado/movido: la tarjeta conserva posición, z y color bajo la nueva
+     ruta; sus estilos de arista migran con ella. Un renombrado de CARPETA
+     migra todos sus descendientes (prefijo + "/"). */
+  function migrateRename(state, oldPath, newPath) {
+    var cards = state && state.cards || {}, changed = false;
+    function mapped(p) {
+      if (p === oldPath) return newPath;
+      var pre = oldPath + "/";
+      return p.indexOf(pre) === 0 ? newPath + "/" + p.slice(pre.length) : p;
+    }
+    if (Object.prototype.hasOwnProperty.call(cards, oldPath)) {
+      cards[newPath] = cards[oldPath]; delete cards[oldPath]; changed = true;
+    }
+    var pre = oldPath + "/";
+    Object.keys(cards).forEach(function (k) {
+      if (k.indexOf(pre) === 0) {
+        cards[newPath + "/" + k.slice(pre.length)] = cards[k]; delete cards[k]; changed = true;
+      }
+    });
+    var styles = state && state.edgeStyles;
+    if (styles && typeof styles === "object") {
+      Object.keys(styles).forEach(function (k) {
+        var parts = k.split("\0");
+        if (parts.length !== 2) return;
+        var from = mapped(parts[0]), to = mapped(parts[1]);
+        if (from === parts[0] && to === parts[1]) return;
+        styles[edgeKey(from, to)] = styles[k]; delete styles[k]; changed = true;
+      });
+    }
+    return changed;
+  }
+  function removeEdgeStylesFor(state, path) {
+    var styles = state && state.edgeStyles, changed = false;
+    if (!styles || typeof styles !== "object") return false;
+    Object.keys(styles).forEach(function (k) {
+      var parts = k.split("\0");
+      if (parts[0] === path || parts[1] === path) { delete styles[k]; changed = true; }
+    });
+    return changed;
+  }
+  /* Aristas visibles: costura dirigida fuente→destino, SOLO cuando ambas
+     notas están fijadas. Sin wikilinks, backlinks ni tags compartidos. */
+  function deriveEdges(paths, sewingOf) {
+    var set = new Set(paths), seen = new Set(), edges = [];
+    paths.forEach(function (p) {
+      var tg;
+      try { tg = sewingOf(p); } catch (_) { return; }
+      if (!tg) return;
+      Array.from(tg).forEach(function (t) {
+        if (t === p || !set.has(t)) return;
+        var k = edgeKey(p, t);
+        if (seen.has(k)) return;
+
+        seen.add(k);
+        edges.push({ from: p, to: t });
+      });
+    });
+    return edges;
+  }
+  function rectsOverlap(ax, ay, aw, ah, bx, by, bw, bh, gap) {
+    gap = gap || 0;
+    return ax - gap < bx + bw && ax + aw + gap > bx && ay - gap < by + bh && ay + ah + gap > by;
+  }
+  /* Hueco para una tarjeta nueva: anillos cuadrados alrededor del centro
+     visible hasta encontrar una celda que no solape a las existentes. Las
+     tarjetas viejas NUNCA se mueven. */
+  function findSpot(existing, center, w, h, gap) {
+    gap = gap == null ? SPOT_GAP : gap;
+    var stepX = w + gap, stepY = h + gap;
+    var sx = Math.round((center.x - w / 2) / stepX), sy = Math.round((center.y - h / 2) / stepY);
+    for (var ring = 0; ring < 48; ring++) {
+      for (var dx = -ring; dx <= ring; dx++) {
+        for (var dy = -ring; dy <= ring; dy++) {
+          if (Math.max(Math.abs(dx), Math.abs(dy)) !== ring) continue;
+          var x = (sx + dx) * stepX, y = (sy + dy) * stepY, ok = true;
+          for (var i = 0; i < existing.length; i++) {
+            var e = existing[i];
+            if (rectsOverlap(x, y, w, h, e.x, e.y, e.w, e.h, gap)) { ok = false; break; }
+          }
+          if (ok) return { x: x, y: y };
+        }
+      }
+    }
+    return { x: center.x - w / 2, y: center.y - h / 2 };
+  }
+  /* Cámara que encuadra todas las tarjetas con margen, zoom acotado. */
+  function fitCamera(cards, viewport, margin) {
+    margin = margin == null ? 60 : margin;
+    if (!cards.length) return { x: viewport.w / 2, y: viewport.h / 2, z: 1 };
+    var x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
+    cards.forEach(function (c) {
+      x1 = Math.min(x1, c.x); y1 = Math.min(y1, c.y);
+      x2 = Math.max(x2, c.x + c.w); y2 = Math.max(y2, c.y + c.h);
+    });
+    var w = Math.max(1, x2 - x1), h = Math.max(1, y2 - y1);
+    var z = clamp(Math.min((viewport.w - margin * 2) / w, (viewport.h - margin * 2) / h), 0.2, 1.25);
+    return { x: viewport.w / 2 - z * (x1 + x2) / 2, y: viewport.h / 2 - z * (y1 + y2) / 2, z: z };
+  }
+  /* Cámara para LEER una tarjeta (primer clic): siempre la centra. Si está
+     lejos (z<0.8) acerca a ~1.1; si está tan cerca que desborda el viewport,
+     aleja hasta encuadrarla; en rango legible conserva el zoom (solo centra). */
+  function focusCam(rect, viewport, z, margin) {
+    margin = margin == null ? 40 : margin;
+    var zfit = Math.min(
+      (viewport.w - margin * 2) / Math.max(1, rect.w),
+      (viewport.h - margin * 2) / Math.max(1, rect.h));
+    var tz = z;
+    if (tz < 0.8) tz = 1.1;
+    else if (tz > 2) tz = 1.5;
+    if (tz > zfit) tz = zfit;
+    tz = clamp(tz, 0.2, 3);
+    return {
+      x: viewport.w / 2 - tz * (rect.x + rect.w / 2),
+      y: viewport.h / 2 - tz * (rect.y + rect.h / 2),
+      z: tz
+    };
+  }
+  /* Extracto en texto plano: utilidad pura conservada para contratos/tests;
+     la cara de la tarjeta usa las propiedades configuradas del tooltip. */
+  function previewText(md, max) {
+    max = max || 200;
+    var t = String(md || "");
+    t = t.replace(/^﻿?---[ \t]*\r?\n[\s\S]*?\r?\n---[ \t]*\r?\n?/, "");
+    t = t.replace(/```[\s\S]*?```/g, " ");
+    t = t.replace(/`([^`]*)`/g, "$1");
+    t = t.replace(/!\[\[[^\]]*\]\]/g, " ");
+    t = t.replace(/\[\[([^\]|]+)\|([^\]]*)\]\]/g, "$2");
+    t = t.replace(/\[\[([^\]]*)\]\]/g, "$1");
+    t = t.replace(/!\[[^\]]*\]\([^)]*\)/g, " ");
+    t = t.replace(/\[([^\]]*)\]\([^)]*\)/g, "$1");
+    t = t.replace(/^#{1,6}\s+/gm, "");
+    t = t.replace(/^\s*(?:[-*+]|\d+\.)\s+\[[ xX]\]\s+/gm, "");
+    t = t.replace(/^\s*>[ \t]?/gm, "");
+    t = t.replace(/^\s*(?:[-*+]|\d+\.)\s+/gm, "");
+    t = t.replace(/(\*{1,3}|_{1,3}|~~)([^*_~]+)\1/g, "$2");
+    t = t.replace(/<[^>]+>/g, " ");
+    t = t.replace(/\s+/g, " ").trim();
+    return t.length > max ? t.slice(0, max - 1).trimEnd() + "…" : t;
+  }
+  function folderOf(path) {
+    var i = String(path || "").lastIndexOf("/");
+    return i < 0 ? "" : path.slice(0, i);
+  }
+  function baseOf(path) {
+    return String(path || "").split("/").pop().replace(/\.md$/i, "");
+  }
+
+  /* ---------- estado y persistencia ---------- */
+
+  /* Vive en settings.pinBoard: saveSettings() del bundle lo conserva al ser
+     el mismo objeto, y aquí se guarda con saveData(settings) SIN pasar por
+     saveSettings (que reconstruiría el cliente de IA y re-aplicaría estilos
+     en cada gesto de arrastre). */
+  function ensureState(plugin) {
+    var s = plugin.settings;
+    if (!s.pinBoard || s.pinBoard.version !== 1 || !s.pinBoard.cards || typeof s.pinBoard.cards !== "object") {
+      s.pinBoard = normalizeState(s.pinBoard);
+    } else {
+      if (!s.pinBoard.edgeStyles || typeof s.pinBoard.edgeStyles !== "object") s.pinBoard.edgeStyles = {};
+      if (normalizeColor(s.pinBoard.boardColor) !== s.pinBoard.boardColor) s.pinBoard.boardColor = normalizeColor(s.pinBoard.boardColor);
+    }
+    return s.pinBoard;
+  }
+  var saveTimer = null;
+  function saveState(plugin, soon) {
+    if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+    if (soon) {
+      saveTimer = setTimeout(function () { saveTimer = null; saveState(plugin); }, 400);
+      return;
+    }
+    try { Promise.resolve(plugin.saveData(plugin.settings)).catch(warn); } catch (e) { warn(e); }
+  }
+  function isPinned(plugin, path) {
+    if (!plugin || !plugin.settings) return false;
+    var s = plugin.settings.pinBoard;
+    return !!(s && s.cards && Object.prototype.hasOwnProperty.call(s.cards, path));
+  }
+  /* Costuras salientes resueltas a rutas (misma semántica que el bundle y el
+     mapa mental: frontmatter sewing, escalar o lista, alias/heading vía
+     getFirstLinkpathDest). */
+  function sewingTargets(app, path) {
+    var out = new Set();
+    var f = app.vault.getAbstractFileByPath(path);
+    if (!(f instanceof Oe.TFile)) return out;
+    var c = app.metadataCache.getFileCache(f);
+    var fm = c && c.frontmatter, sv = fm && fm.sewing;
+    if (sv == null) return out;
+    var ls = Array.isArray(sv) ? sv : [sv];
+    for (var i = 0; i < ls.length; i++) {
+      var it = ls[i];
+      if (typeof it !== "string") continue;
+      var m = it.match(/\[\[([^\]|#]+)/), lt = (m ? m[1] : it).trim();
+      if (!lt) continue;
+      var tf = app.metadataCache.getFirstLinkpathDest(lt, path);
+      if (tf) out.add(tf.path);
+    }
+    return out;
+  }
+
+  function handleOf(plugin) { return plugin._blgPin && plugin._blgPin.attached; }
+  function syncButtons(plugin) { var h = handleOf(plugin); if (h) h.syncButton(); }
+
+  /* ---------- acciones públicas ---------- */
+
+  function pinFile(plugin, file) {
+    if (!(file instanceof Oe.TFile) || file.extension.toLowerCase() !== "md") return;
+    var st = ensureState(plugin);
+    if (st.cards[file.path]) return;
+    var h = handleOf(plugin), center = { x: 0, y: 0 }, existing = [];
+    Object.keys(st.cards).forEach(function (p) {
+      var e = st.cards[p];
+      var dom = h && h.cardSize(p);
+      existing.push({ x: e.x, y: e.y, w: dom ? dom.w : CARD_W, h: dom ? dom.h : CARD_H_EST });
+    });
+    if (h && h.active()) center = h.viewCenter();
+    var spot = findSpot(existing, center, CARD_W, CARD_H_EST, SPOT_GAP);
+    st.cards[file.path] = { x: spot.x, y: spot.y, z: st.nextZ++ };
+    saveState(plugin);
+    notice("pinAdded", file.basename);
+    if (h) h.cardAdded(file.path);
+    syncButtons(plugin);
+  }
+  function unpinPath(plugin, path) {
+    var st = ensureState(plugin);
+    if (!st.cards[path]) return;
+    var name = baseOf(path);
+    delete st.cards[path];
+    removeEdgeStylesFor(st, path);
+    saveState(plugin);
+    notice("pinRemoved", name);
+    var h = handleOf(plugin);
+    if (h) h.cardRemoved(path);
+    syncButtons(plugin);
+  }
+  /* Inserción en el menú cxttap compartido (vista local y vista tag), mismo
+     patrón que BLG-DROPS: el bundle llama con {plugin, view, file}. */
+  function addPinMenu(menu, opts) {
+    opts = opts || {};
+    var plugin = opts.plugin || pluginInstance;
+    if (!plugin || plugin.session) return;
+    var file = opts.file;
+    if (!(file instanceof Oe.TFile) || file.extension.toLowerCase() !== "md") return;
+    var pinned = isPinned(plugin, file.path);
+    menu.addItem(function (item) {
+      item.setIcon(pinned ? "pin-off" : "pin").setTitle(T(pinned ? "ctxUnpinNote" : "ctxPinNote")).onClick(function () {
+        if (pinned) unpinPath(plugin, file.path);
+        else pinFile(plugin, file);
+      });
+    });
+  }
+  /* Abrir robusto (lo usa el MCP): si el panel BLG aún no existe, lo abre y
+     espera el attach (que corre en layout-change y en dos reintentos del
+     módulo). Devuelve true solo si la pizarra quedó activa. Con el panel ya
+     adjunto el enter sigue siendo inmediato (no hay awaits antes). */
+  async function openBoard(plugin, tries) {
+    plugin = plugin || pluginInstance;
+    if (!plugin) return false;
+    var h = handleOf(plugin);
+    if (h && h.active()) return true;
+    if (!h) {
+      try { if (plugin.activateView) await plugin.activateView(); } catch (_) {}
+      var n = tries == null ? 25 : tries;
+      for (var i = 0; i < n && !handleOf(plugin); i++) {
+        await new Promise(function (r) { setTimeout(r, 100); });
+      }
+      h = handleOf(plugin);
+    }
+    if (!h) return false;
+    if (!h.active()) h.enter();
+    return !!h.active();
+  }
+  function closeBoard(plugin) {
+    var h = handleOf(plugin || pluginInstance);
+    if (h && h.active()) h.exit();
+    return true;
+  }
+  function focusBoardCard(plugin, path) {
+    var h = handleOf(plugin || pluginInstance);
+    return !!(h && h.active() && typeof h.focus === "function" && h.focus(path));
+  }
+  function fitBoard(plugin) {
+    var h = handleOf(plugin || pluginInstance);
+    if (!h || !h.active() || typeof h.fit !== "function") return false;
+    h.fit();
+    return true;
+  }
+  /* Estado completo y serializable para el MCP: funciona con la pizarra
+     cerrada (lee settings.pinBoard) y no muta nada. */
+  function boardState(plugin) {
+    plugin = plugin || pluginInstance;
+    if (!plugin || !plugin.settings || !plugin.app) return null;
+    var st = ensureState(plugin), app = plugin.app;
+    var h = handleOf(plugin);
+    var paths = Object.keys(st.cards).sort(function (a, b) { return st.cards[a].z - st.cards[b].z; });
+    var cards = paths.map(function (p) {
+      var e = st.cards[p];
+      var f = app.vault.getAbstractFileByPath(p);
+      var ok = f instanceof Oe.TFile;
+      return {
+        path: p,
+        basename: ok ? f.basename : baseOf(p),
+        folder: folderOf(p),
+        x: Math.round(e.x * 100) / 100, y: Math.round(e.y * 100) / 100, z: e.z,
+        color: normalizeColor(e.color),
+        available: ok
+      };
+    });
+    var edges = deriveEdges(paths, function (p) { return sewingTargets(app, p); }).map(function (e) {
+      var es = st.edgeStyles[edgeKey(e.from, e.to)] || {};
+      return { from: e.from, to: e.to, color: normalizeColor(es.color), dash: es.dash === "solid" ? "solid" : "dash" };
+    });
+    return {
+      active: !!(h && h.active()),
+      pinnedCount: cards.length,
+      camera: st.camera ? { x: st.camera.x, y: st.camera.y, z: st.camera.z } : null,
+      boardColor: st.boardColor || null,
+      selected: h && typeof h.selected === "function" ? h.selected() : [],
+      cards: cards,
+      edges: edges
+    };
+  }
+
+  /* ---------- ajustes propios: fecha manuscrita de las tarjetas ---------- */
+  function injectPinSettings(plugin, containerEl) {
+    var nav = containerEl.querySelector(".blg-settings-tabs");
+    var panelsHost = containerEl.querySelector(".blg-settings-panels");
+    if (!panelsHost) { panelsHost = containerEl; nav = null; }
+    var TAB_KEY = "pinboard", myBtn = null, myPanel = null;
+    if (nav) {
+      myBtn = nav.createEl("button", { cls: "blg-settings-tab", text: T("pinTab") });
+      myPanel = panelsHost.createDiv({ cls: "blg-settings-panel" });
+      myBtn.addEventListener("click", function () {
+        containerEl.querySelectorAll(".blg-settings-tab").forEach(function (b) { b.removeClass("active"); });
+        containerEl.querySelectorAll(".blg-settings-panel").forEach(function (p) { p.removeClass("active"); });
+        myBtn.addClass("active"); myPanel.addClass("active");
+        try { plugin.settings.lastSettingsTab = TAB_KEY; plugin.saveSettings(); } catch (e) { warn(e); }
+      });
+      nav.querySelectorAll(".blg-settings-tab").forEach(function (b) {
+        if (b === myBtn) return;
+        b.addEventListener("click", function () { myBtn.removeClass("active"); myPanel.removeClass("active"); });
+      });
+    } else {
+      myPanel = panelsHost.createDiv({ cls: "blg-bg-section" });
+      myPanel.style.cssText = "margin-top:18px;border-top:1px solid var(--background-modifier-border);padding-top:12px";
+    }
+    myPanel.createEl("h3", { text: T("pinSettingsTitle") });
+    new Oe.Setting(myPanel).setName(T("pinDateFont")).setDesc(T("pinDateFontDesc")).addText(function (t) {
+      t.setPlaceholder(DEFAULT_DATE_FONT).setValue(plugin.settings.pinDateFont || "")
+        .onChange(async function (v) { plugin.settings.pinDateFont = v.trim(); await plugin.saveSettings(); });
+    });
+    new Oe.Setting(myPanel).setName(T("pinDateColor")).setDesc(T("pinDateColorDesc")).addColorPicker(function (c) {
+      c.setValue(dateColor(plugin.settings))
+        .onChange(async function (v) { plugin.settings.pinDateColor = normalizeColor(v) || DEFAULT_DATE_COLOR; await plugin.saveSettings(); });
+    });
+    var wasActive = false;
+    try { wasActive = plugin.settings.lastSettingsTab === TAB_KEY; } catch (e) {}
+    if (myBtn && wasActive) {
+      containerEl.querySelectorAll(".blg-settings-tab").forEach(function (b) { b.removeClass("active"); });
+      containerEl.querySelectorAll(".blg-settings-panel").forEach(function (p) { p.removeClass("active"); });
+      myBtn.addClass("active"); myPanel.addClass("active");
+    } else if (myBtn) {
+      myBtn.removeClass("active"); myPanel.removeClass("active");
+    }
+  }
+  function hookPinSettingTab(plugin) {
+    var orig = plugin.addSettingTab.bind(plugin);
+    plugin.addSettingTab = function (tab) {
+      try {
+        if (tab && tab.plugin === plugin && typeof tab.display === "function" && !tab._blgPinHooked) {
+          var display = tab.display;
+          tab.display = function () {
+            var r = display.apply(this, arguments);
+            try { injectPinSettings(plugin, this.containerEl); } catch (e) { warn(e); }
+            return r;
+          };
+          tab._blgPinHooked = true;
+        }
+      } catch (e) { warn(e); }
+      return orig(tab);
+    };
+  }
+
+  var sharedApi = { addPinMenu: addPinMenu, isPinned: isPinned, pin: pinFile, unpin: unpinPath,
+    openBoard: openBoard, closeBoard: closeBoard, boardState: boardState,
+    focusCard: focusBoardCard, fitBoard: fitBoard,
+    layoutButtons: function () { if (pluginInstance) syncButtons(pluginInstance); } };
+  if (typeof globalThis !== "undefined") globalThis.__BLG_PINBOARD = sharedApi;
+
+  /* ---------- modo pizarra dentro de la vista ---------- */
+
+  function attachView(plugin, view) {
+    if (!view || !view.graphEl || !view.contentEl || view._blgPinAttached) return null;
+    view._blgPinAttached = true;
+    var host = view.contentEl, graph = view.graphEl, settings = plugin.settings;
+    var board = host.createDiv({ cls: "blg-pinboard" });
+    board.hidden = true; board.tabIndex = -1;
+    var dots = board.createDiv({ cls: "blg-pinboard-dots" });
+    var world = board.createDiv({ cls: "blg-pinboard-world" });
+    var edgeSvg = svg("svg", world, { class: "blg-pinboard-edges", "aria-hidden": "true" });
+    var edgeG = svg("g", edgeSvg);
+    var cardLayer = world.createDiv({ cls: "blg-pinboard-cards" });
+    var empty = board.createDiv({ cls: "blg-pinboard-empty" });
+    var controls = board.createDiv({ cls: "blg-pinboard-controls" });
+    var fitBtn = controls.createEl("button", { cls: "blg-pinboard-fit" });
+    fitBtn.type = "button";
+    try { Oe.setIcon(fitBtn, "scan"); } catch (_) {}
+    fitBtn.title = T("pinFit"); fitBtn.setAttribute("aria-label", T("pinFit"));
+    var button = host.createEl("button", { cls: "blg-pin-toggle" });
+    button.type = "button";
+
+    var st = {
+      active: false, x: 0, y: 0, z: 1, dom: new Map(), edges: [], edgeRaf: null,
+      edgeTimer: null, camTimer: null, camAnim: null, destroyers: [],
+      destroying: false, selected: []
+    };
+    function rememberDestroyer(fn) { st.destroyers.push(fn); return fn; }
+    function forgetDestroyer(fn) { var i = st.destroyers.indexOf(fn); if (i >= 0) st.destroyers.splice(i, 1); }
+
+    /* El botón vive en contentEl (sigue visible por encima de la pizarra) pero
+       se alinea al borde inferior DEL GRAFO, igual que el de directorios. */
+    function layoutTop() { board.style.top = (graph.offsetTop || 0) + "px"; }
+    function layoutButton() {
+      var h = host.clientHeight || 0;
+      var g = (graph.offsetTop || 0) + (graph.offsetHeight || 0);
+      button.style.bottom = Math.max(6, h - g + 12) + "px";
+    }
+    var ro = new ResizeObserver(function () { layoutTop(); layoutButton(); });
+    ro.observe(graph); layoutTop(); layoutButton();
+
+    function viewport() { return { w: board.clientWidth || 1, h: board.clientHeight || 1 }; }
+    function applyCam() {
+      world.style.transform = "translate(" + st.x + "px," + st.y + "px) scale(" + st.z + ")";
+      dots.style.backgroundPosition = st.x + "px " + st.y + "px";
+    }
+    function setCam(x, y, z) { st.x = x; st.y = y; st.z = clamp(z, 0.2, 4); applyCam(); }
+    function saveCamSoon() {
+      var state = ensureState(plugin);
+      state.camera = { x: st.x, y: st.y, z: st.z };
+      if (st.camTimer) clearTimeout(st.camTimer);
+      st.camTimer = setTimeout(function () { st.camTimer = null; saveState(plugin, true); }, 250);
+    }
+    function cancelCamAnim() {
+      if (st.camAnim != null) { cancelAnimationFrame(st.camAnim); st.camAnim = null; }
+    }
+    /* Transición suave de cámara (~220 ms, easeOutCubic) para el enfoque. */
+    function tweenCam(tx, ty, tz) {
+      cancelCamAnim();
+      var x0 = st.x, y0 = st.y, z0 = st.z, t0 = performance.now();
+      function step(t) {
+        var k = Math.min(1, (t - t0) / 220);
+        var e = 1 - Math.pow(1 - k, 3);
+        st.x = x0 + (tx - x0) * e; st.y = y0 + (ty - y0) * e; st.z = z0 + (tz - z0) * e;
+        applyCam();
+        if (k < 1 && !st.destroying) st.camAnim = requestAnimationFrame(step);
+        else { st.camAnim = null; saveCamSoon(); }
+      }
+      st.camAnim = requestAnimationFrame(step);
+    }
+    function viewCenter() {
+      var v = viewport();
+      return { x: (v.w / 2 - st.x) / st.z, y: (v.h / 2 - st.y) / st.z };
+    }
+    function cardRects() {
+      var state = ensureState(plugin), out = [];
+      Object.keys(state.cards).forEach(function (p) {
+        var e = state.cards[p], rec = st.dom.get(p);
+        out.push({ x: e.x, y: e.y, w: rec ? rec.el.offsetWidth || CARD_W : CARD_W, h: rec ? rec.el.offsetHeight || CARD_H_EST : CARD_H_EST });
+      });
+      return out;
+    }
+    function cardSize(p) {
+      var rec = st.dom.get(p);
+      return rec ? { w: rec.el.offsetWidth || CARD_W, h: rec.el.offsetHeight || CARD_H_EST } : null;
+    }
+    function applyBoardStyle() {
+      var state = ensureState(plugin);
+      board.style.background = state.boardColor || "";
+      board.style.setProperty("--blg-pin-sew-color", settings.mmSewingColor || "#e0245e");
+      board.style.setProperty("--blg-pin-date-font", dateFont(settings));
+      board.style.setProperty("--blg-pin-date-color", dateColor(settings));
+    }
+    function applyHandwriting(rec) {
+      rec.dateEl.style.fontFamily = dateFont(settings);
+      rec.dateEl.style.color = dateColor(settings);
+    }
+    function applyCardColor(rec) {
+      var state = ensureState(plugin), e = state.cards[rec.path];
+      var color = e && normalizeColor(e.color);
+      if (color) {
+        rec.el.style.setProperty("--blg-pin-card-bg", color);
+        rec.el.style.setProperty("--blg-pin-card-border", color);
+      } else {
+        rec.el.style.removeProperty("--blg-pin-card-bg");
+        rec.el.style.removeProperty("--blg-pin-card-border");
+      }
+    }
+
+    function updateEmpty() {
+      var has = Object.keys(ensureState(plugin).cards).length > 0;
+      empty.hidden = has;
+      if (!has) {
+        empty.empty();
+        var ic = empty.createDiv({ cls: "blg-pinboard-empty-icon" });
+        try { Oe.setIcon(ic, "pin"); } catch (_) {}
+        empty.createDiv({ cls: "blg-pinboard-empty-title", text: T("pinEmptyTitle") });
+        empty.createDiv({ cls: "blg-pinboard-empty-hint", text: T("pinEmptyHint") });
+      }
+    }
+
+    /* --- aristas de costura: diff por lista, redibujado de rutas en un RAF --- */
+    function reconcileEdges() {
+      var state = ensureState(plugin);
+      st.edges = deriveEdges(Object.keys(state.cards), function (p) { return sewingTargets(plugin.app, p); });
+      drawEdges();
+    }
+    function edgesSoon() {
+      if (st.edgeTimer) clearTimeout(st.edgeTimer);
+      st.edgeTimer = setTimeout(function () { st.edgeTimer = null; if (st.active && !st.destroying) reconcileEdges(); }, 500);
+    }
+    function scheduleDraw() {
+      if (st.edgeRaf != null) return;
+      st.edgeRaf = requestAnimationFrame(function () { st.edgeRaf = null; drawEdgesNow(); });
+    }
+    function drawEdges() { scheduleDraw(); }
+    function drawEdgesNow() {
+      if (st.destroying) return;
+      var state = ensureState(plugin);
+      edgeG.empty();
+      st.edges.forEach(function (e) {
+        var a = state.cards[e.from], b = state.cards[e.to];
+        if (!a || !b) return;
+        var ra = st.dom.get(e.from), rb = st.dom.get(e.to);
+        var aw = ra ? ra.el.offsetWidth || CARD_W : CARD_W, ah = ra ? ra.el.offsetHeight || CARD_H_EST : CARD_H_EST;
+        var bw = rb ? rb.el.offsetWidth || CARD_W : CARD_W, bh = rb ? rb.el.offsetHeight || CARD_H_EST : CARD_H_EST;
+        var ac = { x: a.x + aw / 2, y: a.y + ah / 2 }, bc = { x: b.x + bw / 2, y: b.y + bh / 2 };
+        var p1 = borderPoint(ac.x, ac.y, aw, ah, bc.x, bc.y);
+        var p2 = borderPoint(bc.x, bc.y, bw, bh, ac.x, ac.y);
+        var d = sewCurve(p1.x, p1.y, p2.x, p2.y), key = edgeKey(e.from, e.to);
+        var es = state.edgeStyles[key] || {};
+        var color = normalizeColor(es.color) || settings.mmSewingColor || "#e0245e";
+        var solid = es.dash === "solid";
+        var hit = svg("path", edgeG, { class: "blg-pinboard-edge-hit", d: d, "vector-effect": "non-scaling-stroke" });
+        hit.addEventListener("contextmenu", function (ev) { ev.preventDefault(); ev.stopPropagation(); edgeMenu(ev, e); });
+        var line = svg("path", edgeG, { class: "blg-pinboard-edge", d: d, "vector-effect": "non-scaling-stroke" });
+        line.classList.toggle("is-solid", solid);
+        line.style.setProperty("--blg-pin-sew-color", color);
+        line.style.setProperty("stroke-dasharray", solid ? "none" : "7 5");
+        var ang = Math.atan2(bc.y - p2.y, bc.x - p2.x), size = 8;
+        var a1 = ang + Math.PI * 0.8, a2 = ang - Math.PI * 0.8;
+        var arrow = svg("polygon", edgeG, { class: "blg-pinboard-arrow", points:
+          p2.x + "," + p2.y + " " + (p2.x + size * Math.cos(a1)) + "," + (p2.y + size * Math.sin(a1)) +
+          " " + (p2.x + size * Math.cos(a2)) + "," + (p2.y + size * Math.sin(a2)) });
+        arrow.style.setProperty("--blg-pin-sew-color", color);
+        arrow.style.setProperty("fill", color);
+      });
+    }
+
+    /* --- tarjetas --- */
+    /* Icono de la nota (frontmatter `icon`): reutiliza el resolver del bundle
+       (Lucide, emoji, Notebook Navigator/Iconize). Tinte = color de la fecha,
+       para que la fila manuscrita se vea coherente. Null si no hay icono o el
+       resolver aún no está listo (la tarjeta se rellena de nuevo al asentarse
+       la caché de metadatos). */
+    function cardIconUri(file) {
+      try {
+        if (typeof _blgFmIcon !== "function") return null;
+        var fm = (plugin.app.metadataCache.getFileCache(file) || {}).frontmatter;
+        if (!fm || fm.icon == null) return null;
+        return _blgFmIcon(fm.icon, dateColor(settings)) || null;
+      } catch (_) { return null; }
+    }
+    function renderCardProps(rec, file) {
+      rec.previewEl.empty();
+      var fm = (plugin.app.metadataCache.getFileCache(file) || {}).frontmatter;
+      var names = tooltipFieldNames(settings), any = false;
+      names.forEach(function (nm) {
+        var vals = frontmatterValues(fm, nm);
+        if (!vals.length) return;
+        any = true;
+        var line = rec.previewEl.createDiv({ cls: "blg-pin-card-prop" });
+        line.createSpan({ cls: "blg-pin-card-prop-name", text: nm + ":" });
+        line.createSpan({ text: " " + vals.join(", ") });
+      });
+      if (!any) rec.previewEl.createDiv({ cls: "blg-pin-card-prop is-empty", text: "—" });
+    }
+    function fillCard(rec, file) {
+      var ok = file instanceof Oe.TFile;
+      rec.el.classList.toggle("is-unavailable", !ok);
+      rec.titleEl.setText(ok ? file.basename : baseOf(rec.path));
+      var folder = folderOf(rec.path);
+      rec.folderEl.setText(folder || T("moveRoot"));
+      rec.folderEl.title = folder || T("moveRoot");
+      var fc = (settings.dropsFolderColors || {})[folder] || settings.dropsColor || "#63bfe7";
+      rec.dot.style.background = fc;
+      rec.openBtn.disabled = !ok;
+      applyHandwriting(rec);
+      applyCardColor(rec);
+      rec.dateTextEl.setText(ok ? formatMtime(file.stat && file.stat.mtime, settings.uiLang) : "—");
+      rec.dateEl.title = T("pinModified");
+      var iconUri = ok ? cardIconUri(file) : null;
+      if (iconUri) {
+        rec.dateIconEl.hidden = false;
+        rec.dateIconEl.style.backgroundImage = "url(\"" + iconUri + "\")";
+      } else {
+        rec.dateIconEl.hidden = true;
+        rec.dateIconEl.style.backgroundImage = "";
+      }
+      if (!ok) {
+        rec.previewEl.empty();
+        rec.previewEl.setText(T("pinUnavailable"));
+        scheduleDraw();
+        return;
+      }
+      renderCardProps(rec, file);
+      scheduleDraw();
+    }
+    function bringToFront(rec) {
+      var state = ensureState(plugin), e = state.cards[rec.path];
+      if (!e) return;
+      e.z = state.nextZ++;
+      rec.el.style.zIndex = e.z;
+      saveState(plugin, true);
+    }
+    /* Primer clic sobre la tarjeta = "quiero leerla": la centra siempre;
+       acerca solo si está lejos y encuadra lo mínimo si está demasiado cerca. */
+    function focusCard(rec) {
+      var state = ensureState(plugin), ce = state.cards[rec.path];
+      if (!ce) return;
+      bringToFront(rec);
+      var t = focusCam({ x: ce.x, y: ce.y,
+        w: rec.el.offsetWidth || CARD_W, h: rec.el.offsetHeight || CARD_H_EST },
+        viewport(), st.z);
+      tweenCam(t.x, t.y, t.z);
+    }
+    function openNote(path) {
+      var f = plugin.app.vault.getAbstractFileByPath(path);
+      if (!(f instanceof Oe.TFile)) return;
+      var ws = plugin.app.workspace, leaf = null;
+      var recent = ws.getMostRecentLeaf && ws.getMostRecentLeaf();
+      if (recent && recent.view && recent.view.getViewType && recent.view.getViewType() === "markdown") leaf = recent;
+      if (!leaf) { var md = ws.getLeavesOfType("markdown"); if (md.length) leaf = md[md.length - 1]; }
+      if (!leaf) leaf = ws.getLeaf("tab");
+      leaf.openFile(f).catch(warn);
+      if (ws.revealLeaf) ws.revealLeaf(leaf);
+    }
+    function cardDown(e, rec) {
+      if (e.button !== 0) return;
+      if (e.target.closest(".blg-pin-card-btn")) return;
+      e.preventDefault(); e.stopPropagation();
+      var state = ensureState(plugin), ce = state.cards[rec.path];
+      if (!ce) return;
+      bringToFront(rec);
+      var sx = e.clientX, sy = e.clientY, ox = ce.x, oy = ce.y, moved = false;
+      function mv(ev) {
+        if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 5) return;
+        moved = true;
+        rec.el.classList.add("is-dragging");
+        ce.x = ox + (ev.clientX - sx) / st.z;
+        ce.y = oy + (ev.clientY - sy) / st.z;
+        rec.el.style.transform = "translate(" + ce.x + "px," + ce.y + "px)";
+        drawEdges();
+      }
+      function up() {
+        cleanup();
+        rec.el.classList.remove("is-dragging");
+        if (moved) {
+          /* El click que sigue al pointerup no debe re-enfocar tras arrastrar. */
+          rec._dragged = true;
+          setTimeout(function () { rec._dragged = false; }, 0);
+          if (!st.destroying) saveState(plugin);
+        }
+      }
+      function cleanup() {
+        window.removeEventListener("pointermove", mv, true);
+        window.removeEventListener("pointerup", up, true);
+        forgetDestroyer(cleanup);
+      }
+      window.addEventListener("pointermove", mv, true);
+      window.addEventListener("pointerup", up, true);
+      rememberDestroyer(cleanup);
+    }
+
+    function currentFile(rec) {
+      var f = plugin.app.vault.getAbstractFileByPath(rec.path);
+      return f instanceof Oe.TFile ? f : null;
+    }
+    function toggleSelected(rec) {
+      var i = st.selected.indexOf(rec.path);
+      if (i >= 0) st.selected.splice(i, 1); else st.selected.push(rec.path);
+      rec.el.classList.toggle("is-selected", i < 0);
+    }
+    function clearSelection() {
+      st.selected.forEach(function (p) { var r = st.dom.get(p); if (r) r.el.classList.remove("is-selected"); });
+      st.selected = [];
+    }
+    function pickColor(title, initial, cb) {
+      var m = new Oe.Modal(plugin.app), value = normalizeColor(initial) || "#63bfe7";
+      m.titleEl.setText(title);
+      new Oe.Setting(m.contentEl).setName(title).addColorPicker(function (c) {
+        c.setValue(value).onChange(function (v) { value = normalizeColor(v) || value; });
+      });
+      var row = m.contentEl.createDiv({ cls: "blg-pin-color-actions" });
+      var ok = row.createEl("button", { text: T("pinApply"), cls: "mod-cta" });
+      ok.addEventListener("click", function () { m.close(); cb(value); });
+      var cancel = row.createEl("button", { text: T("cancel") });
+      cancel.addEventListener("click", function () { m.close(); });
+      m.open();
+    }
+    function setCardColor(rec, color) {
+      var state = ensureState(plugin), e = state.cards[rec.path];
+      if (!e) return;
+      var c = normalizeColor(color);
+      if (c) e.color = c; else delete e.color;
+      saveState(plugin); applyCardColor(rec);
+    }
+    async function sewPairs(pairs) {
+      var done = 0;
+      for (var i = 0; i < pairs.length; i++) {
+        var a = plugin.app.vault.getAbstractFileByPath(pairs[i][0]);
+        var b = plugin.app.vault.getAbstractFileByPath(pairs[i][1]);
+        if (!(a instanceof Oe.TFile) || !(b instanceof Oe.TFile) || a.path === b.path) continue;
+        try { await plugin.coserInmediata(a, b, true); done++; }
+        catch (e) { warn(e); }
+      }
+      clearSelection();
+      if (done) notice("sewBySelection", done);
+      edgesSoon();
+    }
+    function confirmSelectedRelations() {
+      var paths = st.selected.filter(function (p) { return !!ensureState(plugin).cards[p]; });
+      if (paths.length < 2) return;
+      var files = paths.map(function (p) { return plugin.app.vault.getAbstractFileByPath(p); })
+        .filter(function (f) { return f instanceof Oe.TFile; });
+      if (files.length !== paths.length) { notice("pinUnavailable"); return; }
+      if (paths.length === 2) {
+        var a = files[0], b = files[1];
+        if (typeof Vq === "function") new Vq(plugin.app, msg("pinSewTwo", a.basename, b.basename), function () { sewPairs(relationPairs(paths)); }).open();
+        else sewPairs(relationPairs(paths));
+        return;
+      }
+      var m = new Oe.Modal(plugin.app);
+      m.titleEl.setText(msg("pinRelateCount", paths.length));
+      var box = m.contentEl.createDiv({ cls: "blg-pin-relate-actions" });
+      var all = box.createEl("button", { text: msg("pinSewParentAll", files[0].basename, paths.length - 1), cls: "mod-cta" });
+      all.addEventListener("click", function () { m.close(); sewPairs(relationPairs(paths, "parent")); });
+      var chain = box.createEl("button", { text: T("pinSewChain") });
+      chain.addEventListener("click", function () { m.close(); sewPairs(relationPairs(paths, "chain")); });
+      var cancel = box.createEl("button", { text: T("cancel") });
+      cancel.addEventListener("click", function () { m.close(); });
+      m.open();
+    }
+    function cardMenu(e, rec) {
+      e.preventDefault(); e.stopPropagation(); bringToFront(rec);
+      var menu = new Oe.Menu(), file = currentFile(rec), state = ensureState(plugin);
+      if (file && typeof Wq === "function") {
+        menu.addItem(function (item) {
+          item.setTitle(T("ctxEditYaml")).setIcon("pencil").onClick(function () { new Wq(plugin.app, file, view).open(); });
+        });
+      }
+      menu.addItem(function (item) {
+        item.setTitle(T("pinCardColor")).setIcon("palette").onClick(function () {
+          var cur = state.cards[rec.path] && state.cards[rec.path].color;
+          pickColor(T("pinCardColor"), cur || settings.dropsColor || "#63bfe7", function (c) { setCardColor(rec, c); });
+        });
+      });
+      if (state.cards[rec.path] && state.cards[rec.path].color) {
+        menu.addItem(function (item) {
+          item.setTitle(T("pinResetColor")).setIcon("rotate-ccw").onClick(function () { setCardColor(rec, null); });
+        });
+      }
+      if (st.selected.length >= 2) {
+        menu.addItem(function (item) {
+          item.setTitle(msg("pinRelateCount", st.selected.length)).setIcon("git-merge").onClick(confirmSelectedRelations);
+        });
+      }
+      menu.addItem(function (item) {
+        item.setTitle(T("pinUnpin")).setIcon("pin-off").onClick(function () { unpinPath(plugin, rec.path); });
+      });
+      menu.showAtPosition({ x: e.clientX, y: e.clientY });
+    }
+    function setEdgeStyle(edge, patch) {
+      var state = ensureState(plugin), key = edgeKey(edge.from, edge.to);
+      var out = Object.assign({}, state.edgeStyles[key] || {});
+      if (Object.prototype.hasOwnProperty.call(patch, "color")) {
+        var c = normalizeColor(patch.color);
+        if (c) out.color = c; else delete out.color;
+      }
+      if (patch.dash) out.dash = patch.dash === "solid" ? "solid" : "dash";
+      if (Object.keys(out).length) state.edgeStyles[key] = out; else delete state.edgeStyles[key];
+      saveState(plugin); drawEdges();
+    }
+    function edgeMenu(e, edge) {
+      var menu = new Oe.Menu(), state = ensureState(plugin), es = state.edgeStyles[edgeKey(edge.from, edge.to)] || {};
+      menu.addItem(function (item) {
+        item.setTitle(T("pinEdgeColor")).setIcon("palette").onClick(function () {
+          pickColor(T("pinEdgeColor"), es.color || settings.mmSewingColor || "#e0245e", function (c) { setEdgeStyle(edge, { color: c }); });
+        });
+      });
+      menu.addItem(function (item) {
+        item.setTitle(T("pinLineSolid")).setIcon("minus").onClick(function () { setEdgeStyle(edge, { dash: "solid" }); });
+      });
+      menu.addItem(function (item) {
+        item.setTitle(T("pinLineDashed")).setIcon("ellipsis").onClick(function () { setEdgeStyle(edge, { dash: "dash" }); });
+      });
+      if (Object.keys(es).length) {
+        menu.addItem(function (item) {
+          item.setTitle(T("pinResetStyle")).setIcon("rotate-ccw").onClick(function () {
+            var state2 = ensureState(plugin); delete state2.edgeStyles[edgeKey(edge.from, edge.to)]; saveState(plugin); drawEdges();
+          });
+        });
+      }
+      menu.showAtPosition({ x: e.clientX, y: e.clientY });
+    }
+    function setBoardColor(color) {
+      var state = ensureState(plugin);
+      state.boardColor = normalizeColor(color);
+      saveState(plugin); applyBoardStyle();
+    }
+    function boardMenu(e) {
+      var menu = new Oe.Menu(), state = ensureState(plugin);
+      menu.addItem(function (item) {
+        item.setTitle(T("pinBoardColor")).setIcon("palette").onClick(function () {
+          pickColor(T("pinBoardColor"), state.boardColor || "#1e1e1e", function (c) { setBoardColor(c); });
+        });
+      });
+      if (state.boardColor) {
+        menu.addItem(function (item) {
+          item.setTitle(T("pinResetColor")).setIcon("rotate-ccw").onClick(function () { setBoardColor(null); });
+        });
+      }
+      if (st.selected.length) {
+        menu.addItem(function (item) { item.setTitle(T("pinClearSelection")).setIcon("x").onClick(clearSelection); });
+      }
+      menu.showAtPosition({ x: e.clientX, y: e.clientY });
+    }
+    function buildCard(path, entering) {
+      var state = ensureState(plugin), e = state.cards[path];
+      if (!e || st.dom.has(path)) return st.dom.get(path) || null;
+      var file = plugin.app.vault.getAbstractFileByPath(path);
+      var el = cardLayer.createDiv({ cls: "blg-pin-card" });
+      el.tabIndex = 0;
+      el.style.transform = "translate(" + e.x + "px," + e.y + "px)";
+      el.style.zIndex = e.z;
+      var dateEl = el.createDiv({ cls: "blg-pin-card-date" });
+      var dateIconEl = dateEl.createSpan({ cls: "blg-pin-card-date-icon" });
+      dateIconEl.hidden = true;
+      var dateTextEl = dateEl.createSpan({ cls: "blg-pin-card-date-text" });
+      var head = el.createDiv({ cls: "blg-pin-card-head" });
+      var dot = head.createSpan({ cls: "blg-pin-card-dot" });
+      var titleEl = head.createSpan({ cls: "blg-pin-card-title" });
+      var openBtn = head.createEl("button", { cls: "blg-pin-card-btn blg-pin-card-open" });
+      openBtn.type = "button";
+      try { Oe.setIcon(openBtn, "external-link"); } catch (_) {}
+      openBtn.title = T("pinOpen"); openBtn.setAttribute("aria-label", T("pinOpen"));
+      var unpinBtn = head.createEl("button", { cls: "blg-pin-card-btn blg-pin-card-unpin" });
+      unpinBtn.type = "button";
+      try { Oe.setIcon(unpinBtn, "pin-off"); } catch (_) {}
+      unpinBtn.title = T("pinUnpin"); unpinBtn.setAttribute("aria-label", T("pinUnpin"));
+      var folderEl = el.createDiv({ cls: "blg-pin-card-folder" });
+      var previewEl = el.createDiv({ cls: "blg-pin-card-preview" });
+      var rec = { path: path, el: el, head: head, dot: dot, titleEl: titleEl, folderEl: folderEl,
+        previewEl: previewEl, dateEl: dateEl, dateIconEl: dateIconEl, dateTextEl: dateTextEl,
+        openBtn: openBtn, rev: 0 };
+      st.dom.set(path, rec);
+      if (st.selected.indexOf(path) >= 0) el.classList.add("is-selected");
+      fillCard(rec, file);
+      el.addEventListener("pointerdown", function (e2) {
+        if (e2.button !== 0 || !(e2.ctrlKey || e2.metaKey) || e2.target.closest(".blg-pin-card-btn")) return;
+        e2.preventDefault(); e2.stopPropagation(); toggleSelected(rec); bringToFront(rec);
+      }, true);
+      head.addEventListener("pointerdown", function (e2) { cardDown(e2, rec); });
+      el.addEventListener("contextmenu", function (e2) { cardMenu(e2, rec); });
+      openBtn.addEventListener("click", function (e2) { e2.stopPropagation(); openNote(rec.path); });
+      unpinBtn.addEventListener("click", function (e2) { e2.stopPropagation(); unpinPath(plugin, rec.path); });
+      el.addEventListener("dblclick", function (e2) {
+        if (e2.target.closest(".blg-pin-card-btn") || e2.ctrlKey || e2.metaKey) return;
+        openNote(rec.path);
+      });
+      el.addEventListener("keydown", function (e2) {
+        if (e2.key === "Enter") { e2.preventDefault(); openNote(rec.path); }
+      });
+      /* Rueda sobre la tarjeta: recorre sus propiedades (vertical; con Shift,
+         horizontal si desbordan, como en el tooltip). Si NO hay desborde, el
+         evento sigue hasta la pizarra y conserva el zoom con rueda. */
+      el.addEventListener("wheel", function (e2) {
+        var pv = rec.previewEl;
+        var canY = pv.scrollHeight > pv.clientHeight + 1;
+        var canX = pv.scrollWidth > pv.clientWidth + 1;
+        if (e2.shiftKey ? !canX : !canY) return;
+        e2.preventDefault(); e2.stopPropagation();
+        if (e2.shiftKey) pv.scrollLeft += e2.deltaY || e2.deltaX;
+        else pv.scrollTop += e2.deltaY;
+      }, { passive: false });
+      /* Primer clic (sin arrastrar, sin Ctrl, fuera de botones): enfocar. */
+      el.addEventListener("click", function (e2) {
+        if (e2.button !== 0) return;
+        if (e2.target.closest(".blg-pin-card-btn")) return;
+        if (e2.ctrlKey || e2.metaKey) return;
+        if (rec._dragged) return;
+        focusCard(rec);
+      });
+      var roz = new ResizeObserver(function () { scheduleDraw(); });
+      roz.observe(el);
+      rec.roz = roz;
+      rec.cleanup = rememberDestroyer(function () { roz.disconnect(); });
+      if (entering) {
+        el.classList.add("is-entering");
+        setTimeout(function () { el.classList.remove("is-entering"); }, 260);
+      }
+      return rec;
+    }
+    function removeCard(path) {
+      var rec = st.dom.get(path);
+      if (!rec) return;
+      st.dom.delete(path);
+      if (rec.cleanup) { forgetDestroyer(rec.cleanup); rec.cleanup(); rec.cleanup = null; }
+      if (rec.roz) rec.roz = null;
+      var si = st.selected.indexOf(path);
+      if (si >= 0) st.selected.splice(si, 1);
+      rec.el.classList.add("is-leaving");
+      setTimeout(function () { rec.el.remove(); scheduleDraw(); }, 160);
+      scheduleDraw();
+    }
+    function buildAll() {
+      st.dom.forEach(function (rec) {
+        if (rec.cleanup) { forgetDestroyer(rec.cleanup); rec.cleanup(); rec.cleanup = null; }
+        if (rec.roz) rec.roz = null;
+      });
+      cardLayer.empty(); st.dom.clear();
+      var state = ensureState(plugin);
+      st.selected = st.selected.filter(function (p) { return !!state.cards[p]; });
+      Object.keys(state.cards).sort(function (a, b) { return state.cards[a].z - state.cards[b].z; })
+        .forEach(function (p) { buildCard(p, false); });
+      scheduleDraw();
+    }
+
+    /* --- entrada/salida del modo --- */
+    function enter() {
+      if (st.active || plugin.session) return;
+      // Las gotas siguen al grafo; salir de ellas antes de cubrirlo.
+      var dt = graph.querySelector(".blg-drops-toggle.is-active");
+      if (dt) dt.click();
+      st.active = true;
+      board.hidden = false;
+      layoutTop(); applyBoardStyle();
+      buildAll();
+      var state = ensureState(plugin);
+      if (state.camera) setCam(state.camera.x, state.camera.y, state.camera.z);
+      else { var f = fitCamera(cardRects(), viewport(), 70); setCam(f.x, f.y, f.z); saveCamSoon(); }
+      reconcileEdges(); updateEmpty(); syncButton();
+      try { board.focus({ preventScroll: true }); } catch (_) {}
+    }
+    function exit() {
+      if (!st.active) return;
+      st.active = false;
+      clearSelection();
+      var state = ensureState(plugin);
+      state.camera = { x: st.x, y: st.y, z: st.z };
+      saveState(plugin);
+      board.hidden = true;
+      syncButton();
+      try { button.focus({ preventScroll: true }); } catch (_) {}
+    }
+    button.addEventListener("click", function () { if (st.active) exit(); else enter(); });
+
+    /* --- pan / zoom / fit --- */
+    board.addEventListener("wheel", function (e) {
+      e.preventDefault(); e.stopPropagation();
+      cancelCamAnim();
+      var rect = board.getBoundingClientRect();
+      var ax = e.clientX - rect.left, ay = e.clientY - rect.top;
+      var z1 = clamp(st.z * (1 - e.deltaY * 0.001), 0.2, 3);
+      var p = anchorPan({ x: st.x, y: st.y }, st.z, z1, ax, ay);
+      st.x = p.x; st.y = p.y; st.z = z1;
+      applyCam(); saveCamSoon();
+    }, { passive: false });
+    board.addEventListener("pointerdown", function (e) {
+      if (e.button !== 0 && e.button !== 1) return;
+      if (e.target.closest(".blg-pin-card") || e.target.closest(".blg-pinboard-controls")) return;
+      e.preventDefault();
+      cancelCamAnim();
+      var sx = e.clientX, sy = e.clientY, ox = st.x, oy = st.y, moved = false;
+      function mv(ev) {
+        var dx = ev.clientX - sx, dy = ev.clientY - sy;
+        if (!moved && Math.hypot(dx, dy) < 4) return;
+        moved = true;
+        board.classList.add("is-panning");
+        st.x = ox + dx; st.y = oy + dy;
+        applyCam();
+      }
+      function up() {
+        cleanup();
+        board.classList.remove("is-panning");
+        if (moved) saveCamSoon();
+      }
+      function cleanup() {
+        window.removeEventListener("pointermove", mv, true);
+        window.removeEventListener("pointerup", up, true);
+        forgetDestroyer(cleanup);
+      }
+      window.addEventListener("pointermove", mv, true);
+      window.addEventListener("pointerup", up, true);
+      rememberDestroyer(cleanup);
+    });
+    board.addEventListener("dblclick", function (e) {
+      if (e.target.closest(".blg-pin-card") || e.target.closest(".blg-pinboard-controls")) return;
+      cancelCamAnim();
+      var f = fitCamera(cardRects(), viewport(), 70);
+      setCam(f.x, f.y, f.z); saveCamSoon();
+    });
+    board.addEventListener("contextmenu", function (e) {
+      if (e.target.closest(".blg-pin-card") || e.target.closest(".blg-pinboard-controls")) return;
+      e.preventDefault(); e.stopPropagation(); boardMenu(e);
+    });
+    fitBtn.addEventListener("click", function () {
+      cancelCamAnim();
+      var f = fitCamera(cardRects(), viewport(), 70);
+      setCam(f.x, f.y, f.z); saveCamSoon();
+    });
+    board.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { e.preventDefault(); exit(); }
+    });
+
+    function syncButton() {
+      button.hidden = !!plugin.session;
+      var state = ensureState(plugin);
+      var n = Object.keys(state.cards).length;
+      button.classList.toggle("is-active", st.active);
+      button.empty();
+      var ic = button.createSpan({ cls: "blg-pin-toggle-icon" });
+      try { Oe.setIcon(ic, "pin"); } catch (_) {}
+      if (n) { var badge = button.createSpan({ cls: "blg-pin-toggle-count", text: String(n) }); badge.setAttribute("aria-hidden", "true"); }
+      var dt = graph.querySelector(".blg-drops-toggle");
+      var dropsShown = dt && !dt.hidden && !st.active;
+      button.classList.toggle("is-with-drops", !!dropsShown);
+      layoutButton();
+      button.style.right = "";
+      button.title = T(st.active ? "pinBtnHide" : "pinBtnShow") + " · " + msg("pinCount", n);
+      button.setAttribute("aria-label", button.title);
+    }
+
+    /* --- envolturas de refresco: solo re-sincronizan el botón; el grafo
+       sigue su curso normal debajo de la pizarra. Si empieza una sesión de
+       costura, la pizarra se cierra. --- */
+    var oMode = view.renderMode, oLocal = view.renderLocalGraph, oTag = view.renderTagGraph,
+      oSched = view._scheduleRefresh, oRef = view.refreshLocal;
+    function after() { if (plugin.session && st.active) exit(); syncButton(); }
+    view.renderMode = function () { var r = oMode.apply(this, arguments); after(); return r; };
+    view.refreshLocal = function () { var r = oRef.apply(this, arguments); after(); return r; };
+    view.renderLocalGraph = function () { var r = oLocal.apply(this, arguments); after(); return r; };
+    view.renderTagGraph = function () { var r = oTag.apply(this, arguments); after(); return r; };
+    view._scheduleRefresh = function () { var r = oSched.apply(this, arguments); after(); return r; };
+
+    var handle = {
+      active: function () { return st.active; },
+      enter: enter, exit: exit,
+      viewCenter: viewCenter, cardSize: cardSize,
+      syncButton: syncButton,
+      /* API para el MCP: selección actual, foco de una tarjeta y encuadre. */
+      selected: function () { return st.selected.slice(); },
+      focus: function (path) { var rec = st.dom.get(path); if (!rec) return false; focusCard(rec); return true; },
+      fit: function () { cancelCamAnim(); var f = fitCamera(cardRects(), viewport(), 70); setCam(f.x, f.y, f.z); saveCamSoon(); },
+      edgesSoon: edgesSoon,
+      /* parches incrementales: nunca tocan cámara ni otras tarjetas */
+      cardAdded: function (path) {
+        syncButton();
+        if (!st.active) return;
+        buildCard(path, true);
+        updateEmpty(); reconcileEdges();
+      },
+      cardRemoved: function (path) {
+        syncButton();
+        if (!st.active) return;
+        removeCard(path);
+        updateEmpty();
+        edgesSoon();
+      },
+      cardUpdated: function (path) {
+        if (!st.active) return;
+        var rec = st.dom.get(path);
+        if (!rec) return;
+        fillCard(rec, plugin.app.vault.getAbstractFileByPath(path));
+      },
+      settingsChanged: function () {
+        applyBoardStyle();
+        if (!st.active) return;
+        st.dom.forEach(function (rec) { fillCard(rec, plugin.app.vault.getAbstractFileByPath(rec.path)); });
+        drawEdges();
+      },
+      availability: function (path, ok) {
+        if (!st.active) return;
+        var rec = st.dom.get(path);
+        if (rec) fillCard(rec, ok ? plugin.app.vault.getAbstractFileByPath(path) : null);
+        edgesSoon();
+      },
+      renamed: function (oldPath, newPath) {
+        var si = st.selected.indexOf(oldPath);
+        if (si >= 0) st.selected[si] = newPath;
+        if (!st.active) return;
+        var rec = st.dom.get(oldPath);
+        if (rec) {
+          st.dom.delete(oldPath);
+          rec.path = newPath;
+          st.dom.set(newPath, rec);
+          fillCard(rec, plugin.app.vault.getAbstractFileByPath(newPath));
+        }
+        edgesSoon();
+      },
+      destroy: function () {
+        st.destroying = true;
+        if (st.edgeRaf != null) cancelAnimationFrame(st.edgeRaf);
+        if (st.edgeTimer) clearTimeout(st.edgeTimer);
+        if (st.camTimer) clearTimeout(st.camTimer);
+        cancelCamAnim();
+        st.destroyers.slice().forEach(function (fn) { try { fn(); } catch (_) {} });
+        st.destroyers = [];
+        ro.disconnect();
+        view.renderMode = oMode; view.renderLocalGraph = oLocal; view.renderTagGraph = oTag;
+        view._scheduleRefresh = oSched; view.refreshLocal = oRef;
+        board.remove(); button.remove();
+        view._blgPinAttached = false;
+      }
+    };
+    // El cierre de la vista destruye Cytoscape y contentEl se vacía.
+    if (view.cy && view.cy.on) view.cy.on("destroy", function () {
+      if (plugin._blgPin && plugin._blgPin.attached === handle) {
+        handle.destroy(); plugin._blgPin.attached = null;
+      }
+    });
+    syncButton();
+    return handle;
+  }
+
+  /* ---------- ciclo de vida del plugin ---------- */
+
+  var _onload = PLUGIN_PROTO.onload, _onunload = PLUGIN_PROTO.onunload;
+  PLUGIN_PROTO.onload = async function () {
+    pluginInstance = this;
+    this._blgPin = { attached: null };
+    try { hookPinSettingTab(this); } catch (e) { warn(e); }
+    await _onload.call(this);
+    try {
+      var plugin = this;
+      ensureState(plugin);
+      function h() { return plugin._blgPin && plugin._blgPin.attached; }
+      if (!plugin._blgPinSaveWrapped) {
+        var originalSaveSettings = plugin.saveSettings;
+        plugin.saveSettings = async function () {
+          var r = await originalSaveSettings.apply(this, arguments);
+          var hh = h(); if (hh) hh.settingsChanged();
+          return r;
+        };
+        plugin._blgPinSaveWrapped = true;
+      }
+      /* Identidad: el renombrado migra rutas conservando posición; borrar
+         marca la tarjeta como no disponible (sin perder su sitio); crearla
+         de nuevo la revive. Funciona también con la pizarra cerrada. */
+      plugin.registerEvent(plugin.app.vault.on("rename", function (file, oldPath) {
+        try {
+          var st = ensureState(plugin);
+          if (migrateRename(st, oldPath, file.path)) {
+            saveState(plugin);
+            var hh = h(); if (hh) hh.renamed(oldPath, file.path);
+          }
+        } catch (e) { warn(e); }
+      }));
+      plugin.registerEvent(plugin.app.vault.on("delete", function (file) {
+        try {
+          if (!(file instanceof Oe.TFile)) return;
+          if (!isPinned(plugin, file.path)) return;
+          var hh = h(); if (hh) hh.availability(file.path, false);
+        } catch (e) { warn(e); }
+      }));
+      plugin.registerEvent(plugin.app.vault.on("create", function (file) {
+        try {
+          if (!(file instanceof Oe.TFile)) return;
+          if (!isPinned(plugin, file.path)) return;
+          var hh = h(); if (hh) hh.availability(file.path, true);
+        } catch (e) { warn(e); }
+      }));
+      /* Metadatos: actualizar SOLO la tarjeta afectada y reconciliar aristas
+         cuando la caché se asiente (nunca reconstruir la pizarra entera). */
+      plugin.registerEvent(plugin.app.metadataCache.on("changed", function (file) {
+        try {
+          if (!file || !file.path) return;
+          if (!isPinned(plugin, file.path)) return;
+          var hh = h(); if (hh) { hh.cardUpdated(file.path); hh.edgesSoon(); }
+        } catch (e) { warn(e); }
+      }));
+      plugin.registerEvent(plugin.app.metadataCache.on("resolved", function () {
+        try { var hh = h(); if (hh) hh.edgesSoon(); } catch (e) { warn(e); }
+      }));
+      function tryAttach() {
+        try {
+          var v = plugin.getView && plugin.getView();
+          if (!v || !v.graphEl) return;
+          if (plugin._blgPin.attached && plugin._blgPin.attached.view !== v) {
+            plugin._blgPin.attached.destroy(); plugin._blgPin.attached = null;
+          }
+          if (!plugin._blgPin.attached) {
+            var hh = attachView(plugin, v);
+            if (hh) { hh.view = v; plugin._blgPin.attached = hh; }
+          }
+        } catch (e) { warn(e); }
+      }
+      plugin.registerEvent(plugin.app.workspace.on("layout-change", tryAttach));
+      plugin.registerEvent(plugin.app.workspace.on("active-leaf-change", tryAttach));
+      setTimeout(tryAttach, 250); setTimeout(tryAttach, 1100);
+    } catch (e) { warn(e); }
+  };
+  PLUGIN_PROTO.onunload = function () {
+    try { if (this._blgPin && this._blgPin.attached) this._blgPin.attached.destroy(); } catch (e) { warn(e); }
+    this._blgPin = null; pluginInstance = null;
+    if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+    if (typeof globalThis !== "undefined" && globalThis.__BLG_PINBOARD === sharedApi) delete globalThis.__BLG_PINBOARD;
+    return _onunload.call(this);
+  };
+})();
+
+/* ============================================================
+   Better Local Graph — Gotas de ubicación y Mover A (inyectado).
+   Añadir este módulo DESPUÉS de blg-pin-board.js al regenerar main.js.
+   Desktop únicamente. Ajustes drops* en data.json; no toca frontmatter.
+   Un solo filtro SVG y un solo RAF propio; reduce blur, satélites y
+   reflejos/leyenda, por ese orden, si cae el rendimiento.
+   ============================================================ */
+(function () {
+  "use strict";
+  var PLUGIN_PROTO;
+  try { PLUGIN_PROTO = module.exports && module.exports.default && module.exports.default.prototype; } catch (_) { return; }
+  if (!PLUGIN_PROTO) return;
+  var Oe;
+  try { require("path"); Oe = require("obsidian"); } catch (_) { return; } // móvil
+
+  var pluginInstance = null, warned = false, nextId = 0;
+  function warn(e) { if (!warned) { warned = true; try { console.warn("[BLG Drops]", e); } catch (_) {} } }
+  function T(key) { return typeof L === "function" ? L(key) : key; }
+  function msg(key) { var x = T(key); return typeof x === "function" ? x.apply(null, Array.prototype.slice.call(arguments, 1)) : x; }
+  function notice(key) { new Oe.Notice(msg.apply(null, arguments)); }
+  function defaults() { return {
+    dropsColor: "#63bfe7", dropsOpacity: 0.22, dropsSize: 1,
+    dropsBorderColor: "#63bfe7", dropsBorderWidth: 1, dropsGooBlur: 10,
+    dropsSpeed: 1, dropsLabels: true, dropsLabelSize: 0.85, dropsLegend: false,
+    dropsZoomOut: true, dropsMinZoom: 0.5, dropsCopyMod: "Ctrl", dropsMaxFolders: 15,
+    dropsFolderColors: {}
+  }; }
+  function applyDefaults(plugin) { var d = defaults(), changed = false; Object.keys(d).forEach(function (k) {
+    if (plugin.settings[k] == null) { plugin.settings[k] = d[k]; changed = true; }
+  }); return changed; }
+  function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+  /* Pan que mantiene el punto del modelo bajo el cursor (ax, ay en píxeles del
+     contenedor) al pasar de z0 a z1. Zoom in y zoom out van hacia/desde el
+     cursor, no hacia el centro del viewport. */
+  function anchorPan(pan, z0, z1, ax, ay) {
+    var mx = (ax - pan.x) / z0, my = (ay - pan.y) / z0;
+    return { x: ax - mx * z1, y: ay - my * z1 };
+  }
+  /* Cytoscape devuelve SIEMPRE el mismo objeto de posición (por referencia):
+     guardarlo tal cual en st.target / st.saved hace que la base se mueva con
+     el nodo (deriva en espiral al soltar gotas y destino de salida corrupto).
+     Toda posición persistida se guarda como copia independiente. */
+  function clonePos(p) { return { x: p.x, y: p.y }; }
+  function capturePositions(cy) { var m = new Map(); cy.nodes().forEach(function (n) { m.set(n.id(), clonePos(n.position())); }); return m; }
+  function fold(s) { return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); }
+  function folderPath(file) { var p = file && file.parent && file.parent.path; return !p || p === "/" ? "" : p; }
+  function folderName(p) { return p || T("moveRoot"); }
+  function dropLabel(p) { return p ? p.split("/").pop() : T("moveRoot"); }
+  function excluded(plugin, p) { return (plugin.settings.excludedFolders || []).some(function (e) {
+    e = String(e || "").replace(/^\/+|\/+$/g, ""); return e && (p === e || p.indexOf(e + "/") === 0);
+  }); }
+  /* Misma coincidencia de tags que la Tag View del bundle (segmento en
+     cualquier posición), para detectar si cambió la topología visible. */
+  function tagMatches(candidate, wanted) {
+    var x = String(candidate || "").replace(/^#/, ""), w = String(wanted || "").replace(/^#/, "");
+    if (x === w) return true;
+    if (x.indexOf(w + "/") === 0) return true;
+    var seg = x.split("/"), ws = w.split("/"), wl = ws.length;
+    for (var i = 0; i + wl <= seg.length; i++) {
+      var ok = true;
+      for (var j = 0; j < wl; j++) if (seg[i + j] !== ws[j]) { ok = false; break; }
+      if (ok) return true;
+    }
+    return false;
+  }
+  function tagGraphNodeIds(plugin, wanted) {
+    var out = new Set(), mc = plugin.app.metadataCache;
+    plugin.app.vault.getMarkdownFiles().forEach(function (f) {
+      var c = mc.getFileCache(f), hit = false;
+      if (!c) return;
+      if (c.tags) for (var i = 0; i < c.tags.length; i++) if (tagMatches(c.tags[i].tag, wanted)) { hit = true; break; }
+      if (!hit && c.frontmatter && c.frontmatter.tags) {
+        var arr = Array.isArray(c.frontmatter.tags) ? c.frontmatter.tags : [c.frontmatter.tags];
+        for (var k = 0; k < arr.length; k++) if (arr[k] != null && tagMatches(String(arr[k]), wanted)) { hit = true; break; }
+      }
+      if (hit) out.add(f.path);
+    });
+    return out;
+  }
+  /* Aristas de la Tag View entre nodos YA visibles. Permite actualizar
+     costuras/enlaces sin reconstruir nodos, layout, cámara ni selección. */
+  function tagEdgeDescriptors(plugin, pathSet) {
+    var els = [], seen = new Map(), mc = plugin.app.metadataCache;
+    function pushEdge(A, B, cls) {
+      if (!A || !B || A === B || !pathSet.has(A) || !pathSet.has(B)) return;
+      var k = A < B ? A + "\0" + B : B + "\0" + A;
+      if (seen.has(k)) {
+        if (cls.indexOf("sewing") !== -1) {
+          var ex = seen.get(k);
+          if (ex.classes.indexOf("sewing") === -1) ex.classes += " sewing";
+        }
+        return;
+      }
+      var el = { data: { id: "e_" + k, source: A, target: B }, classes: cls };
+      seen.set(k, el); els.push(el);
+    }
+    var RL = mc.resolvedLinks || {};
+    pathSet.forEach(function (src) {
+      var tgts = RL[src]; if (!tgts) return;
+      Object.keys(tgts).forEach(function (dst) { if (pathSet.has(dst)) pushEdge(src, dst, "tagedge"); });
+    });
+    pathSet.forEach(function (src) {
+      var f = plugin.app.vault.getAbstractFileByPath(src);
+      if (!(f instanceof Oe.TFile) || !plugin._sewingTargets) return;
+      plugin._sewingTargets(f).forEach(function (dst) { pushEdge(src, dst, "tagedge sewing"); });
+    });
+    return els;
+  }
+  function hex(h) { var m = /^#?([\da-f]{2})([\da-f]{2})([\da-f]{2})$/i.exec(h || defaults().dropsColor);
+    return m ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] : hex(defaults().dropsColor); }
+  function rgba(h, a) { return "rgba(" + hex(h).join(",") + "," + a + ")"; }
+  function colors(plugin) {
+    var s = plugin.settings, light = document.body.classList.contains("theme-light"), op = clamp(+s.dropsOpacity || 0, 0.05, 0.6);
+    return { fill: s.dropsColor, border: s.dropsBorderColor,
+      fillAlpha: light ? op * 0.8 : op, borderAlpha: clamp(op * (light ? 2.2 : 1.8), 0.25, 0.7),
+      ink: rgba(s.dropsBorderColor, light ? 0.65 : 0.55), shine: rgba(s.dropsColor, light ? 0.18 : 0.3) };
+  }
+  /* Colores efectivos de UNA gota: la asignación por carpeta (ruta completa)
+     prevalece sobre el color global; sin asignación, el global. */
+  function dropColors(plugin, p) {
+    var s = plugin.settings, map = s.dropsFolderColors || {}, own = map[p];
+    var base = /^#[0-9a-f]{6}$/i.test(own || "") ? own : s.dropsColor;
+    var light = document.body.classList.contains("theme-light"), op = clamp(+s.dropsOpacity || 0, 0.05, 0.6);
+    return { fill: base, border: base,
+      fillAlpha: light ? op * 0.8 : op, borderAlpha: clamp(op * (light ? 2.2 : 1.8), 0.25, 0.7),
+      shine: rgba(base, light ? 0.18 : 0.3) };
+  }
+  function fullPath(dir, name) { return dir ? dir + "/" + name : name; }
+  function rootOrFolder(app, p) { return p ? app.vault.getAbstractFileByPath(p) : app.vault.getRoot(); }
+  function resolveFile(view, id) {
+    var path = view && view._blgDropsAlias && view._blgDropsAlias.get(id);
+    var file = path && view.app.vault.getAbstractFileByPath(path);
+    return file instanceof Oe.TFile ? file : null;
+  }
+  function fileForNode(app, id, aliases) {
+    var file = app.vault.getAbstractFileByPath(id);
+    if (!(file instanceof Oe.TFile) && aliases.has(id)) file = app.vault.getAbstractFileByPath(aliases.get(id));
+    return file;
+  }
+  function validFolderPath(p) { return p !== "/" && !/(^|\/)\.{1,2}(\/|$)|[\\:*?"<>|]/.test(p) && !/\/\//.test(p) && p === p.trim() && !p.endsWith("/"); }
+  function confirm(app, title, body, accept, yes) {
+    var modal = new Oe.Modal(app);
+    modal.onOpen = function () {
+      modal.titleEl.setText(title); modal.contentEl.createEl("p", { text: body });
+      var row = modal.contentEl.createDiv({ cls: "blg-drops-confirm" });
+      row.createEl("button", { text: T("cancel") }).onclick = function () { modal.close(); };
+      row.createEl("button", { text: accept, cls: "mod-cta" }).onclick = function () { modal.close(); yes(); };
+    };
+    modal.onClose = function () { modal.contentEl.empty(); };
+    modal.open();
+  }
+
+  /* Todas las carpetas cargadas, prefijo primero y substring después. La
+     carpeta actual se antepone solamente cuando también coincide. */
+  function openFolderPicker(opts) {
+    var plugin = opts.plugin || pluginInstance, app = plugin.app, current = opts.current || "";
+    var counts = new Map(); app.vault.getMarkdownFiles().forEach(function (f) {
+      var p = folderPath(f); counts.set(p, (counts.get(p) || 0) + 1);
+    });
+    var folders = app.vault.getAllLoadedFiles().filter(function (f) { return f instanceof Oe.TFolder && !excluded(plugin, f.path === "/" ? "" : f.path); });
+    if (!folders.some(function (f) { return f.path === "/"; })) folders.push(app.vault.getRoot());
+    var modal = new Oe.Modal(app), input, create, suggest;
+    function pathOf(f) { return f.path === "/" ? "" : f.path; }
+    function choose(p) { modal.close(); opts.onChoose(p); }
+    function matches(q) {
+      q = fold(q.trim());
+      return folders.filter(function (f) { return fold(folderName(pathOf(f))).indexOf(q) !== -1; })
+        .sort(function (a, b) {
+          var x = pathOf(a), y = pathOf(b), ax = x === current ? -1 : fold(x).startsWith(q) ? 0 : 1;
+          var by = y === current ? -1 : fold(y).startsWith(q) ? 0 : 1;
+          return ax - by || x.localeCompare(y);
+        });
+    }
+    async function createFolder(p) {
+      try {
+        if (!validFolderPath(p) || excluded(plugin, p)) { notice("moveBadFolder"); return; }
+        var acc = "";
+        for (var seg of p.split("/")) {
+          acc = fullPath(acc, seg);
+          var existing = app.vault.getAbstractFileByPath(acc);
+          if (existing && !(existing instanceof Oe.TFolder)) throw new Error(msg("moveExists", acc));
+          if (!existing) await app.vault.createFolder(acc);
+        }
+        choose(p);
+      } catch (e) { notice("moveError", e.message || String(e)); }
+    }
+    modal.onOpen = function () {
+      modal.titleEl.setText(T("moveFolderTitle"));
+      input = modal.contentEl.createEl("input", { type: "text", cls: "blg-drops-search", placeholder: T("moveFolderPicker") });
+      create = modal.contentEl.createEl("button", { cls: "blg-drops-create" });
+      function updateCreate() {
+        var p = input.value.trim().replace(/^\/+|\/+$/g, "");
+        var exists = folders.some(function (f) { return pathOf(f) === p; });
+        create.hidden = !p || exists || !validFolderPath(p) || excluded(plugin, p);
+        create.setText(msg("moveNewFolder", p));
+      }
+      create.onclick = function () {
+        var p = input.value.trim().replace(/^\/+|\/+$/g, "");
+        if (!p || !validFolderPath(p) || excluded(plugin, p)) { notice("moveBadFolder"); return; }
+        confirm(app, T("moveNewFolderTitle"), msg("moveNewFolderBody", p), T("moveCreate"), function () { createFolder(p); });
+      };
+      var Sug = class extends Oe.AbstractInputSuggest {
+        getSuggestions(query) { return matches(query).slice(0, 40); }
+        renderSuggestion(f, el) {
+          var p = pathOf(f); el.createSpan({ text: folderName(p), cls: "blg-drops-folder-name" });
+          el.createSpan({ text: msg("moveFolderCount", counts.get(p) || 0) + (p === current ? " " + T("moveCurrent") : ""), cls: "blg-drops-folder-count" });
+        }
+        selectSuggestion(f) { this.close(); choose(pathOf(f)); }
+      };
+      suggest = new Sug(app, input);
+      input.addEventListener("input", updateCreate); input.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") { suggest.close(); modal.close(); }
+      });
+      updateCreate(); setTimeout(function () { if (input.isConnected) { input.focus(); suggest.open(); } }, 0);
+    };
+    modal.onClose = function () { if (suggest) suggest.close(); modal.contentEl.empty(); };
+    modal.open();
+  }
+
+  /* Mover/copiar nota por nota. Jamás reescribir contenido o renombrar el
+     basename; la copia usa Vault.copy y falla cerrada si no está disponible. */
+  async function moveFiles(files, dest, opts) {
+    opts = opts || {}; var plugin = opts.plugin || pluginInstance, app = plugin.app;
+    var target = rootOrFolder(app, dest), result = { moved: 0, skipped: 0, paths: new Map(), errors: [] };
+    files = Array.from(files || []);
+    if (!(target instanceof Oe.TFolder) || excluded(plugin, dest)) {
+      notice("moveBadFolder"); result.skipped = files.length; return result;
+    }
+    var used = new Set();
+    for (var entry of files) {
+      var file = typeof entry === "string" ? app.vault.getAbstractFileByPath(entry) : entry;
+      if (!(file instanceof Oe.TFile) || file.extension.toLowerCase() !== "md" || used.has(file.path)) { result.skipped++; continue; }
+      var oldPath = file.path; used.add(oldPath);
+      if (folderPath(file) === dest) { result.skipped++; continue; }
+      var destination = fullPath(dest, file.name);
+      if (opts.copy) {
+        if (typeof app.vault.copy !== "function") { result.skipped++; result.errors.push(T("copyUnavailable")); continue; }
+        var stem = file.basename, i = 1;
+        while (app.vault.getAbstractFileByPath(destination)) destination = fullPath(dest, stem + " " + (i++) + "." + file.extension);
+      } else if (app.vault.getAbstractFileByPath(destination)) {
+        result.skipped++; result.errors.push(msg("moveExists", destination)); continue;
+      }
+      try {
+        if (opts.copy) await app.vault.copy(file, destination);
+        else await app.fileManager.renameFile(file, destination);
+        result.moved++; result.paths.set(oldPath, destination);
+        var activeView = opts.view || (plugin.getView && plugin.getView());
+        if (!opts.copy && activeView && activeView._blgDropsAlias) activeView._blgDropsAlias.set(oldPath, destination);
+      } catch (e) { result.skipped++; result.errors.push(msg("moveError", e && e.message || String(e))); }
+    }
+    if (!opts.silent) {
+      if (files.length === 1 && result.moved) notice(opts.copy ? "moveCopied" : "moveDone", folderName(dest));
+      else if (files.length === 1 && result.errors.length) new Oe.Notice(result.errors[0]);
+      else if (files.length > 1) {
+        notice(opts.copy ? "copyResult" : "moveResult", result.moved, result.skipped);
+        if (result.errors.includes(T("copyUnavailable"))) notice("copyUnavailable");
+      }
+      else if (result.skipped) notice("noChanges");
+    }
+    var v = opts.view || (plugin.getView && plugin.getView());
+    if (result.moved && v && v._blgDropsMoved) v._blgDropsMoved(result, !!opts.copy);
+    if (result.moved && v && v._scheduleRefresh) v._scheduleRefresh(true);
+    return result;
+  }
+
+  function addMoveToMenu(menu, opts) {
+    opts = opts || {}; var plugin = opts.plugin || pluginInstance;
+    if (!plugin || (opts.source !== "mindmap" && plugin.session)) return;
+    var entries = opts.source === "mindmap" ? (opts.files || []) : [opts.file];
+    if (!entries.length || !entries[0]) return;
+    menu.addItem(function (item) { item.setIcon("folder-input").setTitle(T("ctxMoveTo")).onClick(function () {
+      var f = opts.source === "mindmap" ? plugin.app.vault.getAbstractFileByPath(entries[0].path) : entries[0];
+      openFolderPicker({ plugin: plugin, current: opts.source === "mindmap" ? "" : folderPath(f), onChoose: function (dest) {
+        if (opts.source === "mindmap") {
+          var names = entries.slice(0, 5).map(function (e) { var n = plugin.app.vault.getAbstractFileByPath(e.path); return n instanceof Oe.TFile ? n.basename : e.path; });
+          var detail = msg("mmMoveBody", entries.length, opts.tag, folderName(dest)) + "\n" + names.join(" · ") + (entries.length > 5 ? "…" : "");
+          confirm(plugin.app, T("mmMoveTitle"), detail, T("mmMoveOk"), async function () {
+            var result = await moveFiles(entries.map(function (e) { return e.path; }), dest, { plugin: plugin, silent: true });
+            notice("mmMoveResult", result.moved, result.skipped);
+            if (result.moved && opts.onDone) opts.onDone();
+          });
+        } else moveFiles([f], dest, { plugin: plugin, view: opts.view });
+      } });
+    }); });
+  }
+
+  var sharedApi = {
+    addMoveToMenu: addMoveToMenu, openFolderPicker: openFolderPicker, moveFiles: moveFiles,
+    resolveFile: resolveFile, colors: colors
+  };
+  if (typeof globalThis !== "undefined") globalThis.__BLG_DROPS = sharedApi;
+
+  /* Ajustes: el hook debe instalarse ANTES del onload del bundle, pues allí
+     se registra la pestaña original. Cada control repinta la vista abierta. */
+  function settingsTab(plugin, container, tab) {
+    var nav = container.querySelector(".blg-settings-tabs"), host = container.querySelector(".blg-settings-panels") || container;
+    var btn = nav && nav.createEl("button", { cls: "blg-settings-tab", text: T("n_drops") });
+    var panel = host.createDiv({ cls: nav ? "blg-settings-panel blg-drops-section" : "blg-drops-section" });
+    if (btn) {
+      btn.addEventListener("click", function () {
+        container.querySelectorAll(".blg-settings-tab,.blg-settings-panel").forEach(function (el) { el.removeClass("active"); });
+        btn.addClass("active"); panel.addClass("active"); plugin.settings.lastSettingsTab = "drops"; plugin.saveSettings();
+      });
+      nav.querySelectorAll(".blg-settings-tab").forEach(function (b) { if (b !== btn) b.addEventListener("click", function () { btn.removeClass("active"); panel.removeClass("active"); }); });
+      if (plugin.settings.lastSettingsTab === "drops") {
+        container.querySelectorAll(".blg-settings-tab,.blg-settings-panel").forEach(function (el) { el.removeClass("active"); });
+        btn.addClass("active"); panel.addClass("active");
+      }
+    }
+    panel.createEl("h3", { text: T("n_drops") }); panel.createEl("p", { text: T("d_drops"), cls: "blg-drops-settings-desc" });
+    async function changed(k, v) {
+      plugin.settings[k] = v;
+      var view = plugin._blgDrops && plugin._blgDrops.attached;
+      if (view) view.settingsChanged(k);
+      await plugin.saveSettings();
+    }
+    function color(k, name, desc) { var s = new Oe.Setting(panel).setName(T(name));
+      if (desc) s.setDesc(T(desc)); s.addColorPicker(function (c) { c.setValue(plugin.settings[k]).onChange(function (v) { changed(k, v); }); }); }
+    function slider(k, name, a, b, step) { new Oe.Setting(panel).setName(T(name)).addSlider(function (s) {
+      s.setLimits(a, b, step).setValue(plugin.settings[k]).setDynamicTooltip().onChange(function (v) { changed(k, v); });
+    }); }
+    function toggle(k, name) { new Oe.Setting(panel).setName(T(name)).addToggle(function (t) {
+      t.setValue(!!plugin.settings[k]).onChange(function (v) { changed(k, v); });
+    }); }
+    color("dropsColor", "n_dropsColor", "d_dropsColor");
+    slider("dropsOpacity", "n_dropsOpacity", 0.05, 0.6, 0.01);
+    slider("dropsSize", "n_dropsSize", 0.7, 1.8, 0.05);
+    color("dropsBorderColor", "n_dropsBorderColor");
+    slider("dropsBorderWidth", "n_dropsBorderWidth", 0, 3, 0.1);
+    slider("dropsGooBlur", "n_dropsGoo", 4, 20, 1);
+    slider("dropsSpeed", "n_dropsSpeed", 0.5, 2, 0.1);
+    toggle("dropsLabels", "n_dropsLabels"); toggle("dropsLegend", "n_dropsLegend");
+    new Oe.Setting(panel).setName(T("n_dropsLabelSize")).setDesc(T("d_dropsLabelSize"))
+      .addSlider(function (s) { s.setLimits(0.65, 1.35, 0.05).setValue(plugin.settings.dropsLabelSize)
+        .setDynamicTooltip().onChange(function (v) { changed("dropsLabelSize", v); }); });
+    toggle("dropsZoomOut", "n_dropsZoomOut");
+    slider("dropsMinZoom", "n_dropsMinZoom", 0.2, 1, 0.05);
+    new Oe.Setting(panel).setName(T("n_dropsCopyMod")).addDropdown(function (d) {
+      d.addOption("Ctrl", T("dropsCopyCtrl")).addOption("Alt", T("dropsCopyAlt"))
+        .addOption("none", T("dropsCopyNone")).setValue(plugin.settings.dropsCopyMod)
+        .onChange(function (v) { changed("dropsCopyMod", v); });
+    });
+    slider("dropsMaxFolders", "n_dropsMaxFolders", 5, 50, 1);
+    new Oe.Setting(panel).addButton(function (b) { b.setButtonText(T("dropsReset")).onClick(async function () {
+      Object.assign(plugin.settings, defaults()); await plugin.saveSettings();
+      if (plugin._blgDrops && plugin._blgDrops.attached) plugin._blgDrops.attached.settingsChanged("dropsSize");
+      tab.display();
+    }); });
+  }
+  function hookSettingTab(plugin) {
+    var orig = plugin.addSettingTab.bind(plugin);
+    plugin.addSettingTab = function (tab) {
+      if (tab && tab.plugin === plugin && typeof tab.display === "function" && !tab._blgDropsHooked) {
+        var display = tab.display;
+        tab.display = function () { var r = display.apply(this, arguments);
+          try { settingsTab(plugin, this.containerEl, this); } catch (e) { warn(e); } return r; };
+        tab._blgDropsHooked = true;
+      }
+      return orig(tab);
+    };
+  }
+
+  /* Vista y motor SVG. Las coordenadas de gotas/nodos son del MODELO; el
+     viewport SVG replica exactamente zoom/pan de Cytoscape. Las etiquetas
+     se dibujan después del filtro, en píxeles de pantalla. */
+  var NS = "http://www.w3.org/2000/svg";
+  function svg(tag, parent, attrs) { var el = document.createElementNS(NS, tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { el.setAttribute(k, attrs[k]); });
+    if (parent) parent.appendChild(el); return el;
+  }
+  function hash(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return h >>> 0; }
+  function dropPath(d, t, breathe, pull, accel) {
+    var out = ""; var R = d.r * breathe, phase = d.seed / 4294967296 * Math.PI * 2;
+    var ax = accel ? accel.x : 0, ay = accel ? accel.y : 0;
+    var aa = Math.hypot(ax, ay), lean = clamp(aa * 0.22, 0, 0.34);
+    var ux = aa > 0.0001 ? ax / aa : 1, uy = aa > 0.0001 ? ay / aa : 0;
+    for (var i = 0; i <= 40; i++) {
+      var a = -Math.PI / 2 + i * Math.PI * 2 / 40, wobble =
+        0.08 * Math.sin(a + phase + t * 0.00031) +
+        0.05 * Math.sin(2 * a + phase * 1.7 - t * 0.00024) +
+        0.03 * Math.sin(3 * a + phase * 0.7 + t * 0.00038);
+      var r = R * (1 + wobble), ca = Math.cos(a), sa = Math.sin(a);
+      /* Dipolo direccional: el borde en el sentido de la inercia se ESTIRA y
+         el opuesto se recoge (g es impar en "along", así que la dirección
+         importa). El centro nunca se mueve; sólo cambia la silueta. */
+      var along = ca * ux + sa * uy, g = 1 + lean * along;
+      var x = ca * r * (1 + 0.16 * sa) * g;
+      var y = sa * r * 1.07 * (1 + 0.04 * sa) * g;
+      if (pull) { var da = Math.atan2(Math.sin(a - pull.angle), Math.cos(a - pull.angle));
+        var f = pull.amount * Math.exp(-da * da / 0.23); x += ca * f; y += sa * f; }
+      out += (i ? "L" : "M") + (d.x + x) + "," + (d.y + y);
+    }
+    return out + "Z";
+  }
+  /* Resorte amortiguado EXACTAMENTE para el conjunto arrastrado. Recibe la
+     velocidad objetivo y devuelve una "aceleración" visual acotada: arrancar
+     opone la forma, frenar la adelanta y cambiar de sentido la recoloca. El
+     estado se amortigua a cero; NO mueve el centro ni hace rebotar la gota. */
+  function jellyStep(st, target, dt) {
+    var cap = 7, c = 11, k = 95;
+    var dts = clamp(dt || 16, 0, 50) / 1000;
+    var len = Math.hypot(target.x, target.y);
+    if (len > cap) { target = { x: target.x * cap / len, y: target.y * cap / len }; }
+    if (st.x == null) { st.x = 0; st.y = 0; st.vx = target.x; st.vy = target.y; return { x: 0, y: 0 }; }
+    var fx = k * (target.x - st.x) - c * st.vx, fy = k * (target.y - st.y) - c * st.vy;
+    st.vx += fx * dts; st.vy += fy * dts; st.x += st.vx * dts; st.y += st.vy * dts;
+    var out = Math.hypot(st.x, st.y), max = cap * 1.12;
+    if (out > max) { st.x *= max / out; st.y *= max / out; }
+    return { x: st.x, y: st.y };
+  }
+  function resetJelly(d) { return d.jelly = { x: 0, y: 0, vx: 0, vy: 0 }; }
+  /* Velocidad del arrastre medida por el DESPLAZAMIENTO real del conjunto en
+     cada fotograma, no por los eventos del ratón. Así, frenar con el botón
+     aún pulsado también se detecta: el centro deja de moverse y la velocidad
+     cae a cero, que es lo que hace reaccionar a la masa. */
+  function dragVelocity(drg, x, y, dt) {
+    if (drg.fx == null) { drg.fx = x; drg.fy = y; }
+    var m = Math.max(1, dt || 16), ivx = (x - drg.fx) / m, ivy = (y - drg.fy) / m;
+    drg.fx = x; drg.fy = y;
+    var a = 1 - Math.exp(-m / 42);
+    drg.vx = (drg.vx || 0) + (ivx - (drg.vx || 0)) * a;
+    drg.vy = (drg.vy || 0) + (ivy - (drg.vy || 0)) * a;
+    return { x: drg.vx, y: drg.vy };
+  }
+  function hoverStep(cur, target, dt, reduced) {
+    if (reduced) return target;
+    if (cur == null) return target ? 0.25 : 0;
+    var step = (dt || 16) / (target > cur ? 130 : 210);
+    return target > cur ? Math.min(target, cur + step) : Math.max(target, cur - step);
+  }
+  function collect(plugin, view, alias) {
+    var groups = new Map(), skipped = false, totals = new Map(), positions = new Map();
+    plugin.app.vault.getMarkdownFiles().forEach(function (f) { var p = folderPath(f); totals.set(p, (totals.get(p) || 0) + 1); });
+    view.cy.nodes().forEach(function (n) {
+      if (!n.visible() || n.style("display") === "none") return;
+      var file = fileForNode(plugin.app, n.id(), alias);
+      if (!(file instanceof Oe.TFile) || file.extension.toLowerCase() !== "md") return;
+      var p = folderPath(file); if (excluded(plugin, p)) { skipped = true; return; }
+      if (!groups.has(p)) groups.set(p, { path: p, nodes: [], total: totals.get(p) || 0, seed: hash(p), x: 0, y: 0 });
+      groups.get(p).nodes.push(n); positions.set(n.id(), n.position());
+    });
+    return { groups: Array.from(groups.values()), skipped: skipped, positions: positions };
+  }
+  function arrange(groups, view, settings) {
+    var center = view.currentPath && groups.find(function (g) { return g.nodes.some(function (n) { return n.id() === view.currentPath; }); });
+    var compact = groups.length > settings.dropsMaxFolders;
+    groups.sort(function (a, b) { return (a === center ? -1 : b === center ? 1 : b.nodes.length - a.nodes.length) || a.path.localeCompare(b.path); });
+    var scale = +settings.dropsSize || 1, largest = 0, gap = compact ? 9 : 14;
+    groups.forEach(function (d) {
+      // El máximo es suave: si una carpeta contiene muchas notas, expandir
+      // su ÚNICA gota evita expulsarlas o mezclarlas con otra carpeta.
+      d.r = Math.max(compact ? 56 : 70, 38 + Math.sqrt(d.nodes.length) * (compact ? 31 : 38)) * scale;
+      largest = Math.max(largest, d.r);
+    });
+    if (!groups.length) return { positions: new Map(), compact: compact };
+    groups[0].x = 0; groups[0].y = 0;
+    var placed = [groups[0]];
+    for (var i = 1; i < groups.length; i++) {
+      var d = groups[i], found = false;
+      for (var ring = 1; ring <= groups.length + 1 && !found; ring++) {
+        var rad = Math.max(groups[0].r + d.r + gap, ring * (2 * largest + gap));
+        var slots = Math.max(8, Math.floor(2 * Math.PI * rad / (d.r * 2 + gap)));
+        for (var j = 0; j < slots; j++) {
+          var angle = 2 * Math.PI * (j / slots) + ring * 0.17;
+          var x = rad * Math.cos(angle), y = rad * Math.sin(angle);
+          if (placed.every(function (p) { return Math.hypot(x - p.x, y - p.y) >= d.r + p.r + gap; })) {
+            d.x = x; d.y = y; found = true; break;
+          }
+        }
+      }
+      if (!found) { d.x = (groups.length + 2) * (2 * largest + gap); d.y = 0; }
+      placed.push(d);
+    }
+    var positions = new Map();
+    groups.forEach(function (d) {
+      d.nodes.sort(function (a, b) { return a.id().localeCompare(b.id()); });
+      d.nodes.forEach(function (n, i) {
+        var a = i * 2.399963229728653, r = i === 0 ? 0 : d.r * 0.66 * Math.sqrt((i + 0.3) / d.nodes.length);
+        positions.set(n.id(), { x: d.x + r * Math.cos(a), y: d.y + d.r * 0.1 + r * Math.sin(a) });
+      });
+    });
+    return { positions: positions, compact: compact };
+  }
+  /* Hit-test puro para agarrar una gota entera. `model` es el puntero en
+     coordenadas del modelo, `screen` en píxeles del contenedor. Devuelve la
+     gota si el puntero cae en su etiqueta o en agua vacía (no sobre un nodo). */
+  function hitDrop(groups, model, screen, z, pan, settings) {
+    var size = +settings.dropsLabelSize || 0.85;
+    for (var i = 0; i < groups.length; i++) {
+      var d = groups[i];
+      if (settings.dropsLabels !== false && (d.labelFade == null || d.labelFade > 0.3)) {
+        var w = Math.min(330, dropLabel(d.path).length * 6.6 * size + 18 * size);
+        var lx = d.x * z + pan.x, ly = (d.y - d.r * 0.6) * z + pan.y;
+        if (screen.x >= lx - w / 2 && screen.x <= lx + w / 2 && screen.y >= ly - 17 * size && screen.y <= ly + 5 * size) return d;
+      }
+    }
+    for (var j = 0; j < groups.length; j++) {
+      var g = groups[j];
+      if (Math.hypot(model.x - g.x, (model.y - g.y) / 1.07) >= g.r * 0.98) continue;
+      var overNode = g.nodes.some(function (n) {
+        var p = n.position(), half = (typeof n.width === "function" ? n.width() : 42) / 2 + 6;
+        return Math.hypot(model.x - p.x, model.y - p.y) < half;
+      });
+      return overNode ? null : g;
+    }
+    return null;
+  }
+  /* Hover para desvanecer el rótulo y para el menú contextual: a diferencia de
+     hitDrop, el agua cuenta INCLUYENDO los nodos que hay dentro — precisamente
+     el rótulo se oculta para poder verlos. La píldora sólo cuenta visible. */
+  function hoverDrop(groups, model, screen, z, pan, settings) {
+    var size = +settings.dropsLabelSize || 0.85;
+    for (var i = 0; i < groups.length; i++) {
+      var d = groups[i];
+      if (settings.dropsLabels !== false && (d.labelFade == null || d.labelFade > 0.3)) {
+        var w = Math.min(330, dropLabel(d.path).length * 6.6 * size + 18 * size);
+        var lx = d.x * z + pan.x, ly = (d.y - d.r * 0.6) * z + pan.y;
+        if (screen.x >= lx - w / 2 && screen.x <= lx + w / 2 && screen.y >= ly - 17 * size && screen.y <= ly + 5 * size) return d;
+      }
+    }
+    for (var j = 0; j < groups.length; j++) {
+      var g = groups[j];
+      if (Math.hypot(model.x - g.x, (model.y - g.y) / 1.07) < g.r * 0.98) return g;
+    }
+    return null;
+  }
+  function camera(view, groups, saved, settings, viewport) {
+    if (!settings.dropsZoomOut || !groups.length) return { zoom: saved.zoom, pan: saved.pan, overflow: false };
+    var rgb = hex(settings.dropsColor), luminance = (rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722) / 255;
+    var visualPad = (1 - settings.dropsOpacity) * 8 + (document.body.classList.contains("theme-light") ? luminance : 1 - luminance) * 6;
+    var blur = +settings.dropsGooBlur || 10, margin = blur * 2 + (+settings.dropsBorderWidth || 0) + 22 + visualPad;
+    var x1 = Infinity, x2 = -Infinity, y1 = Infinity, y2 = -Infinity;
+    groups.forEach(function (d) { x1 = Math.min(x1, d.x - d.r - margin); x2 = Math.max(x2, d.x + d.r + margin);
+      y1 = Math.min(y1, d.y - d.r * 1.12 - margin - (settings.dropsLabels ? 28 * settings.dropsLabelSize : 0)); y2 = Math.max(y2, d.y + d.r * 1.12 + margin); });
+    var panel = settings.dropsLegend ? 280 : 0;
+    var ideal = Math.min(saved.zoom, (viewport.w - 90 - panel) / Math.max(1, x2 - x1), (viewport.h - 92) / Math.max(1, y2 - y1));
+    var floor = clamp(+settings.dropsMinZoom || 0.5, 0.2, 1), zoom = Math.max(floor, ideal);
+    return { zoom: zoom, pan: { x: (viewport.w + panel) / 2 - zoom * (x1 + x2) / 2,
+      y: viewport.h / 2 - zoom * (y1 + y2) / 2 }, overflow: zoom > ideal + 0.001 };
+  }
+
+  function attachView(plugin, view) {
+    if (!view || !view.cy || !view.graphEl || view._blgDropsAttached) return null;
+    view._blgDropsAttached = true;
+    var cy = view.cy, graph = view.graphEl, settings = plugin.settings, id = ++nextId;
+    graph.style.position = "relative";
+    var layer = svg("svg", graph, { class: "blg-drops-layer", "aria-hidden": "true" });
+    layer.setAttribute("hidden", "");
+    var defs = svg("defs", layer), filterId = "blg-drops-goo-" + id;
+    var grad = svg("radialGradient", defs, { id: "blg-drops-gradient-" + id });
+    var stop1 = svg("stop", grad, { offset: "0%" }), stop2 = svg("stop", grad, { offset: "100%" });
+    var filter = svg("filter", defs, { id: filterId, x: "-25%", y: "-25%", width: "150%", height: "150%" });
+    var blur = svg("feGaussianBlur", filter, { in: "SourceGraphic", stdDeviation: settings.dropsGooBlur });
+    svg("feColorMatrix", filter, { mode: "matrix", values: "1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8" });
+    var world = svg("g", layer), water = svg("g", world), goo = svg("g", water, { filter: "url(#" + filterId + ")" });
+    var outlines = svg("g", world), highlights = svg("g", world), labels = svg("g", layer);
+    var filament = [];
+    for (var fi = 0; fi < 6; fi++) filament.push(svg("circle", goo, { r: 0 }));
+    var blob = svg("circle", goo, { r: 0 }), residual = svg("circle", goo, { r: 0 });
+    var ghosts = [];
+    for (var gi = 0; gi < 60; gi++) ghosts.push(svg("circle", goo, { r: 0 }));
+    var bubbleLabel = svg("g", labels, { visibility: "hidden" });
+    var bubblePill = svg("rect", bubbleLabel, { rx: 8, ry: 8 });
+    var bubbleText = svg("text", bubbleLabel);
+    var button = graph.createEl("button", { cls: "blg-drops-toggle" });
+    button.type = "button";
+    var legend = graph.createDiv({ cls: "blg-drops-legend" });
+    var legendHead = legend.createEl("button", { cls: "blg-drops-legend-head" });
+    var legendHint = legend.createDiv({ cls: "blg-drops-legend-hint", text: T("dropsPanHint") });
+    var legendRows = legend.createDiv({ cls: "blg-drops-legend-rows" });
+    var st = { active: false, phase: "idle", groups: [], target: new Map(), saved: null, tween: null,
+      alias: new Map(), changed: false, dirty: false, raf: null, drag: null, effects: [], mods: { ctrl: false, alt: false },
+      pointer: null, graphRect: null, hoverRestore: null, dropBusy: false, pending: new Set(), groupReturn: null, dropDrag: null,
+      viewport: { w: 1, h: 1 }, reduced: matchMedia("(prefers-reduced-motion: reduce)").matches,
+      blur: +settings.dropsGooBlur || 10, satellites: 3, shine: true, fps: 0, layerMs: 0,
+      frameCost: 0, frameCount: 0, lastFps: 0, lastFrame: 0,
+      hidden: new Map(), drops: [], compactNotice: false, excludedNotice: false, overflowNotice: false, lastMode: "", centerPath: null,
+      wraf: null, wheelRunning: false, wax: 0, way: 0, wtz: 1 };
+    view._blgDropsAlias = st.alias;
+    function resize() { st.viewport.w = graph.clientWidth || 1; st.viewport.h = graph.clientHeight || 1;
+      st.graphRect = graph.getBoundingClientRect();
+      layer.setAttribute("viewBox", "0 0 " + st.viewport.w + " " + st.viewport.h);
+      if (st.active && st.saved) { var cam = camera(view, st.groups, st.saved, settings, st.viewport);
+        setOverflow(cam); if (!st.drag) { cy.zoom(cam.zoom); cy.pan(cam.pan); syncZoom(); } }
+    }
+    var ro = new ResizeObserver(resize); ro.observe(graph); resize();
+    function syncZoom() { if (view._sz) { view._sz.z = cy.zoom(); view._sz.tz = cy.zoom(); view._sz.running = false; } }
+    function mode() { return plugin.session ? "sewing" : plugin.tagView ? "tag:" + plugin.tagView.tag : "local"; }
+    function overLimit() { return !!graph.querySelector(".coser-overlimit"); }
+    function maxN() { return +settings.maxNodes || 30; }
+    function nodeCount() { return view.cy ? view.cy.nodes().length : 0; }
+    function syncButton() {
+      // Sin nodos, vista vacía o por encima de maxNodes no hay nada que agrupar.
+      // La vista de tag queda exenta del tope por conteo: allí el botón siempre
+      // está disponible (nunca muestra el aviso .coser-overlimit de la vista local).
+      var n = nodeCount(), tag = !!plugin.tagView;
+      var allowed = !plugin.session && !overLimit() && n > 0 && (tag || n <= maxN());
+      button.hidden = !allowed; button.classList.toggle("is-active", st.active);
+      var text = T(st.active ? "dropsBtnHide" : "dropsBtnShow"); button.empty();
+      try { Oe.setIcon(button, "folder"); } catch (_) {}
+      button.title = text + " · " + msg("dropsCopyHint", settings.dropsCopyMod) +
+        (settings.uiLang === "en" ? " · Shift: drag group" : " · Shift: arrastrar grupo");
+      button.setAttribute("aria-label", button.title);
+      // Aviso al pinboard: ambos botones comparten la misma esquina inferior.
+      try { var pb = globalThis.__BLG_PINBOARD; if (pb && pb.layoutButtons) pb.layoutButtons(); } catch (_) {}
+    }
+    function paintSettings() { var c = colors(plugin);
+      stop1.setAttribute("stop-color", c.fill); stop1.setAttribute("stop-opacity", 1);
+      stop2.setAttribute("stop-color", c.fill); stop2.setAttribute("stop-opacity", 0.73);
+      legend.style.setProperty("--blg-drops-color", c.fill);
+      bubblePill.setAttribute("fill", "var(--background-primary)"); bubblePill.setAttribute("stroke", c.border);
+      bubbleText.setAttribute("fill", "var(--text-normal)");
+      blur.setAttribute("stdDeviation", st.blur);
+      layer.style.setProperty("--blg-drops-label-font-size", 11 * settings.dropsLabelSize + "px");
+      filament.concat([blob, residual]).concat(ghosts).forEach(function (b) { b.setAttribute("fill", c.fill); b.setAttribute("fill-opacity", c.fillAlpha); });
+      st.drops.forEach(function (d) { var dc = dropColors(plugin, d.path); d.colors = dc;
+        d.gStop1.setAttribute("stop-color", dc.fill); d.gStop1.setAttribute("stop-opacity", 1);
+        d.gStop2.setAttribute("stop-color", dc.fill); d.gStop2.setAttribute("stop-opacity", 0.73);
+        d.membrane.setAttribute("fill", "url(#" + d.gradId + ")"); d.membrane.setAttribute("fill-opacity", dc.fillAlpha);
+        d.sat.forEach(function (b) { b.setAttribute("fill", dc.fill); b.setAttribute("fill-opacity", dc.fillAlpha); });
+        d.outline.setAttribute("stroke", dc.border); d.outline.setAttribute("stroke-opacity", dc.borderAlpha);
+        d.glow.setAttribute("stroke", dc.border); d.glow.setAttribute("stroke-opacity", 0);
+        d.highlight.setAttribute("fill", dc.shine);
+        d.wave.setAttribute("stroke", dc.border);
+        d.labelRect.setAttribute("stroke", dc.border); });
+    }
+    function caption(d) { return dropLabel(d.path); }
+    function rebuildLegend() {
+      legendRows.empty(); legend.hidden = !settings.dropsLegend || !st.active || !st.shine;
+      legendHint.hidden = !st.overflow;
+      legendHead.setText(T("dropsLegendTitle"));
+      legendHead.title = T(legendRows.hidden ? "dropsLegendExpand" : "dropsLegendCollapse");
+      st.groups.forEach(function (d) { var row = legendRows.createEl("button", { cls: "blg-drops-legend-row" });
+        var sw = row.createSpan({ cls: "blg-drops-swatch" }); sw.style.setProperty("--blg-drops-color", (d.colors || dropColors(plugin, d.path)).fill);
+        row.createSpan({ text: folderName(d.path) + " · " + msg("dropsCount", d.nodes.length, d.total) });
+        row.title = folderName(d.path); row.onclick = function () { var z = Math.max(settings.dropsMinZoom, Math.min(1, cy.zoom() * 1.2));
+          st.tween = { start: performance.now(), duration: st.reduced ? 0 : 420, fromZoom: cy.zoom(), toZoom: z,
+            fromPan: cy.pan(), toPan: { x: st.viewport.w / 2 - z * d.x, y: st.viewport.h / 2 - z * d.y }, from: new Map(), to: new Map() }; };
+      });
+    }
+    function setOverflow(cam) {
+      st.overflow = !!cam.overflow; legendHint.hidden = !st.overflow;
+      if (st.overflow && !st.overflowNotice) { notice("dropsPanHint"); st.overflowNotice = true; }
+    }
+    legendHead.onclick = function () { legendRows.hidden = !legendRows.hidden;
+      legendHead.title = T(legendRows.hidden ? "dropsLegendExpand" : "dropsLegendCollapse"); };
+    function buildDrops() {
+      st.drops.forEach(function (d) { d.membrane.remove(); d.glow.remove(); d.outline.remove(); d.highlight.remove(); d.wave.remove(); d.label.remove(); d.grad.remove(); d.sat.forEach(function (b) { b.remove(); }); });
+      st.drops = [];
+      st.groups.forEach(function (d) {
+        d.membrane = svg("path", goo); d.sat = [];
+        for (var i = 0; i < 3; i++) d.sat.push(svg("circle", goo, { r: 0 }));
+        d.glow = svg("path", outlines, { fill: "none", "stroke-linecap": "round", "stroke-opacity": 0 });
+        d.outline = svg("path", outlines, { fill: "none" });
+        d.highlight = svg("ellipse", highlights);
+        d.wave = svg("circle", highlights, { fill: "none", r: 0 });
+        d.gradId = "blg-drops-gradient-" + id + "-" + st.drops.length;
+        d.grad = svg("radialGradient", defs, { id: d.gradId });
+        d.gStop1 = svg("stop", d.grad, { offset: "0%" }); d.gStop2 = svg("stop", d.grad, { offset: "100%" });
+        if (d.labelFade == null) d.labelFade = 1;
+        var size = +settings.dropsLabelSize || 0.85;
+        d.label = svg("g", labels, { class: "blg-drops-label" });
+        d.labelRect = svg("rect", d.label, { rx: 9 * size, ry: 9 * size, fill: "var(--background-primary)", "fill-opacity": 0.88 });
+        d.labelText = svg("text", d.label, { fill: "var(--text-normal)" });
+        d.labelText.textContent = caption(d);
+        svg("title", d.label).textContent = folderName(d.path);
+        var width = Math.min(330, d.labelText.textContent.length * 6.6 * size + 18 * size);
+        d.labelRect.setAttribute("x", -width / 2); d.labelRect.setAttribute("y", -17 * size); d.labelRect.setAttribute("width", width); d.labelRect.setAttribute("height", 22 * size);
+        d.labelText.setAttribute("text-anchor", "middle"); d.labelText.setAttribute("y", -2 * size);
+        st.drops.push(d);
+      });
+      paintSettings(); rebuildLegend();
+    }
+
+    function ease(p) { return 1 - Math.pow(1 - clamp(p, 0, 1), 3); }
+    function spring(p) { p = clamp(p, 0, 1); return 1 + 2.70158 * Math.pow(p - 1, 3) + 1.70158 * Math.pow(p - 1, 2); }
+    function mix(a, b, p) { return a + (b - a) * p; }
+    function beginTween(from, to, cam, leaving) {
+      st.tween = { start: performance.now(), duration: st.reduced ? 0 : leaving ? 430 : 540,
+        from: from, to: to, fromZoom: cy.zoom(), toZoom: cam.zoom, fromPan: cy.pan(), toPan: cam.pan,
+        leaving: !!leaving };
+    }
+    function applyTween(now) {
+      var tw = st.tween; if (!tw) return;
+      var p = tw.duration ? clamp((now - tw.start) / tw.duration, 0, 1) : 1;
+      /* Al salir se usa ease cúbico sin rebote: regreso fluido y exacto a la
+         posición/cámara original. El spring con sobreimpulso queda sólo para
+         la entrada al modo gotas. */
+      var move = tw.leaving ? ease(p) : spring(Math.min(1, p * 1.17));
+      var cp = tw.leaving ? ease(p) : ease(Math.max(0, (p - 0.12) / 0.88));
+      cy.batch(function () {
+        tw.to.forEach(function (dest, key) {
+          var node = cy.getElementById(key), from = tw.from.get(key) || dest;
+          if (node.length && !st.pending.has(key) && !(st.drag && st.drag.ids.includes(key)) && !(st.dropDrag && st.dropDrag.ids.includes(key))) node.position({ x: mix(from.x, dest.x, move), y: mix(from.y, dest.y, move) });
+        });
+        cy.zoom(mix(tw.fromZoom, tw.toZoom, cp));
+        cy.pan({ x: mix(tw.fromPan.x, tw.toPan.x, cp), y: mix(tw.fromPan.y, tw.toPan.y, cp) });
+      });
+      syncZoom();
+      if (p >= 1) {
+        cy.batch(function () { tw.to.forEach(function (pos, key) { var n = cy.getElementById(key); if (n.length && !st.pending.has(key) && !(st.drag && st.drag.ids.includes(key)) && !(st.dropDrag && st.dropDrag.ids.includes(key))) n.position(pos); });
+          cy.zoom(tw.toZoom); cy.pan(tw.toPan); });
+        syncZoom(); st.tween = null;
+        if (tw.leaving) finishExit(); else st.phase = "on";
+      }
+    }
+    function candidate(d, pos) { return Math.hypot(pos.x - d.x, (pos.y - d.y) / 1.07) < d.r * 0.98; }
+    function copied() { return settings.dropsCopyMod === "Ctrl" ? st.mods.ctrl : settings.dropsCopyMod === "Alt" && st.mods.alt; }
+    function activeFiles() { return st.drag ? st.drag.ids.map(function (id) { return fileForNode(plugin.app, id, st.alias); }).filter(function (f) {
+      return f instanceof Oe.TFile && f.extension.toLowerCase() === "md";
+    }) : []; }
+    function invalid(d) {
+      if (!d || excluded(plugin, d.path) || !(rootOrFolder(plugin.app, d.path) instanceof Oe.TFolder)) return true;
+      if (copied()) return false;
+      return activeFiles().some(function (f) { return folderPath(f) !== d.path && !!plugin.app.vault.getAbstractFileByPath(fullPath(d.path, f.name)); });
+    }
+    function render(now, dt) {
+      var z = cy.zoom(), pan = cy.pan(), speed = +settings.dropsSpeed || 1;
+      world.setAttribute("transform", "translate(" + pan.x + " " + pan.y + ") scale(" + z + ")");
+      var progress = st.tween && st.tween.duration ? (now - st.tween.start) / st.tween.duration : 1;
+      var alpha = st.phase === "enter" && st.tween ? ease(progress) :
+        st.phase === "leave" && st.tween ? 1 - ease(progress) : 1;
+      var growth = 0.15 + 0.85 * alpha;
+      water.setAttribute("opacity", alpha);
+      outlines.setAttribute("opacity", alpha); highlights.setAttribute("opacity", alpha);
+      var drag = st.drag, hover = null, pull = null;
+      if (drag) {
+        var pos = drag.node.position();
+        hover = st.groups.find(function (d) { return d.path !== drag.source && candidate(d, pos); });
+        drag.hover = hover;
+      }
+      /* Rótulo que se oculta al pasar por encima: el puntero quieto sigue
+         "dentro" aunque la cámara se mueva, así que se calcula cada frame.
+         El brillo del borde acompaña el hover incluso con rótulos apagados. */
+      var hoverFade = null;
+      if (st.pointer && st.phase === "on" && !st.drag && !st.dropDrag && !st.tween) {
+        var hr = st.graphRect;
+        if (hr && st.pointer.x >= hr.left && st.pointer.x <= hr.right && st.pointer.y >= hr.top && st.pointer.y <= hr.bottom) {
+          var hsx = st.pointer.x - hr.left, hsy = st.pointer.y - hr.top;
+          hoverFade = hoverDrop(st.groups, { x: (hsx - pan.x) / z, y: (hsy - pan.y) / z }, { x: hsx, y: hsy }, z, pan, settings);
+        }
+      }
+      st.drops.forEach(function (d) {
+        var breathe = st.reduced ? 1 : 1 + 0.019 * Math.sin(now * speed / 950 + d.seed) + 0.009 * Math.sin(now * speed / 1380 + d.seed / 17);
+        var impact = st.effects.find(function (e) { return e.impact === d.path; });
+        if (impact && !st.reduced) { var q = clamp((now - impact.start) / impact.duration, 0, 1);
+          breathe += 0.075 * Math.sin(q * Math.PI * 9) * (1 - q); }
+        if (drag && !drag.group && hover === d) { var p = drag.node.position();
+          pull = { angle: Math.atan2(p.y - d.y, p.x - d.x), amount: Math.min(d.r * 0.12, Math.max(0, d.r - Math.hypot(p.x - d.x, p.y - d.y)) * 0.18) };
+        } else pull = null;
+        var recoil = st.effects.find(function (e) { return e.recoil === d.path; });
+        if (recoil && !st.reduced) { var q = clamp((now - recoil.start) / recoil.duration, 0, 1);
+          pull = { angle: recoil.angle, amount: d.r * 0.14 * Math.sin(q * Math.PI * 5) * (1 - q) }; }
+        if (drag && !drag.group && drag.source === d.path && !drag.detached) {
+          var p = drag.node.position(), dist = Math.hypot(p.x - d.x, p.y - d.y);
+          pull = { angle: Math.atan2(p.y - d.y, p.x - d.x), amount: Math.min(d.r * 0.36, Math.max(0, dist - d.r * 0.4) * 0.48) };
+        }
+        var accel = d.dragAccel || { x: 0, y: 0 };
+        var path = dropPath(d, st.reduced ? 0 : now * speed, breathe * growth, pull, accel);
+        d.membrane.setAttribute("d", path); d.outline.setAttribute("d", path); d.glow.setAttribute("d", path);
+        d.outline.setAttribute("stroke-width", settings.dropsBorderWidth / Math.max(0.5, z));
+        d.hoverGlow = hoverStep(d.hoverGlow, hoverFade === d ? 1 : 0, dt, st.reduced);
+        d.glow.setAttribute("stroke-opacity", 0.42 * d.hoverGlow);
+        d.glow.setAttribute("stroke-width", ((+settings.dropsBorderWidth || 0) + 2.1) / Math.max(0.5, z));
+        d.sat.forEach(function (ball, i) {
+          var a = i * 2.399963 + d.seed * 0.0000001 + now * speed * (i % 2 ? -0.00015 : 0.00012);
+          ball.setAttribute("cx", d.x + Math.cos(a) * d.r * 0.72);
+          ball.setAttribute("cy", d.y + Math.sin(a) * d.r * 0.72);
+          ball.setAttribute("r", i < st.satellites && !st.reduced ? growth * d.r * (0.13 + i * 0.02) : 0);
+        });
+        d.highlight.setAttribute("cx", d.x - d.r * 0.32); d.highlight.setAttribute("cy", d.y - d.r * 0.36);
+        d.highlight.setAttribute("rx", st.shine ? d.r * 0.16 * growth : 0); d.highlight.setAttribute("ry", d.r * 0.07 * growth);
+        d.highlight.setAttribute("transform", "rotate(-25 " + (d.x - d.r * 0.32) + " " + (d.y - d.r * 0.36) + ")");
+        var wave = st.effects.find(function (e) { return e.wave === d.path; });
+        d.wave.setAttribute("cx", d.x); d.wave.setAttribute("cy", d.y);
+        d.wave.setAttribute("r", wave ? d.r * (0.3 + 1.2 * clamp((now - wave.start) / 520, 0, 1)) : 0);
+        d.wave.setAttribute("stroke", (d.colors || dropColors(plugin, d.path)).border);
+        d.wave.setAttribute("stroke-opacity", wave ? 0.5 * (1 - clamp((now - wave.start) / 520, 0, 1)) : 0);
+        d.wave.setAttribute("stroke-width", 2 / Math.max(0.5, z));
+        /* Fade del rótulo: salida rápida (180 ms), reaparición más lenta
+           (320 ms). Invertir el cursor a mitad revierte suave, sin parpadeo. */
+        var fadeTarget = hoverFade === d ? 0 : 1, curFade = d.labelFade == null ? 1 : d.labelFade;
+        if (st.reduced) curFade = fadeTarget;
+        else if (curFade !== fadeTarget) {
+          var fstep = (dt || 16) / (fadeTarget < curFade ? 180 : 320);
+          curFade = fadeTarget < curFade ? Math.max(fadeTarget, curFade - fstep) : Math.min(fadeTarget, curFade + fstep);
+        }
+        d.labelFade = curFade;
+        var lx = d.x * z + pan.x, ly = (d.y - d.r * 0.6) * z + pan.y;
+        d.label.setAttribute("transform", "translate(" + lx + " " + ly + ")");
+        d.label.setAttribute("visibility", settings.dropsLabels && curFade > 0.02 ? "visible" : "hidden");
+        d.label.setAttribute("opacity", alpha * curFade);
+        d.labelRect.setAttribute("stroke-opacity", hover === d ? 0.9 : 0.35);
+        d.labelText.setAttribute("fill", hover === d && invalid(d) ? "var(--text-error)" : "var(--text-normal)");
+      });
+      var source = drag && st.groups.find(function (d) { return d.path === drag.source; });
+      if (drag && source && !drag.group) {
+        var pos = drag.node.position(), dist = Math.hypot(pos.x - source.x, pos.y - source.y);
+        var stretch = dist / source.r, broken = stretch > 1.35;
+        blob.setAttribute("cx", pos.x); blob.setAttribute("cy", pos.y); blob.setAttribute("r", Math.max(13, 22 / Math.max(0.5, z)));
+        for (var i = 0; i < filament.length; i++) {
+          var b = filament[i], f = (i + 1) / (filament.length + 1);
+          b.setAttribute("cx", mix(source.x, pos.x, f)); b.setAttribute("cy", mix(source.y, pos.y, f));
+          b.setAttribute("r", broken ? 0 : Math.max(0, (15 - stretch * 6) * (1 - f * 0.5)));
+        }
+        residual.setAttribute("cx", source.x + (pos.x - source.x) * Math.min(1, source.r / Math.max(1, dist)));
+        residual.setAttribute("cy", source.y + (pos.y - source.y) * Math.min(1, source.r / Math.max(1, dist)));
+        residual.setAttribute("r", broken ? 8 : 0);
+        if (hover) {
+          var label = msg("dropsTarget", folderName(hover.path));
+          var nextText = invalid(hover) ? T("dropsInvalid") + " · " + label : label;
+          if (bubbleText.textContent !== nextText) bubbleText.textContent = nextText;
+          var w = Math.min(300, bubbleText.textContent.length * 7 + 18);
+          bubblePill.setAttribute("width", w); bubblePill.setAttribute("height", 22);
+          bubblePill.setAttribute("x", -w / 2); bubblePill.setAttribute("y", -17);
+          bubbleText.setAttribute("text-anchor", "middle"); bubbleText.setAttribute("y", -2);
+          bubbleText.setAttribute("fill", invalid(hover) ? "var(--text-error)" : "var(--text-normal)");
+          bubbleLabel.setAttribute("transform", "translate(" + (pos.x * z + pan.x) + " " + (pos.y * z + pan.y - 34) + ")");
+          bubbleLabel.setAttribute("visibility", "visible");
+        } else bubbleLabel.setAttribute("visibility", "hidden");
+      } else { blob.setAttribute("r", 0); residual.setAttribute("r", 0);
+        filament.forEach(function (b) { b.setAttribute("r", 0); }); bubbleLabel.setAttribute("visibility", "hidden"); }
+      st.effects = st.effects.filter(function (e) { return now - e.start < e.duration; });
+      var visibleEffects = st.effects.filter(function (ef) { return ef.from && ef.to; });
+      ghosts.forEach(function (g, i) {
+        var ef = visibleEffects[i]; if (!ef) { g.setAttribute("r", 0); return; }
+        var q = ease((now - ef.start) / ef.duration);
+        g.setAttribute("cx", mix(ef.from.x, ef.to.x, q)); g.setAttribute("cy", mix(ef.from.y, ef.to.y, q));
+        // Mitosis: dos lóbulos se estrangulan y se separan en sentidos opuestos.
+        g.setAttribute("r", ef.copy ? 17 * (1 - 0.5 * Math.sin(q * Math.PI)) : 18 * (1 - 0.7 * q));
+      });
+    }
+    function frame(now) {
+      if (!st.active) return;
+      var started = performance.now();
+      var dt = st.lastFrame ? Math.min(100, now - st.lastFrame) : 16; st.lastFrame = now;
+      try {
+        /* Física del conjunto: su centro obedece al cursor, su FORMA integra
+           la velocidad medida por desplazamiento real. La masa va en sentido
+           CONTRARIO al avance (se retrasa); al frenar —aunque no se suelte—
+           la velocidad cae y el resorte la adelanta con sobreimpulso. Al
+           soltar sólo se disipa lo que quedaba: la base no viaja ni rebota. */
+        var dragging = st.dropDrag || (st.drag && st.drag.group ? st.drag : null);
+        if (dragging) { var gd = st.groups.find(function (d) { return d.path === dragging.source; }) || dragging.drop;
+          if (gd) { var v = dragVelocity(dragging, gd.x, gd.y, dt);
+            gd.dragAccel = st.reduced ? { x: 0, y: 0 } : jellyStep(gd.jelly || resetJelly(gd), { x: -v.x, y: -v.y }, dt); } }
+        st.drops.forEach(function (d) {
+          if (dragging && ((dragging.drop && dragging.drop === d) || (dragging.source && dragging.source === d.path))) return;
+          if (!d.dragAccel) return;
+          d.dragAccel = jellyStep(d.jelly || resetJelly(d), { x: 0, y: 0 }, dt);
+          var j = d.jelly;
+          if (Math.hypot(d.dragAccel.x, d.dragAccel.y) < 0.02 && j && Math.hypot(j.vx, j.vy) < 0.06) { d.dragAccel = null; d.jelly = null; }
+        });
+        applyTween(now);
+        if (!st.active) return;
+        if (st.groupReturn) { var gr = st.groupReturn, q = gr.duration ? clamp((now - gr.start) / gr.duration, 0, 1) : 1;
+          gr.drop.x = mix(gr.from.x, gr.to.x, spring(q)); gr.drop.y = mix(gr.from.y, gr.to.y, spring(q));
+          if (q === 1) st.groupReturn = null; }
+        if (!st.reduced && !st.tween && !st.drag && !st.dropDrag && !st.dropBusy && st.pending.size === 0 && st.frameCount % 4 === 0) {
+          cy.batch(function () { st.target.forEach(function (p, key) {
+            var n = cy.getElementById(key); if (!n.length) return;
+            var seed = hash(key) % 31, a = now * settings.dropsSpeed / 3300 + seed;
+            n.position({ x: p.x + 1.4 * Math.cos(a), y: p.y + 1.4 * Math.sin(a) });
+          }); });
+        }
+        render(now, dt);
+        updateCursor();
+        if (st.hoverRestore && !st.tween && !st.dropBusy && !st.drag) {
+          var n = st.hoverRestore; st.hoverRestore = null;
+          document.body.classList.remove("blg-drops-node-moving");
+          var p = n.renderedPosition && n.renderedPosition(), rect = st.graphRect;
+          if (!st.pointer || !p || !rect || Math.hypot(st.pointer.x - rect.left - p.x, st.pointer.y - rect.top - p.y) < 36) {
+            if (n.emit) n.emit("mouseover");
+          }
+        }
+        st.frameCost += performance.now() - started;
+        st.frameCount++;
+        if (!st.lastFps) st.lastFps = now;
+        if (now - st.lastFps >= 2000) {
+          st.fps = st.frameCount * 1000 / (now - st.lastFps);
+          st.layerMs = st.frameCost / st.frameCount;
+          st.frameCost = 0; st.frameCount = 0; st.lastFps = now;
+          if ((st.fps < 50 || st.layerMs > 8) && !st.reduced) {
+            if (st.blur > 4) { st.blur = Math.max(4, st.blur - 2); blur.setAttribute("stdDeviation", st.blur); }
+            else if (st.satellites > 1) st.satellites--;
+            else if (st.shine) { st.shine = false; legend.hidden = true; }
+          }
+        }
+      } catch (e) { warn(e); finishExit(); return; }
+      st.raf = requestAnimationFrame(frame);
+    }
+    function start() {
+      if (st.active || plugin.session || !cy || overLimit() || (!plugin.tagView && nodeCount() > maxN())) return;
+      cy.nodes().stop(true, true); cy.edges().stop(true, true); syncZoom();
+      var data = collect(plugin, view, st.alias);
+      if (!data.groups.length) { notice("dropsNoNodes"); return; }
+      st.saved = { zoom: cy.zoom(), pan: clonePos(cy.pan()), positions: capturePositions(cy) };
+      st.groups = data.groups; st.changed = false; st.dirty = false; st.lastMode = mode();
+      st.centerPath = view.currentPath;
+      var layout = arrange(st.groups, view, settings); st.target = layout.positions; st.compact = layout.compact;
+      if (data.skipped && !st.excludedNotice) { notice("dropsExcluded"); st.excludedNotice = true; }
+      if (st.compact && !st.compactNotice) { notice("dropsCompact"); st.compactNotice = true; }
+      // Excluidas permanecen fuera del modo, temporalmente invisibles.
+      cy.nodes().forEach(function (n) { var f = plugin.app.vault.getAbstractFileByPath(n.id());
+        if (f instanceof Oe.TFile && excluded(plugin, folderPath(f))) {
+          st.hidden.set(n.id(), n.style("display")); n.style("display", "none");
+        } });
+      cy.edges().forEach(function (e) { if (st.hidden.has(e.source().id()) || st.hidden.has(e.target().id())) {
+        st.hidden.set(e.id(), e.style("display")); e.style("display", "none"); } });
+      if (view._pulseT) { clearTimeout(view._pulseT); view._pulseT = null; }
+      view._stopPulse && view._stopPulse();
+      st.active = true; st.phase = "enter"; st.blur = +settings.dropsGooBlur || 10;
+      st.satellites = 3; st.shine = true; st.frameCount = 0; st.frameCost = 0; st.lastFps = 0; st.lastFrame = 0;
+      layer.removeAttribute("hidden"); buildDrops(); syncButton(); st.graphRect = graph.getBoundingClientRect();
+      var cam = camera(view, st.groups, st.saved, settings, st.viewport);
+      setOverflow(cam);
+      beginTween(st.saved.positions, st.target, cam, false);
+      st.raf = requestAnimationFrame(frame);
+    }
+    function finishExit() {
+      cancelWheel();
+      if (st.raf != null) cancelAnimationFrame(st.raf);
+      st.raf = null; st.active = false; st.phase = "idle"; st.drag = null; dropUp();
+      st.hoverRestore = null; st.dropBusy = false; document.body.classList.remove("blg-drops-node-moving");
+      graph.classList.remove("blg-drops-grab", "blg-drops-grabbing");
+      st.pending.clear(); st.groupReturn = null; st.tween = null; st.effects = []; st.lastFrame = 0; layer.setAttribute("hidden", ""); legend.hidden = true;
+      st.hidden.forEach(function (old, key) { var el = cy.getElementById(key); if (el.length) el.style("display", old); });
+      st.hidden.clear(); syncZoom(); syncButton();
+      var silent = st.silentExit; st.silentExit = false;
+      if (!st.destroying && !silent && mode() === st.lastMode && (st.changed || st.dirty)) {
+        // Sólo los movimientos de archivos obligan a reconstruir. Si únicamente
+        // hubo eventos de caché tragados, refrescar y dejar que el atajo `_sig`
+        // del bundle decida: si el grafo no cambió, no hay re-layout ni salto.
+        if (st.changed) view._lastSig = null;
+        view._scheduleRefresh(true);
+        // Si el bundle corto-circuita (grafo idéntico) no reinicia el pulso: hacerlo aquí.
+        if (!st.changed && !plugin.tagView && view._startLocalPulse) view._startLocalPulse(settings);
+      } else if (!st.destroying && !silent && !plugin.session && mode() === st.lastMode) {
+        if (plugin.tagView && view._startPulse) view._startPulse(settings);
+        else if (view._startLocalPulse) view._startLocalPulse(settings);
+      }
+      // Conservar el mapa durante el debounce de refresh: un menú abierto justo
+      // tras salir aún puede apuntar al ID Cytoscape anterior.
+      st.saved = null; st.centerPath = null;
+    }
+    /* Salida inmediata sin restaurar posiciones ni cámara: la vista se va a
+       reconstruir para OTRA nota/modo y las gotas viejas no deben sobrevivir. */
+    function exitNow(refresh) {
+      if (!st.active) return false;
+      if (st.drag && st.drag.pauseTimer) clearTimeout(st.drag.pauseTimer);
+      st.drag = null; st.phase = "leave"; st.silentExit = true;
+      st.dirty = false; st.changed = false;
+      finishExit();
+      // El render entrante (o el refresco pedido aquí) reactiva el pulso por sí mismo.
+      if (refresh) { view._lastSig = null; view._scheduleRefresh(true); }
+      return true;
+    }
+    function stop(immediate) {
+      if (!st.active || st.phase === "leave") return;
+      if (st.drag && st.drag.pauseTimer) clearTimeout(st.drag.pauseTimer);
+      st.hoverRestore = null; document.body.classList.remove("blg-drops-node-moving");
+      st.drag = null; dropUp(); st.phase = "leave";
+      var cam = { zoom: st.saved.zoom, pan: st.saved.pan };
+      // La cámara original sólo es válida si el grafo conserva sus nodos.
+      if (st.changed && st.saved.positions.size !== cy.nodes().length) cam = camera(view, st.groups, st.saved, settings, st.viewport);
+      beginTween(capturePositions(cy), st.saved.positions, cam, true);
+      if (immediate) { st.tween.duration = 0; applyTween(performance.now()); }
+      syncButton();
+    }
+    function rerange() {
+      if (!st.active || st.phase === "leave") return;
+      var old = capturePositions(cy);
+      var data = collect(plugin, view, st.alias); st.groups = data.groups;
+      var layout = arrange(st.groups, view, settings); st.target = layout.positions; st.compact = layout.compact;
+      buildDrops();
+      var cam = camera(view, st.groups, { zoom: cy.zoom(), pan: cy.pan() }, settings, st.viewport);
+      setOverflow(cam);
+      beginTween(old, st.target, cam, false); st.phase = "enter";
+    }
+    function bounce(ids) {
+      var from = capturePositions(cy);
+      ids.forEach(function (key) { var p = st.target.get(key), n = cy.getElementById(key);
+        if (p && n.length) st.effects.push({ from: clonePos(n.position()), to: p, start: performance.now(), duration: 420 });
+      });
+      beginTween(from, st.target, { zoom: cy.zoom(), pan: cy.pan() }, false);
+    }
+    view._blgDropsMoved = function (result, copy) {
+      if (!st.active || !result.moved) return;
+      st.changed = true;
+      if (!copy) { result.paths.forEach(function (path, old) { st.alias.set(old, path); }); if (!st.dropBusy) rerange(); }
+    };
+    async function dropped(n) {
+      if (!st.drag || n.id() !== st.drag.id) return;
+      var drag = st.drag, pos = n.position();
+      if (!drag.everMoved) { st.drag = null; return; }
+      if (drag.group) {
+        // El grupo se queda donde se soltó: la nueva base pasa a ser el destino.
+        st.drag = null; settleGroup(drag.ids); return;
+      }
+      var dest = st.groups.find(function (d) { return d.path !== drag.source && candidate(d, pos); });
+      var copy = copied(); st.drag = null;
+      if (!dest || excluded(plugin, dest.path) || !(rootOrFolder(plugin.app, dest.path) instanceof Oe.TFolder)) {
+        bounce(drag.ids); if (dest) notice("moveBadFolder"); return;
+      }
+      var files = drag.ids.map(function (key) { return fileForNode(plugin.app, key, st.alias); });
+      drag.ids.forEach(function (key) { st.pending.add(key); });
+      st.dropBusy = true;
+      var moved = false;
+      try {
+        var result = await moveFiles(files, dest.path, { plugin: plugin, view: view, copy: copy });
+        if (!st.active) return;
+        moved = !!result.moved;
+        if (result.moved) {
+          var t = performance.now();
+          st.effects.push({ impact: dest.path, start: t, duration: st.reduced ? 0 : 530 });
+          st.effects.push({ wave: dest.path, start: t, duration: st.reduced ? 0 : 520 / settings.dropsSpeed });
+          drag.ids.forEach(function (key) { var node = cy.getElementById(key), p = node.length ? clonePos(node.position()) : clonePos(pos);
+            st.effects.push({ from: p, to: { x: dest.x, y: dest.y }, start: t, duration: st.reduced ? 0 : 510 / settings.dropsSpeed, copy: copy });
+            if (copy) st.effects.push({ from: { x: dest.x, y: dest.y }, to: st.target.get(key) || p, start: t, duration: st.reduced ? 0 : 510 / settings.dropsSpeed, copy: true });
+          });
+        }
+        if (!result.moved || copy) bounce(drag.ids);
+      } catch (e) { if (st.active) bounce(drag.ids); throw e;
+      } finally { drag.ids.forEach(function (key) { st.pending.delete(key); }); st.dropBusy = false;
+        if (moved && !copy && st.active) rerange(); }
+    }
+    function settleGroup(ids) {
+      ids.forEach(function (key) { var n = cy.getElementById(key); if (n.length) st.target.set(key, clonePos(n.position())); });
+    }
+    /* Arrastre de la gota entera desde su etiqueta o desde agua vacía. El
+       listener va en fase de captura para adelantarse al canvas de Cytoscape. */
+    function modelPoint(e) { var rect = st.graphRect || graph.getBoundingClientRect(), z = cy.zoom(), pan = cy.pan();
+      var sx = e.clientX - rect.left, sy = e.clientY - rect.top;
+      return { screen: { x: sx, y: sy }, model: { x: (sx - pan.x) / z, y: (sy - pan.y) / z } }; }
+    function dropAt(e) {
+      if (!st.active || st.phase !== "on" || st.tween || st.drag || st.dropBusy) return null;
+      var pt = modelPoint(e);
+      return hitDrop(st.groups, pt.model, pt.screen, cy.zoom(), cy.pan(), settings);
+    }
+    function dropDown(e) {
+      if (e.button !== 0 || e.target === button || legend.contains(e.target)) return;
+      var d = dropAt(e); if (!d) return;
+      e.stopPropagation(); e.preventDefault();
+      st.graphRect = graph.getBoundingClientRect();
+      var pt = modelPoint(e);
+      st.dropDrag = { drop: d, ids: d.nodes.map(function (n) { return n.id(); }), last: pt.model, moved: false };
+      resetJelly(d); d.dragAccel = null;
+      view.resetHover && view.resetHover();
+      window.addEventListener("mousemove", dropMove, true); window.addEventListener("mouseup", dropUp, true);
+    }
+    function dropMove(e) {
+      var dd = st.dropDrag; if (!dd) return;
+      var p = modelPoint(e).model, dx = p.x - dd.last.x, dy = p.y - dd.last.y;
+      if (!dx && !dy) return;
+      dd.drop.x += dx; dd.drop.y += dy; dd.last = p; dd.moved = true;
+      cy.batch(function () { dd.ids.forEach(function (key) { var n = cy.getElementById(key); if (!n.length) return;
+        var o = n.position(); n.position({ x: o.x + dx, y: o.y + dy });
+        var t = st.target.get(key); if (t) st.target.set(key, { x: t.x + dx, y: t.y + dy }); }); });
+      if (!document.body.classList.contains("blg-drops-node-moving")) document.body.classList.add("blg-drops-node-moving");
+    }
+    function dropUp() {
+      var dd = st.dropDrag; if (!dd) return;
+      st.dropDrag = null; document.body.classList.remove("blg-drops-node-moving");
+      window.removeEventListener("mousemove", dropMove, true); window.removeEventListener("mouseup", dropUp, true);
+      if (dd.moved) settleGroup(dd.ids);
+    }
+    /* Color por carpeta (ruta completa), persistido en data.json. El cambio se
+       previsualiza en vivo y se guarda al cerrar el selector. */
+    function setDropColor(path, value) {
+      settings.dropsFolderColors = settings.dropsFolderColors || {};
+      if (value) settings.dropsFolderColors[path] = value; else delete settings.dropsFolderColors[path];
+      paintSettings(); rebuildLegend();
+    }
+    function pickDropColor(d) {
+      var original = (settings.dropsFolderColors || {})[d.path] || null, cancelled = false, input = null;
+      var modal = new Oe.Modal(plugin.app);
+      modal.onOpen = function () {
+        modal.titleEl.setText(msg("dropsColorFor", folderName(d.path)));
+        input = modal.contentEl.createEl("input", { type: "color", cls: "blg-drops-color-input" });
+        var cur = original || settings.dropsColor;
+        input.value = /^#[0-9a-f]{6}$/i.test(cur) ? cur : defaults().dropsColor;
+        input.addEventListener("input", function () { setDropColor(d.path, input.value); });
+        var row = modal.contentEl.createDiv({ cls: "blg-drops-confirm" });
+        row.createEl("button", { text: T("cancel") }).onclick = function () { cancelled = true; setDropColor(d.path, original); modal.close(); };
+        row.createEl("button", { text: T("dropsApplyColor"), cls: "mod-cta" }).onclick = function () { modal.close(); };
+        setTimeout(function () { if (input && input.isConnected) { input.focus(); input.click(); } }, 0);
+      };
+      modal.onClose = function () {
+        if (!cancelled && input) setDropColor(d.path, input.value);
+        plugin.saveSettings(); modal.contentEl.empty();
+      };
+      modal.open();
+    }
+    /* Click derecho sobre el agua (no sobre un nodo): el cxttap de Cytoscape va
+       sobre el canvas hijo; esta captura llega antes y frena la propagación. */
+    function dropContext(e) {
+      if (!st.active || st.phase !== "on" || st.tween || st.drag || st.dropDrag || st.dropBusy) return;
+      if (e.target === button || legend.contains(e.target)) return;
+      var pt = modelPoint(e);
+      var d = hoverDrop(st.groups, pt.model, pt.screen, cy.zoom(), cy.pan(), settings);
+      if (!d) return;
+      var overNode = d.nodes.some(function (n) { var p = n.position(), half = (typeof n.width === "function" ? n.width() : 42) / 2 + 6;
+        return Math.hypot(pt.model.x - p.x, pt.model.y - p.y) < half; });
+      if (overNode) return;
+      e.preventDefault(); e.stopPropagation();
+      var menu = new Oe.Menu(plugin.app);
+      menu.addItem(function (item) { item.setIcon("palette").setTitle(T("dropsSetColor")).onClick(function () { pickDropColor(d); }); });
+      if ((settings.dropsFolderColors || {})[d.path]) menu.addItem(function (item) {
+        item.setIcon("rotate-ccw").setTitle(T("dropsResetColor")).onClick(function () { setDropColor(d.path, null); plugin.saveSettings(); });
+      });
+      menu.showAtMouseEvent(e);
+    }
+    function updateCursor() {
+      var grabbing = !!st.dropDrag, grab = false;
+      if (!grabbing && st.pointer && st.phase === "on" && !st.drag && st.graphRect) {
+        var r = st.graphRect;
+        if (st.pointer.x >= r.left && st.pointer.x <= r.right && st.pointer.y >= r.top && st.pointer.y <= r.bottom)
+          grab = !!dropAt({ clientX: st.pointer.x, clientY: st.pointer.y });
+      }
+      graph.classList.toggle("blg-drops-grabbing", grabbing); graph.classList.toggle("blg-drops-grab", grab && !grabbing);
+    }
+    function grabbed(e) {
+      if (!st.active || st.phase === "leave") return;
+      st.hoverRestore = null;
+      document.body.classList.remove("blg-drops-node-moving");
+      var n = e.target, id = n.id(), source = st.groups.find(function (d) { return d.nodes.some(function (v) { return v.id() === id; }); });
+      if (!source) return;
+      var selected = (view._sel || []).map(function (s) { return s.path; });
+      var group = !!((e.originalEvent && e.originalEvent.shiftKey) || st.mods.shift);
+      var pos = n.position();
+      st.drag = { node: n, id: id, source: source.path, last: { x: pos.x, y: pos.y }, start: { x: pos.x, y: pos.y },
+        center: { x: source.x, y: source.y }, group: group, detached: false, moving: false, everMoved: false,
+        ids: group ? source.nodes.map(function (v) { return v.id(); }) :
+          selected.length > 1 && selected.includes(id) ? selected.filter(function (x) { return st.target.has(x); }) : [id] };
+      if (group) { resetJelly(source); source.dragAccel = null; }
+    }
+    function dragged(e) {
+      var drag = st.drag, n = e.target;
+      if (!drag || n.id() !== drag.id) return;
+      var p = n.position();
+      if (p.x === drag.last.x && p.y === drag.last.y) return;
+      if (drag.group) { var source = st.groups.find(function (d) { return d.path === drag.source; });
+        if (source) { source.x = drag.center.x + p.x - drag.start.x; source.y = drag.center.y + p.y - drag.start.y; }
+        drag.ids.forEach(function (key) { if (key === drag.id) return; var other = cy.getElementById(key);
+          if (other.length) { var old = other.position(); other.position({ x: old.x + p.x - drag.last.x, y: old.y + p.y - drag.last.y }); } });
+      } else if (!drag.detached) { var source = st.groups.find(function (d) { return d.path === drag.source; });
+        if (source && Math.hypot(p.x - source.x, p.y - source.y) > source.r * 1.35) {
+          drag.detached = true; st.effects.push({ recoil: source.path, angle: Math.atan2(p.y - source.y, p.x - source.x),
+            start: performance.now(), duration: st.reduced ? 0 : 430 });
+        } }
+      /* position() puede devolver el MISMO objeto vivo de Cytoscape: copiar
+         los campos, nunca guardar la referencia, o el siguiente evento
+         compararía contra sí mismo y el arrastre se congelaría. */
+      drag.last.x = p.x; drag.last.y = p.y; drag.everMoved = true;
+      if (!drag.moving) { drag.moving = true; view.resetHover && view.resetHover(); }
+      document.body.classList.add("blg-drops-node-moving");
+    }
+    function mods(e) { st.mods.ctrl = !!e.ctrlKey; st.mods.alt = !!e.altKey; st.mods.shift = !!e.shiftKey;
+      st.pointer = { x: e.clientX, y: e.clientY }; }
+    function leave() { st.pointer = null; }
+    function onKey(e) { st.mods.ctrl = e.ctrlKey; st.mods.alt = e.altKey; st.mods.shift = e.shiftKey; }
+    /* BLG-FOCUS-WHEEL: la rueda del bundle gira alrededor del CENTRO del
+       viewport. Aquí se toma el relevo (captura, stopImmediatePropagation)
+       cuando el puntero NO está sobre un nodo — agua, rótulo de carpeta o
+       vacío, con gotas activas o no — para anclar el zoom al cursor. Sobre un
+       nodo o un tooltip con scroll se devuelve el control al bundle. */
+    function onWheel(e) {
+      if (st.active && st.tween && st.phase !== "leave") {
+        st.tween = null; st.phase = "on"; syncZoom();
+      }
+      if (plugin.session || e.target === button || legend.contains(e.target)) return;
+      if (view._hoverNode) return;
+      var tt = view._ttEl;
+      if (tt && tt.style.display !== "none") {
+        var mx = e.shiftKey ? tt.scrollWidth - tt.clientWidth : tt.scrollHeight - tt.clientHeight;
+        if (mx > 0) return;
+      }
+      e.preventDefault(); e.stopImmediatePropagation();
+      if (view._tagFocusAnim) { view._tagFocusAnim.stop(); view._tagFocusAnim = null; }
+      view._tagFocusArm = null;
+      var rect = graph.getBoundingClientRect(); st.graphRect = rect;
+      st.wax = e.clientX - rect.left; st.way = e.clientY - rect.top;
+      st.wtz = clamp(cy.zoom() * (1 - e.deltaY * 0.001), 0.1, 10);
+      if (view._sz) { view._sz.tz = st.wtz; view._sz.running = true; }
+      if (!st.wheelRunning) { st.wheelRunning = true; st.wraf = requestAnimationFrame(wheelLoop); }
+    }
+    function wheelLoop() {
+      if (!cy || view._tagFocusAnim) { st.wheelRunning = false; return; }
+      var a = cy.zoom(), n = st.wtz - a, done = Math.abs(n) < 0.001, z2 = done ? st.wtz : a + n * 0.25;
+      cy.zoom(z2); cy.pan(anchorPan(cy.pan(), a, z2, st.wax, st.way));
+      if (done) { st.wheelRunning = false; syncZoom(); }
+      else st.wraf = requestAnimationFrame(wheelLoop);
+    }
+    function cancelWheel() { if (st.wraf != null) cancelAnimationFrame(st.wraf); st.wraf = null; st.wheelRunning = false; }
+    button.onclick = function () { if (st.phase === "leave") return; st.active ? stop(false) : start(); };
+    function freed(e) {
+      var drag = st.drag;
+      if (drag && !drag.everMoved) dragged(e);
+      if (drag && drag.everMoved) {
+        st.hoverRestore = e.target; document.body.classList.add("blg-drops-node-moving");
+        view.resetHover && view.resetHover();
+      }
+      dropped(e.target).catch(warn);
+    }
+    cy.on("grab", "node", grabbed); cy.on("drag", "node", dragged); cy.on("free", "node", freed);
+    graph.addEventListener("pointermove", mods, true); graph.addEventListener("pointerup", mods, true);
+    graph.addEventListener("pointerleave", leave, true);
+    graph.addEventListener("mousedown", dropDown, true);
+    graph.addEventListener("contextmenu", dropContext, true);
+    graph.addEventListener("wheel", onWheel, true);
+    document.addEventListener("keydown", onKey, true); document.addEventListener("keyup", onKey, true);
+    var themeObserver = new MutationObserver(paintSettings); themeObserver.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    var originalMode = view.renderMode, originalLocal = view.renderLocalGraph, originalTag = view.renderTagGraph, originalSchedule = view._scheduleRefresh, originalRefresh = view.refreshLocal;
+    var nodeTimer = null;
+    /* Con conjuntos activos, los cambios de relaciones se aplican al grafo
+       visible sin reconstruir nodos ni tocar layout/cámara. Si cambia la
+       topología (alta/baja de nodos), se conserva el diferido clásico. */
+    function syncRelations() {
+      if (!cy || plugin.session || st.phase === "leave") return false;
+      if (plugin.tagView) {
+        var wanted = tagGraphNodeIds(plugin, plugin.tagView.tag), same = wanted.size === cy.nodes().length;
+        if (same) cy.nodes().forEach(function (n) { if (!wanted.has(n.id())) same = false; });
+        if (!same || !view._applyGraphEdges) return false;
+        view._applyGraphEdges(tagEdgeDescriptors(plugin, wanted));
+        return true;
+      }
+      var path = st.centerPath || view.currentPath;
+      var file = path && plugin.app.vault.getAbstractFileByPath(path);
+      if (!(file instanceof Oe.TFile) && path && st.alias.has(path)) file = plugin.app.vault.getAbstractFileByPath(st.alias.get(path));
+      if (!(file instanceof Oe.TFile)) return false;
+      return originalLocal.call(view, file, true) === true;
+    }
+    function otherNote(file) {
+      if (!st.active || plugin.tagView || plugin.session) return false;
+      file = file || plugin.app.workspace.getActiveFile();
+      var path = file && file.extension === "md" && file.path;
+      return !!path && path !== st.centerPath && path !== st.alias.get(st.centerPath);
+    }
+    // Cambió la nota central: las gotas de la carpeta anterior no deben quedar
+    // sobre el grafo nuevo. Salida inmediata y refresco (sin tween a posiciones viejas).
+    function checkActiveNote(file) { return otherNote(file) && !st.dropBusy && exitNow(true); }
+    var activeLeafRef = plugin.app.workspace.on("active-leaf-change", function (leaf) {
+      var file = leaf && leaf.view && leaf.view.file;
+      setTimeout(function () { if (!st.destroying) checkActiveNote(file); }, 60);
+    });
+    var fileOpenRef = plugin.app.workspace.on("file-open", function (file) { checkActiveNote(file); });
+    view.renderMode = function () {
+      if (checkActiveNote()) return;
+      if (st.active && mode() !== st.lastMode) exitNow(false);
+      else if (st.active) { st.dirty = true; return; }
+      var r = originalMode.apply(this, arguments); syncButton(); return r;
+    };
+    view.refreshLocal = function (force) {
+      // Con otra nota activa la reconstrucción SIGUE su curso: salir primero.
+      if (st.active && otherNote()) exitNow(false);
+      var r = originalRefresh.apply(this, arguments); syncButton(); return r;
+    };
+    view.renderLocalGraph = function (file) {
+      if (st.active) {
+        var same = file && (file.path === st.centerPath || file.path === st.alias.get(st.centerPath));
+        if (same && st.phase !== "leave") {
+          // Las relaciones se reflejan ya; el render completo sigue diferido
+          // porque esta llamada explícita también puede traer cambios visuales.
+          syncRelations(); st.dirty = true; return;
+        }
+        exitNow(false);
+      }
+      var r = originalLocal.apply(this, arguments); syncButton(); return r;
+    };
+    view.renderTagGraph = function () {
+      if (st.active) {
+        if (mode() === st.lastMode) {
+          syncRelations(); st.dirty = true; return;
+        }
+        exitNow(false);
+      }
+      var r = originalTag.apply(this, arguments); syncButton(); return r;
+    };
+    view._scheduleRefresh = function (force) {
+      if (st.active) {
+        checkActiveNote();
+        if (st.active && !syncRelations()) st.dirty = true;
+        return;
+      }
+      return originalSchedule.call(this, force);
+    };
+    function changedNodes(e) {
+      if (e && e.target && e.target.isEdge && e.target.isEdge()) return;
+      if (nodeTimer) clearTimeout(nodeTimer);
+      nodeTimer = setTimeout(function () { nodeTimer = null;
+        if (!st.active) { syncButton(); return; }
+        if (st.phase === "leave") return;
+        if (!cy.nodes().length || overLimit() || (!plugin.tagView && cy.nodes().length > maxN())) { exitNow(false); return; }
+        st.dirty = true; rerange(); }, 80);
+    }
+    cy.on("add remove", changedNodes);
+    var handle = {
+      settingsChanged: function (key) {
+        if (key === "dropsGooBlur") st.blur = +settings.dropsGooBlur || 10;
+        paintSettings(); syncButton();
+        if (st.active && (key === "dropsSize" || key === "dropsMaxFolders" || key === "dropsZoomOut" || key === "dropsMinZoom")) rerange();
+        else if (st.active) {
+          if (key === "dropsLabelSize") buildDrops(); else rebuildLegend();
+          if (["dropsColor", "dropsOpacity", "dropsBorderColor", "dropsBorderWidth", "dropsGooBlur", "dropsLabels", "dropsLabelSize", "dropsLegend"].includes(key)) {
+            var from = capturePositions(cy);
+            var cam = camera(view, st.groups, { zoom: cy.zoom(), pan: cy.pan() }, settings, st.viewport);
+            setOverflow(cam); beginTween(from, st.target, cam, false);
+          }
+        }
+      },
+      get fps() { return st.fps; },
+      get layerMs() { return st.layerMs; },
+      /* BLG-FOCUS-WHEEL: el tap de Cytoscape llega ANTES del "free", con el
+         agarre aún registrado. Un agarre sin movimiento es un clic, no un
+         arrastre: no debe bloquear el enfoque del nodo en la vista tag. */
+      get busy() { return !!(st.active && (st.tween || (st.drag && st.drag.everMoved) || st.dropDrag || st.dropBusy || st.phase !== "on")); },
+      destroy: function () {
+        st.destroying = true;
+        cancelWheel();
+        if (st.active) { try { stop(true); } catch (e) { warn(e); } }
+        if (st.raf != null) cancelAnimationFrame(st.raf);
+        if (nodeTimer) clearTimeout(nodeTimer);
+        plugin.app.workspace.offref(activeLeafRef);
+        plugin.app.workspace.offref(fileOpenRef);
+        ro.disconnect(); themeObserver.disconnect();
+        graph.removeEventListener("pointermove", mods, true); graph.removeEventListener("pointerup", mods, true);
+        graph.removeEventListener("pointerleave", leave, true);
+        graph.removeEventListener("mousedown", dropDown, true); dropUp();
+        graph.removeEventListener("contextmenu", dropContext, true);
+        graph.classList.remove("blg-drops-grab", "blg-drops-grabbing");
+        graph.removeEventListener("wheel", onWheel, true);
+        document.removeEventListener("keydown", onKey, true); document.removeEventListener("keyup", onKey, true);
+        cy.off("grab", "node", grabbed); cy.off("drag", "node", dragged); cy.off("free", "node", freed); cy.off("add remove", changedNodes);
+        document.body.classList.remove("blg-drops-node-moving");
+        view.renderMode = originalMode; view.renderLocalGraph = originalLocal; view.renderTagGraph = originalTag; view._scheduleRefresh = originalSchedule; view.refreshLocal = originalRefresh;
+        delete view._blgDropsMoved;
+        delete view._blgDropsAlias;
+        st.alias.clear();
+        button.remove(); legend.remove(); layer.remove(); view._blgDropsAttached = false;
+      }
+    };
+    // El cierre de la vista destruye Cytoscape; evita conservar listeners/DOM.
+    cy.on("destroy", function () { if (plugin._blgDrops && plugin._blgDrops.attached === handle) {
+      handle.destroy(); plugin._blgDrops.attached = null; } });
+    syncButton(); layer.setAttribute("hidden", ""); legend.hidden = true;
+    return handle;
+  }
+
+  var _onload = PLUGIN_PROTO.onload, _onunload = PLUGIN_PROTO.onunload;
+  PLUGIN_PROTO.onload = async function () {
+    pluginInstance = this; this._blgDrops = { attached: null };
+    try { hookSettingTab(this); } catch (e) { warn(e); }
+    await _onload.call(this);
+    try {
+      if (applyDefaults(this)) await this.saveSettings();
+      var plugin = this;
+      function tryAttach() {
+        try { var v = plugin.getView && plugin.getView();
+          if (!v || !v.cy || !v.graphEl) return;
+          if (plugin._blgDrops.attached && plugin._blgDrops.attached.view !== v) {
+            plugin._blgDrops.attached.destroy(); plugin._blgDrops.attached = null;
+          }
+          if (!plugin._blgDrops.attached) {
+            var h = attachView(plugin, v); if (h) { h.view = v; plugin._blgDrops.attached = h; }
+          }
+        } catch (e) { warn(e); }
+      }
+      plugin.registerEvent(plugin.app.workspace.on("layout-change", tryAttach));
+      plugin.registerEvent(plugin.app.workspace.on("active-leaf-change", tryAttach));
+      setTimeout(tryAttach, 300); setTimeout(tryAttach, 1200);
+    } catch (e) { warn(e); }
+  };
+  PLUGIN_PROTO.onunload = function () {
+    try { if (this._blgDrops && this._blgDrops.attached) this._blgDrops.attached.destroy(); } catch (e) { warn(e); }
+    this._blgDrops = null; pluginInstance = null;
+    if (typeof globalThis !== "undefined" && globalThis.__BLG_DROPS === sharedApi) delete globalThis.__BLG_DROPS;
+    return _onunload.call(this);
   };
 })();

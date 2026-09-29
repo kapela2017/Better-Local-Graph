@@ -103,6 +103,87 @@
   cursor: pointer;
 }
 
+/* ===== Location drops: SVG above Cytoscape, controls outside goo ===== */
+.blg-drops-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 5;
+}
+.blg-drops-layer[hidden], .blg-drops-legend[hidden], .blg-drops-toggle[hidden],
+.blg-drops-create[hidden], .blg-drops-legend-rows[hidden] { display: none; }
+.blg-drops-toggle {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 6;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 22px;
+  background: var(--background-primary);
+  color: var(--text-normal);
+  box-shadow: var(--shadow-s);
+  cursor: pointer;
+}
+.blg-drops-toggle.is-active {
+  border-color: var(--interactive-accent);
+  background: var(--background-secondary);
+  color: var(--interactive-accent);
+}
+.blg-drops-toggle svg { width: 16px; height: 16px; }
+.blg-drops-toggle:focus-visible, .blg-drops-legend button:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+}
+.blg-drops-label { font-size: var(--blg-drops-label-font-size, 11px); font-weight: 600; letter-spacing: 0.01em; }
+.blg-drops-label text { paint-order: stroke fill; }
+.blg-drops-legend {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 6;
+  width: min(280px, 40%);
+  max-height: min(320px, 50%);
+  overflow: auto;
+  pointer-events: auto;
+  background: var(--background-primary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-s);
+  color: var(--text-normal);
+}
+.blg-drops-legend-head, .blg-drops-legend-row {
+  width: 100%; border: 0; background: transparent; color: inherit;
+  text-align: left; cursor: pointer; padding: 6px 9px;
+}
+.blg-drops-legend-head { font-weight: 700; border-bottom: 1px solid var(--background-modifier-border); }
+.blg-drops-legend-hint { padding: 5px 9px; color: var(--text-muted); font-size: var(--font-ui-smaller); }
+.blg-drops-legend-hint[hidden] { display: none; }
+.blg-drops-legend-row { display: flex; align-items: baseline; gap: 8px; font-size: var(--font-ui-small); }
+.blg-drops-legend-row:hover { background: var(--background-modifier-hover); }
+.blg-drops-legend-row span:last-child { overflow-wrap: anywhere; }
+.blg-drops-swatch { width: 9px; height: 9px; flex: 0 0 auto; border-radius: 50%; background: var(--blg-drops-color); }
+.blg-drops-settings-desc { color: var(--text-muted); font-size: var(--font-ui-small); }
+.blg-drops-search { display: block; width: 100%; box-sizing: border-box; margin: 8px 0; }
+.blg-drops-create { margin: 5px 0 10px; }
+.blg-drops-folder-name { display: block; }
+.blg-drops-folder-count { display: block; color: var(--text-muted); font-size: var(--font-ui-smaller); }
+.blg-drops-confirm { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.blg-drops-color-input { display: block; width: 100%; height: 44px; padding: 3px; border: 1px solid var(--background-modifier-border); border-radius: 8px; background: var(--background-primary); cursor: pointer; margin: 10px 0 2px; }
+body.blg-drops-node-moving .coser-tooltip { visibility: hidden !important; }
+.blg-graph.blg-drops-grab, .blg-graph.blg-drops-grab canvas { cursor: grab !important; }
+.blg-graph.blg-drops-grabbing, .blg-graph.blg-drops-grabbing canvas { cursor: grabbing !important; }
+@media (prefers-reduced-motion: reduce) {
+  .blg-drops-toggle { transition: none; }
+}
+
 /* ===== Mapa mental de tags (modal markmap) ===== */
 .blg-mm-modal {
   background: #ffffff;
@@ -262,6 +343,74 @@
   white-space: nowrap;
 }
 
+/* BLG-TAG-SEARCH: buscador de la vista general del tag (toolbar) */
+.blg-tag-search {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  align-self: center;
+  min-width: 0;
+}
+
+.blg-tag-search input {
+  width: 160px;
+  max-width: 30vw;
+  padding: 3px 9px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 7px;
+  background: var(--background-primary);
+  color: var(--text-normal);
+  font-size: 12px;
+  line-height: 1.4;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.blg-tag-search input:focus {
+  border-color: var(--interactive-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--interactive-accent) 25%, transparent);
+}
+
+.blg-tag-search input::placeholder {
+  color: var(--text-faint);
+}
+
+.blg-tag-search .blg-tag-search-clear {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--background-modifier-hover);
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  flex: none;
+}
+
+.blg-tag-search .blg-tag-search-clear:hover {
+  background: var(--background-modifier-active-hover, var(--background-modifier-border));
+  color: var(--text-normal);
+}
+
+/* la x solo aparece cuando hay texto */
+.blg-tag-search input:not(:placeholder-shown) ~ .blg-tag-search-clear {
+  display: inline-flex;
+}
+
+.blg-tag-search .blg-tag-search-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* nodos coincidentes: la opacidad/glow se fija inline; la clase solo marca */
+
 /* ramas que coinciden: resaltadas; el resto atenuado */
 .blg-mm-modal .blg-mm-hl .blg-mm-label {
   border-color: #6c5ce7;
@@ -404,4 +553,303 @@
   background: #fdeef3;
   color: var(--blg-mm-sew-color, #e0245e);
   border-color: var(--blg-mm-sew-color, #e0245e);
+}
+
+/* ===== Pizarra de notas fijadas (blg-pin-board.js) ===== */
+/* Modo dentro del mismo panel: cubre el grafo, no la barra de herramientas. */
+.blg-root { position: relative; }
+.blg-pinboard {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 7;
+  overflow: hidden;
+  background: var(--background-primary);
+  outline: none;
+}
+.blg-pinboard[hidden], .blg-pin-toggle[hidden], .blg-pinboard-empty[hidden] { display: none; }
+.blg-pinboard-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--background-modifier-border) 1px, transparent 1.2px);
+  background-size: 26px 26px;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.blg-pinboard-world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+}
+.blg-pinboard-edges {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+  pointer-events: none;
+}
+.blg-pinboard-edge {
+  fill: none;
+  stroke: var(--blg-pin-sew-color, #e0245e);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 7 5;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--blg-pin-sew-color, #e0245e) 55%, transparent));
+  animation: blg-pin-sew-flow 1.6s linear infinite;
+}
+.blg-pinboard-edge.is-solid { animation: none; }
+.blg-pinboard-edge-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 14;
+  pointer-events: stroke;
+  cursor: context-menu;
+}
+.blg-pinboard-arrow { fill: var(--blg-pin-sew-color, #e0245e); opacity: 0.9; }
+@keyframes blg-pin-sew-flow { to { stroke-dashoffset: -12; } }
+
+
+/* --- tarjetas --- */
+.blg-pinboard-cards { position: absolute; left: 0; top: 0; }
+.blg-pin-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 220px;
+  background: var(--blg-pin-card-bg, var(--background-secondary));
+  border: 1px solid var(--blg-pin-card-border, var(--background-modifier-border));
+
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+  padding: 8px 10px 9px;
+  cursor: default;
+  transition: box-shadow 140ms ease, transform 140ms ease, opacity 160ms ease;
+}
+.blg-pin-card:hover {
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
+}
+.blg-pin-card:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+}
+.blg-pin-card.is-selected {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--interactive-accent) 22%, transparent),
+    0 8px 22px rgba(0, 0, 0, 0.2);
+}
+.blg-pin-card.is-dragging {
+
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.3);
+  transition: none;
+  cursor: grabbing;
+}
+.blg-pin-card.is-entering { animation: blg-pin-pop 240ms ease-out; }
+.blg-pin-card.is-leaving { opacity: 0; transform-origin: center; }
+@keyframes blg-pin-pop {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.blg-pin-card-date {
+  margin: -2px 2px 5px;
+  min-height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  font-family: var(--blg-pin-date-font, "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive);
+  font-size: 12px;
+  line-height: 1.1;
+  color: var(--blg-pin-date-color, #8b6f47);
+  text-align: right;
+  transform: rotate(-1.1deg);
+  opacity: 0.92;
+  user-select: none;
+}
+.blg-pin-card-date-icon {
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.blg-pin-card-date-icon[hidden] { display: none; }
+.blg-pin-card-date-text { white-space: nowrap; }
+.blg-pin-card-head {
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: grab;
+  user-select: none;
+}
+.blg-pin-card-head:active { cursor: grabbing; }
+.blg-pin-card-dot {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  opacity: 0.85;
+}
+.blg-pin-card-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-normal);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.blg-pin-card-btn {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-faint);
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: none;
+}
+.blg-pin-card-btn:hover { color: var(--interactive-accent); background: var(--background-modifier-hover); }
+.blg-pin-card-btn:disabled { color: var(--text-faint); opacity: 0.4; cursor: default; }
+.blg-pin-card-btn svg { width: 13px; height: 13px; }
+.blg-pin-card-folder {
+  margin-top: 2px;
+  font-size: 10px;
+  color: var(--text-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.blg-pin-card-preview {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-muted);
+  max-height: 96px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  overscroll-behavior: contain;
+}
+.blg-pin-card-preview::-webkit-scrollbar { width: 6px; height: 6px; }
+.blg-pin-card-preview::-webkit-scrollbar-thumb {
+  background: var(--background-modifier-border);
+  border-radius: 3px;
+}
+.blg-pin-card-prop {
+  margin-top: 2px;
+  overflow-wrap: anywhere;
+}
+.blg-pin-card-prop:first-child { margin-top: 0; }
+.blg-pin-card-prop-name { color: var(--text-faint); font-weight: 600; }
+.blg-pin-card-prop.is-empty { opacity: 0.6; }
+
+.blg-pin-card.is-unavailable {
+  border-style: dashed;
+  opacity: 0.65;
+}
+.blg-pin-card.is-unavailable .blg-pin-card-preview { font-style: italic; }
+
+/* --- estado vacío, controles y botón del panel --- */
+.blg-pinboard-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-faint);
+  pointer-events: none;
+  text-align: center;
+  padding: 0 40px;
+}
+.blg-pinboard-empty-icon svg { width: 34px; height: 34px; opacity: 0.4; }
+.blg-pinboard-empty-title { font-size: 15px; font-weight: 600; }
+.blg-pinboard-empty-hint { font-size: 12px; max-width: 320px; }
+.blg-pinboard-controls {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: flex;
+  gap: 6px;
+}
+.blg-pinboard-fit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 50%;
+  background: var(--background-primary);
+  color: var(--text-normal);
+  box-shadow: var(--shadow-s);
+  cursor: pointer;
+}
+.blg-pinboard-fit:hover { color: var(--interactive-accent); }
+.blg-pinboard-fit svg { width: 15px; height: 15px; }
+.blg-pinboard.is-panning { cursor: grabbing; }
+.blg-pin-color-actions,
+.blg-pin-relate-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+.blg-pin-relate-actions { flex-direction: column; align-items: stretch; }
+.blg-pin-toggle {
+
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 10px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 22px;
+  background: var(--background-primary);
+  color: var(--text-normal);
+  box-shadow: var(--shadow-s);
+  cursor: pointer;
+}
+.blg-pin-toggle.is-active {
+  border-color: var(--interactive-accent);
+  background: var(--background-secondary);
+  color: var(--interactive-accent);
+}
+.blg-pin-toggle.is-with-drops { right: 64px; }
+
+.blg-pin-toggle svg { width: 16px; height: 16px; }
+.blg-pin-toggle-icon { display: flex; align-items: center; }
+.blg-pin-toggle-count {
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 14px;
+  text-align: center;
+}
+.blg-pin-toggle:focus-visible, .blg-pinboard-fit:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .blg-pin-card { transition: none; }
+  .blg-pin-card.is-entering { animation: none; }
+  .blg-pinboard-edge { animation: none; }
 }
