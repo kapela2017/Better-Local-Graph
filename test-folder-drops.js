@@ -185,6 +185,67 @@ function tagTapFocusOpensOnSecondClick() {
     "renderTagGraph resets the armed node");
 }
 
+/* En la vista LOCAL, el tap en el fondo encuadra por el bounding box de los
+   NODOS, nunca por el de las aristas: una curva o flecha larga no puede
+   alejar el grafo. La vista tag y la costura conservan el fit anterior. */
+function backgroundTapFitsVisibleNodes() {
+  const start = bundle.indexOf('this.cy.on("tap",a=>{');
+  const endMarker = '}),this.cy.on("cxttap","node",a=>{';
+  const end = bundle.indexOf(endMarker, start) + 2;
+  assert.ok(start >= 0 && end > start, "background tap handler missing");
+  const snippet = bundle.slice(start, end);
+  function run(nodes, legacy) {
+    let callback, animateCalls = [];
+    const elements = { length: nodes.length ? nodes.length : 0 };
+    const cy = {
+      on(name, fn) { assert.equal(name, "tap"); callback = fn; },
+      elements() { return elements; },
+      nodes() { if (legacy) throw new Error("legacy modes must not switch to node fitting"); return nodes; },
+      width: () => 800, height: () => 600, zoom: () => 0.75,
+      animate(props, opts) { animateCalls.push({ props, opts }); }
+    };
+    const view = { cy, plugin: { tagView: legacy === "tag" ? { tag: "x" } : null, session: legacy === "session" ? {} : null },
+      _sz: { z: 0.75, tz: 0.75, running: true }, _tagFocusArm: "x" };
+    vm.runInNewContext(`(function(){${snippet}})`, {}).call(view);
+    callback({ target: cy });
+    return { view, animateCalls, elements };
+  }
+  const twoNodes = {
+    length: 2,
+    boundingBox(opts) {
+      assert.equal(opts.includeLabels, false);
+      assert.equal(opts.includeOverlays, false);
+      return { x1: -100, y1: -50, x2: 300, y2: 150, w: 400, h: 200 };
+    }
+  };
+  let r = run(twoNodes);
+  assert.equal(r.view._tagFocusArm, null, "background tap disarms the tag second click");
+  assert.equal(r.view._sz.running, false, "background tap stops the wheel zoom loop");
+  assert.equal(r.animateCalls.length, 1);
+  assert.equal(r.animateCalls[0].opts.duration, 350);
+  assert.equal(r.animateCalls[0].opts.easing, "ease-in-out-cubic");
+  assert.ok(!("fit" in r.animateCalls[0].props), "local background tap no longer fits every element");
+  assert.equal(r.animateCalls[0].props.zoom, 1.5, "few nodes keep a readable bounded zoom");
+  assert.ok(Math.abs(r.animateCalls[0].props.pan.x - 250) < 1e-9 &&
+    Math.abs(r.animateCalls[0].props.pan.y - 225) < 1e-9, "node bbox stays centered");
+  const oneNode = {
+    length: 1,
+    boundingBox(opts) { return { x1: -21, y1: -21, x2: 21, y2: 21, w: 42, h: 42 }; }
+  };
+  r = run(oneNode);
+  assert.equal(r.animateCalls[0].props.zoom, 1.15, "one node is centered without an extreme zoom-in");
+  assert.ok(Math.abs(r.animateCalls[0].props.pan.x - 400) < 1e-9 &&
+    Math.abs(r.animateCalls[0].props.pan.y - 300) < 1e-9);
+  r = run({ length: 0, boundingBox() { throw new Error("empty graph must not compute a bbox"); } });
+  assert.equal(r.animateCalls.length, 0, "empty graph does not move the camera");
+  for (const legacy of ["tag", "session"]) {
+    r = run(twoNodes, legacy);
+    assert.equal(r.animateCalls.length, 1);
+    assert.equal(r.animateCalls[0].props.fit.eles, r.elements, `${legacy} keeps the previous all-element fit`);
+    assert.equal(r.animateCalls[0].props.fit.padding, 60);
+  }
+}
+
 function hoverDropIncludesNodesAndFadedPill() {
   const mk = (x, y, w) => ({ position: () => ({ x, y }), width: () => w || 42 });
   const groups = [{ path: "ia/agentes", x: 0, y: 0, r: 100, nodes: [mk(0, 10), mk(40, 0)] },
@@ -826,6 +887,7 @@ function nodeCountOverLimitExits() {
   buttonHiddenOverMaxNodes();
   nodeCountOverLimitExits();
   tagTapFocusOpensOnSecondClick();
+  backgroundTapFitsVisibleNodes();
   wheelAnchorKeepsCursorPoint();
   hoverDropIncludesNodesAndFadedPill();
   dropColorOverrideAndReset();

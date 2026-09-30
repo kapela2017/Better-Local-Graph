@@ -158,6 +158,17 @@ assert.deepEqual(Object.keys(api), ["addPinMenu", "isPinned", "pin", "unpin", "o
   assert.equal(wide.z, 0.2); // clamp inferior
 }
 
+/* Entrar a la pizarra siempre abre en vista general. La cámara persistida
+   sirve para serializar el estado, pero ya no decide la entrada: si se
+   restaurara, una salida durante el enfoque de una tarjeta reabriría allí. */
+{
+  const enterAt = source.indexOf("    function enter() {");
+  const fitAt = source.indexOf("      cancelCamAnim();\n      var f = fitCamera(cardRects(), viewport(), 70);\n      setCam(f.x, f.y, f.z); saveCamSoon();", enterAt);
+  assert.ok(enterAt >= 0 && fitAt > enterAt, "enter cancels any stale camera tween and fits every card");
+  assert.ok(!source.includes("if (state.camera) setCam(state.camera.x, state.camera.y, state.camera.z);"),
+    "enter must not restore the camera of the last reviewed card");
+}
+
 /* ---------- anchorPan: el punto del mundo bajo el cursor no se mueve ---------- */
 {
   const pan = { x: 50, y: -30 }, z0 = 0.8, z1 = 1.4, ax = 300, ay = 200;

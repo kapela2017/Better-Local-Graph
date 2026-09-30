@@ -1090,9 +1090,9 @@
       board.hidden = false;
       layoutTop(); applyBoardStyle();
       buildAll();
-      var state = ensureState(plugin);
-      if (state.camera) setCam(state.camera.x, state.camera.y, state.camera.z);
-      else { var f = fitCamera(cardRects(), viewport(), 70); setCam(f.x, f.y, f.z); saveCamSoon(); }
+      cancelCamAnim();
+      var f = fitCamera(cardRects(), viewport(), 70);
+      setCam(f.x, f.y, f.z); saveCamSoon();
       reconcileEdges(); updateEmpty(); syncButton();
       try { board.focus({ preventScroll: true }); } catch (_) {}
     }
