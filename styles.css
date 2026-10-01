@@ -611,6 +611,12 @@ body.blg-drops-node-moving .coser-tooltip { visibility: hidden !important; }
   cursor: context-menu;
 }
 .blg-pinboard-arrow { fill: var(--blg-pin-sew-color, #e0245e); opacity: 0.9; }
+.blg-pinboard-edge.is-base {
+  stroke: var(--blg-pin-base-color, #8b5cf6);
+  stroke-dasharray: none;
+  animation: none;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--blg-pin-base-color, #8b5cf6) 50%, transparent));
+}
 @keyframes blg-pin-sew-flow { to { stroke-dashoffset: -12; } }
 
 
@@ -762,6 +768,25 @@ body.blg-drops-node-moving .coser-tooltip { visibility: hidden !important; }
   opacity: 0.65;
 }
 .blg-pin-card.is-unavailable .blg-pin-card-preview { font-style: italic; }
+
+/* --- consultas .base --- */
+.blg-pin-card.is-base {
+  border-color: var(--blg-pin-base-color, #8b5cf6);
+  background: color-mix(in srgb, var(--blg-pin-base-color, #8b5cf6) 10%, var(--background-secondary));
+}
+.blg-pin-card.is-base .blg-pin-card-dot { background: var(--blg-pin-base-color, #8b5cf6); }
+.blg-pin-card.is-base .blg-pin-card-title { color: var(--blg-pin-base-color, #8b5cf6); }
+.blg-pin-card-base-meta {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--blg-pin-base-color, #8b5cf6);
+  font-size: 11px;
+  font-weight: 600;
+}
+.blg-pin-card-base-icon { display: inline-flex; width: 14px; height: 14px; }
+.blg-pin-card-base-icon svg { width: 14px; height: 14px; }
 
 /* --- estado vacío, controles y botón del panel --- */
 .blg-pinboard-empty {

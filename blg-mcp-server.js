@@ -80,6 +80,139 @@
     return out;
   }
 
+  /* ---------- utilidades Bases: vista activa y propiedades ---------- */
+
+  function propertyName(propertyId) {
+    var m = String(propertyId || "").match(/^note\.(.*)$/);
+    return m ? m[1] : String(propertyId || "");
+  }
+
+  function isEditablePropertyId(propertyId, formulas) {
+    if (!/^note\./.test(String(propertyId || ""))) return false;
+    var name = propertyName(propertyId);
+    return !!(name && !(formulas && Object.prototype.hasOwnProperty.call(formulas, name)));
+  }
+
+  function serializeValue(value, propertyId, formulas) {
+    var editable = isEditablePropertyId(propertyId, formulas);
+    if (value == null) return { value: null, display: "", editable: editable };
+    var display;
+    try { display = String(value); }
+    catch (_) { display = ""; }
+    if (typeof value === "object") {
+      try { if (typeof value.toString === "function") display = String(value.toString()); }
+      catch (_) {}
+    }
+    return { value: editable ? value : undefined, display: display, editable: editable };
+  }
+
+  function activeBasesLeaf(app, ref) {
+    var Oe = require("obsidian");
+    var active = null;
+    if (ref) {
+      var all = [];
+      app.workspace.iterateAllLeaves(function (leaf) { all.push(leaf); });
+      var low = normPath(ref).toLowerCase();
+      for (var i = 0; i < all.length; i++) {
+        var leaf = all[i];
+        if (!leaf || !leaf.view) continue;
+        var file = leaf.view.file;
+        if (!(file instanceof Oe.TFile) || String(file.extension).toLowerCase() !== "base") continue;
+        if (normPath(file.path).toLowerCase() === low || normPath(file.path).toLowerCase() === low + ".base") { active = leaf; break; }
+      }
+      return active;
+    }
+    active = app.workspace.activeLeaf || null;
+    if (!active || !active.view) return null;
+    var file = active.view.file;
+    if (!(file instanceof Oe.TFile) || String(file.extension).toLowerCase() !== "base") return null;
+    return active;
+  }
+
+  function normPath(p) { return String(p || "").replace(/\\/g, "/").replace(/^\/+|\/+$/g, ""); }
+
+  function baseViewState(leaf) {
+    try {
+      if (leaf && typeof leaf.getViewState === "function") {
+        var st = leaf.getViewState() || {};
+        var inner = st.state || {};
+        return { type: st.type || null, file: inner.file || null, viewName: inner.viewName || null };
+      }
+    } catch (_) {}
+    return { type: null, file: null, viewName: null };
+  }
+
+  function baseActiveSubview(leaf) {
+    var view = leaf && leaf.view;
+    if (!view) return null;
+    var ctrl = view.controller || null;
+    var viewName = null;
+    var state = baseViewState(leaf);
+    if (state.viewName) viewName = state.viewName;
+    try {
+      if (!viewName && view.state && view.state.viewName) viewName = view.state.viewName;
+    } catch (_) {}
+    try {
+      if (!viewName && ctrl && typeof ctrl.getViewName === "function") viewName = ctrl.getViewName();
+    } catch (_) {}
+    var subviews = view._children || view.children || view.views || null;
+    if (subviews && subviews.length) {
+      for (var i = 0; i < subviews.length; i++) {
+        var sv = subviews[i];
+        if (!sv) continue;
+        if (!viewName || sv.name === viewName || sv.type === viewName || (sv.config && sv.config.name === viewName)) return sv;
+      }
+      for (var j = 0; j < subviews.length; j++) if (subviews[j]) return subviews[j];
+    }
+    try {
+      if (view.currentView) return view.currentView;
+    } catch (_) {}
+    // fallback: si la propia vista tiene pinta de subview (kanban-view)
+    if (view.groupByPropertyId !== undefined || view.type === "kanban-view" || viewName) return view;
+    return null;
+  }
+
+  function normalizeGroupValue(value) {
+    if (value == null) return "Uncategorized";
+    var s;
+    try { s = String(value).trim(); } catch (_) { s = ""; }
+    return (s === "" || s.toLowerCase() === "null") ? "Uncategorized" : s;
+  }
+
+  function entryValue(entry, propertyId) {
+    try { return typeof entry.getValue === "function" ? entry.getValue(propertyId) : null; }
+    catch (_) { return null; }
+  }
+
+  function kanbanGroups(subview) {
+    var entries = (subview && subview.data && subview.data.data) || [];
+    var groupId = subview && subview.groupByPropertyId || null;
+    var laneId = subview && subview.swimlaneByPropertyId || null;
+    if (laneId && laneId === groupId) laneId = null;
+    var grouped = new Map();
+    entries.forEach(function (entry) {
+      var col = normalizeGroupValue(entryValue(entry, groupId));
+      if (!grouped.has(col)) grouped.set(col, []);
+      grouped.get(col).push(entry);
+    });
+    return { entries: entries, groupId: groupId, laneId: laneId, grouped: grouped };
+  }
+
+  function baseRecord(plugin, file) {
+    var api = (typeof globalThis !== "undefined") && globalThis.__BLG_BASES;
+    if (!api) return null;
+    try {
+      if (!api.isBaseFile || !api.isBaseFile(file)) return null;
+      var r = api.record && api.record(plugin, file.path);
+      return r && !r.error ? r : null;
+    } catch (_) { return null; }
+  }
+
+  function viewList(record) {
+    var views = record && record.parsed && record.parsed.views || [];
+    return views.map(function (v) { return { type: v.type || null, name: v.name || null, groupBy: v.groupByProperty || null }; });
+  }
+
   // acepta ruta exacta, ruta sin .md, wikilink o basename
   function resolveFile(app, ref) {
     if (!ref) return null;
@@ -403,6 +536,66 @@
             return result;
           }
 
+          // --- vista .base activa (Bases) ---
+          var baseLeaf = activeBasesLeaf(app, null);
+          if (baseLeaf && baseLeaf.view && baseLeaf.view.file) {
+            var baseFile = baseLeaf.view.file;
+            result.mode = "bases";
+            result.base = {
+              path: baseFile.path,
+              basename: baseFile.basename
+            };
+            var rec = baseRecord(plugin, baseFile);
+            if (rec) result.base.views = viewList(rec);
+            var sub = baseActiveSubview(baseLeaf);
+            if (sub) {
+              result.base.activeView = {
+                type: sub.type || (baseViewState(baseLeaf).viewName || null),
+                name: sub.name || baseViewState(baseLeaf).viewName || null
+              };
+              if (sub.groupByPropertyId == null && rec && rec.parsed && rec.parsed.views) {
+                var v0 = rec.parsed.views[0];
+                if (v0 && v0.groupByProperty) sub.groupByPropertyId = v0.groupByProperty;
+              }
+              if (sub.groupByPropertyId) {
+                var groupByName = propertyName(sub.groupByPropertyId);
+                var swimName = propertyName(sub.swimlaneByPropertyId || "");
+                result.base.groupByProperty = groupByName;
+                result.base.swimlaneProperty = swimName || null;
+                result.base.columns = [];
+                var groups = kanbanGroups(sub);
+                groups.grouped.forEach(function (entries, col) {
+                  result.base.columns.push({
+                    name: col,
+                    count: entries.length,
+                    cards: entries.map(function (e) {
+                      var f = e.file;
+                      var props = {};
+                      if (rec && rec.parsed && rec.parsed.properties) {
+                        Object.keys(rec.parsed.properties).forEach(function (pid) {
+                          var name = propertyName(pid);
+                          if (!name) return;
+                          props[name] = serializeValue(entryValue(e, pid), pid, rec.parsed.formulas);
+                        });
+                      }
+                      return {
+                        path: f && f.path,
+                        basename: f && f.basename,
+                        title: f && f.basename,
+                        frontmatter: f ? (app.metadataCache.getFileCache(f) && app.metadataCache.getFileCache(f).frontmatter) || {} : {},
+                        properties: props
+                      };
+                    })
+                  });
+                });
+              }
+            }
+            result.bookmark = bmInfo;
+            result.activeIsBookmark = activeIsBookmarkFn(baseFile.path);
+            result.message = "El usuario está viendo una vista .base de Obsidian Bases. Usa blg_get_current_base para detalles y blg_update_base_cards para manipular tarjetas.";
+            return result;
+          }
+
           // --- no se detectó nada ---
           result.bookmark = bmInfo;
           result.message = "No se detectó ninguna vista activa del plugin. Abre una nota o una Tag View.";
@@ -626,6 +819,150 @@
             default:
               throw { code: -32602, message: "action desconocida: '" + action + "'. Usa get|open|close|pin|unpin|focus|fit." };
           }
+        }
+      },
+
+      /* ===== lectura de la vista .base activa ===== */
+      blg_get_current_base: {
+        description: "Devuelve el contenido de la vista .base activa de Obsidian Bases: columnas kanban con sus tarjetas, propiedades editables (note.*) y calculadas (fórmulas, de solo lectura). Requiere que el usuario tenga abierta una vista .base; si no, devuelve error. Úsala para leer el tablero antes de manipular tarjetas con blg_update_base_cards.",
+        inputSchema: { type: "object", properties: {
+          base: { type: "string", description: "Ruta o basename de la .base a leer. Omitir para usar la vista .base activa." }
+        } },
+        handler: async function (args) {
+          args = args || {};
+          var ref = args.base ? String(args.base).trim() : null;
+          var leaf = activeBasesLeaf(app, ref);
+          if (!leaf || !leaf.view || !leaf.view.file) {
+            throw { code: -32603, message: "No hay ninguna vista .base activa" + (ref ? " para: " + ref : "") + ". Abre una .base en Obsidian." };
+          }
+          var file = leaf.view.file;
+          var rec = baseRecord(plugin, file);
+          if (!rec) throw { code: -32603, message: "La base no está en caché o tiene error. Recarga el vault o revisa el archivo .base." };
+          var sub = baseActiveSubview(leaf);
+          var state = baseViewState(leaf);
+          var result = {
+            path: file.path,
+            basename: file.basename,
+            views: viewList(rec),
+            activeView: state.viewName || (sub && (sub.name || sub.type)) || null,
+            formulas: rec.parsed.formulas ? Object.keys(rec.parsed.formulas) : [],
+            editableProperties: Object.keys(rec.parsed.properties || {}).filter(function (pid) { return isEditablePropertyId(pid, rec.parsed.formulas); }).map(propertyName),
+            computedProperties: Object.keys(rec.parsed.properties || {}).filter(function (pid) { return !isEditablePropertyId(pid, rec.parsed.formulas); }).map(propertyName)
+          };
+          if (sub && sub.groupByPropertyId == null && rec && rec.parsed && rec.parsed.views) {
+            var v0 = rec.parsed.views[0];
+            if (v0 && v0.groupByProperty) sub.groupByPropertyId = v0.groupByProperty;
+          }
+          if (sub && sub.groupByPropertyId) {
+            result.groupByProperty = propertyName(sub.groupByPropertyId);
+            result.swimlaneProperty = propertyName(sub.swimlaneByPropertyId || "") || null;
+            result.columns = [];
+            var groups = kanbanGroups(sub);
+            groups.grouped.forEach(function (entries, col) {
+              result.columns.push({
+                name: col,
+                count: entries.length,
+                cards: entries.map(function (e) {
+                  var f = e.file;
+                  var props = {};
+                  var fm = f ? (app.metadataCache.getFileCache(f) && app.metadataCache.getFileCache(f).frontmatter) || {} : {};
+                  Object.keys(rec.parsed.properties || {}).forEach(function (pid) {
+                    var name = propertyName(pid);
+                    if (!name) return;
+                    props[name] = serializeValue(entryValue(e, pid), pid, rec.parsed.formulas);
+                  });
+                  return {
+                    path: f && f.path,
+                    basename: f && f.basename,
+                    title: f && f.basename,
+                    frontmatter: fm,
+                    properties: props
+                  };
+                })
+              });
+            });
+          }
+          return result;
+        }
+      },
+
+      /* ===== manipulación de tarjetas: actualizar propiedades frontmatter ===== */
+      blg_update_base_cards: {
+        description: "Actualiza las propiedades frontmatter de una o varias notas que son tarjetas en una vista .base kanban. Úsala para mover tarjetas entre columnas/carril cambiando la propiedad de agrupación, o para editar cualquier propiedad editable (note.*). Las fórmulas y propiedades calculadas se ignoran silenciosamente (son de solo lectura). Si la propiedad no existe en la nota, se crea; si el valor es null, se elimina la propiedad.",
+        inputSchema: { type: "object", required: ["cards"], properties: {
+          base: { type: "string", description: "Ruta o basename de la .base (para validar que la tarjeta está en la vista). Omitir para usar la vista .base activa." },
+          cards: {
+            type: "array",
+            items: { type: "object", required: ["path"], properties: {
+              path: { type: "string", description: "Ruta de la nota/tarjeta a actualizar" },
+              properties: { type: "object", additionalProperties: true, description: "Mapa de propiedad → nuevo valor. Valor null = eliminar. Las propiedades deben ser editables (note.*, no fórmulas)." }
+            } },
+            description: "Tarjetas a modificar"
+          }
+        } },
+        handler: async function (args) {
+          args = args || {};
+          var ref = args.base ? String(args.base).trim() : null;
+          var leaf = activeBasesLeaf(app, ref);
+          if (!leaf || !leaf.view || !leaf.view.file) {
+            throw { code: -32603, message: "No hay ninguna vista .base activa" + (ref ? " para: " + ref : "") };
+          }
+          var baseFile = leaf.view.file;
+          var cards = Array.isArray(args.cards) ? args.cards : [];
+          if (!cards.length) throw { code: -32602, message: "Falta 'cards' (array de tarjetas con path y properties)." };
+          var rec = baseRecord(plugin, baseFile);
+          if (!rec) throw { code: -32603, message: "La base no está en caché." };
+          var formulas = rec.parsed.formulas || {};
+          var results = [];
+          var errors = [];
+          for (var i = 0; i < cards.length; i++) {
+            var c = cards[i] || {};
+            var cardPath = String(c.path || "").trim();
+            var props = c.properties;
+            if (!cardPath) { errors.push({ index: i, error: "path vacío" }); continue; }
+            var file = resolveFile(app, cardPath);
+            if (!file) { errors.push({ index: i, path: cardPath, error: "nota no encontrada" }); continue; }
+            if (!props || typeof props !== "object") { errors.push({ index: i, path: cardPath, error: "properties debe ser un objeto" }); continue; }
+            var changes = {};
+            var skipped = [];
+            for (var key in props) {
+              if (!Object.prototype.hasOwnProperty.call(props, key)) continue;
+              var pid = "note." + key;
+              if (!isEditablePropertyId(pid, formulas)) { skipped.push(key); continue; }
+              changes[key] = props[key];
+            }
+            if (!Object.keys(changes).length) {
+              errors.push({ index: i, path: cardPath, error: "ninguna propiedad editable (todas son fórmulas o inválidas)", skipped: skipped });
+              continue;
+            }
+            try {
+              var cache = app.metadataCache.getFileCache(file);
+              var fm = (cache && cache.frontmatter) || {};
+              await app.fileManager.processFrontMatter(file, function (fmx) {
+                var target = fmx || fm;
+                for (var k in changes) {
+                  if (changes[k] === null) delete target[k];
+                  else target[k] = changes[k];
+                }
+              });
+              // asegurar que el cache quede actualizado si processFrontMatter no lo hace
+              if (cache) cache.frontmatter = fm;
+              results.push({ index: i, path: file.path, updated: Object.keys(changes), skipped: skipped.length ? skipped : undefined });
+            } catch (e) {
+              errors.push({ index: i, path: cardPath, error: String(e && e.message || e) });
+            }
+          }
+          // refrescar la vista y los grafos
+          try {
+            var v = plugin.getView && plugin.getView();
+            if (v && v._scheduleRefresh) v._scheduleRefresh(true);
+          } catch (_) {}
+          return {
+            ok: errors.length === 0,
+            base: baseFile.path,
+            updated: results,
+            errors: errors.length ? errors : undefined
+          };
         }
       },
     };

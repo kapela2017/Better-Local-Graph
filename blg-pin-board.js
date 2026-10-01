@@ -184,22 +184,28 @@
     });
     return changed;
   }
-  /* Aristas visibles: costura dirigida fuente→destino, SOLO cuando ambas
-     notas están fijadas. Sin wikilinks, backlinks ni tags compartidos. */
-  function deriveEdges(paths, sewingOf) {
+  /* Aristas visibles: costura dirigida fuente→destino cuando ambas notas
+     están fijadas, más aristas consulta→nota para cada .base fijada. */
+  function deriveEdges(paths, sewingOf, basesOf) {
     var set = new Set(paths), seen = new Set(), edges = [];
+    function push(p, t, kind) {
+      if (t === p || !set.has(t)) return;
+      var k = edgeKey(p, t);
+      if (seen.has(k)) return;
+      seen.add(k);
+      edges.push({ from: p, to: t, kind: kind });
+    }
     paths.forEach(function (p) {
       var tg;
       try { tg = sewingOf(p); } catch (_) { return; }
       if (!tg) return;
-      Array.from(tg).forEach(function (t) {
-        if (t === p || !set.has(t)) return;
-        var k = edgeKey(p, t);
-        if (seen.has(k)) return;
-
-        seen.add(k);
-        edges.push({ from: p, to: t });
-      });
+      Array.from(tg).forEach(function (t) { push(p, t, "sewing"); });
+    });
+    paths.forEach(function (p) {
+      if (!isBasePath(p) || !basesOf) return;
+      var tg;
+      try { tg = basesOf(p); } catch (_) { return; }
+      (tg || []).forEach(function (t) { push(p, t, "base"); });
     });
     return edges;
   }
@@ -288,8 +294,10 @@
     return i < 0 ? "" : path.slice(0, i);
   }
   function baseOf(path) {
-    return String(path || "").split("/").pop().replace(/\.md$/i, "");
+    return String(path || "").split("/").pop().replace(/\.(md|base)$/i, "");
   }
+  function isBasePath(path) { return /\.base$/i.test(String(path || "")); }
+  function basesApi(plugin) { return plugin && globalThis.__BLG_BASES || null; }
 
   /* ---------- estado y persistencia ---------- */
 
@@ -326,6 +334,7 @@
      getFirstLinkpathDest). */
   function sewingTargets(app, path) {
     var out = new Set();
+    if (isBasePath(path)) return out;
     var f = app.vault.getAbstractFileByPath(path);
     if (!(f instanceof Oe.TFile)) return out;
     var c = app.metadataCache.getFileCache(f);
@@ -349,7 +358,7 @@
   /* ---------- acciones públicas ---------- */
 
   function pinFile(plugin, file) {
-    if (!(file instanceof Oe.TFile) || file.extension.toLowerCase() !== "md") return;
+    if (!(file instanceof Oe.TFile) || ["md", "base"].indexOf(file.extension.toLowerCase()) === -1) return;
     var st = ensureState(plugin);
     if (st.cards[file.path]) return;
     var h = handleOf(plugin), center = { x: 0, y: 0 }, existing = [];
@@ -385,7 +394,7 @@
     var plugin = opts.plugin || pluginInstance;
     if (!plugin || plugin.session) return;
     var file = opts.file;
-    if (!(file instanceof Oe.TFile) || file.extension.toLowerCase() !== "md") return;
+    if (!(file instanceof Oe.TFile) || ["md", "base"].indexOf(file.extension.toLowerCase()) === -1) return;
     var pinned = isPinned(plugin, file.path);
     menu.addItem(function (item) {
       item.setIcon(pinned ? "pin-off" : "pin").setTitle(T(pinned ? "ctxUnpinNote" : "ctxPinNote")).onClick(function () {
@@ -451,9 +460,9 @@
         available: ok
       };
     });
-    var edges = deriveEdges(paths, function (p) { return sewingTargets(app, p); }).map(function (e) {
+    var edges = deriveEdges(paths, function (p) { return sewingTargets(app, p); }, function (p) { var B = basesApi(plugin); return B ? B.resultsFor(plugin, p) : []; }).map(function (e) {
       var es = st.edgeStyles[edgeKey(e.from, e.to)] || {};
-      return { from: e.from, to: e.to, color: normalizeColor(es.color), dash: es.dash === "solid" ? "solid" : "dash" };
+      return { from: e.from, to: e.to, kind: e.kind, color: normalizeColor(es.color), dash: es.dash === "solid" ? "solid" : "dash" };
     });
     return {
       active: !!(h && h.active()),
@@ -656,7 +665,7 @@
     /* --- aristas de costura: diff por lista, redibujado de rutas en un RAF --- */
     function reconcileEdges() {
       var state = ensureState(plugin);
-      st.edges = deriveEdges(Object.keys(state.cards), function (p) { return sewingTargets(plugin.app, p); });
+      st.edges = deriveEdges(Object.keys(state.cards), function (p) { return sewingTargets(plugin.app, p); }, function (p) { var B = basesApi(plugin); return B ? B.resultsFor(plugin, p) : []; });
       drawEdges();
     }
     function edgesSoon() {
@@ -683,13 +692,17 @@
         var p2 = borderPoint(bc.x, bc.y, bw, bh, ac.x, ac.y);
         var d = sewCurve(p1.x, p1.y, p2.x, p2.y), key = edgeKey(e.from, e.to);
         var es = state.edgeStyles[key] || {};
-        var color = normalizeColor(es.color) || settings.mmSewingColor || "#e0245e";
-        var solid = es.dash === "solid";
+        var B = basesApi(plugin);
+        var isBaseEdge = e.kind === "base";
+        var color = normalizeColor(es.color) || (isBaseEdge && B ? B.color(settings) : settings.mmSewingColor || "#e0245e");
+        var solid = es.dash === "solid" || isBaseEdge;
         var hit = svg("path", edgeG, { class: "blg-pinboard-edge-hit", d: d, "vector-effect": "non-scaling-stroke" });
         hit.addEventListener("contextmenu", function (ev) { ev.preventDefault(); ev.stopPropagation(); edgeMenu(ev, e); });
         var line = svg("path", edgeG, { class: "blg-pinboard-edge", d: d, "vector-effect": "non-scaling-stroke" });
         line.classList.toggle("is-solid", solid);
+        line.classList.toggle("is-base", isBaseEdge);
         line.style.setProperty("--blg-pin-sew-color", color);
+        line.style.setProperty("--blg-pin-base-color", color);
         line.style.setProperty("stroke-dasharray", solid ? "none" : "7 5");
         var ang = Math.atan2(bc.y - p2.y, bc.x - p2.x), size = 8;
         var a1 = ang + Math.PI * 0.8, a2 = ang - Math.PI * 0.8;
@@ -709,11 +722,21 @@
        la caché de metadatos). */
     function cardIconUri(file) {
       try {
+        var B = basesApi(plugin);
+        if (B && file && file.extension && file.extension.toLowerCase() === "base") return B.icon(settings, dateColor(settings)) || null;
         if (typeof _blgFmIcon !== "function") return null;
         var fm = (plugin.app.metadataCache.getFileCache(file) || {}).frontmatter;
         if (!fm || fm.icon == null) return null;
         return _blgFmIcon(fm.icon, dateColor(settings)) || null;
       } catch (_) { return null; }
+    }
+    function renderBaseCard(rec, file) {
+      rec.previewEl.empty();
+      var B = basesApi(plugin), count = B ? B.resultsFor(plugin, rec.path).length : 0;
+      var line = rec.previewEl.createDiv({ cls: "blg-pin-card-base-meta" });
+      var ic = line.createSpan({ cls: "blg-pin-card-base-icon" });
+      try { Oe.setIcon(ic, "database"); } catch (_) {}
+      line.createSpan({ text: (settings.uiLang === "en" ? "Base · " : "Base · ") + count + (count === 1 ? (settings.uiLang === "en" ? " result" : " resultado") : (settings.uiLang === "en" ? " results" : " resultados")) });
     }
     function renderCardProps(rec, file) {
       rec.previewEl.empty();
@@ -731,12 +754,16 @@
     }
     function fillCard(rec, file) {
       var ok = file instanceof Oe.TFile;
+      var isBase = ok && file.extension && file.extension.toLowerCase() === "base";
+      var B = basesApi(plugin);
       rec.el.classList.toggle("is-unavailable", !ok);
+      rec.el.classList.toggle("is-base", isBase);
+      rec.el.style.setProperty("--blg-pin-base-color", B ? B.color(settings) : "#8b5cf6");
       rec.titleEl.setText(ok ? file.basename : baseOf(rec.path));
       var folder = folderOf(rec.path);
       rec.folderEl.setText(folder || T("moveRoot"));
       rec.folderEl.title = folder || T("moveRoot");
-      var fc = (settings.dropsFolderColors || {})[folder] || settings.dropsColor || "#63bfe7";
+      var fc = isBase && B ? B.color(settings) : (settings.dropsFolderColors || {})[folder] || settings.dropsColor || "#63bfe7";
       rec.dot.style.background = fc;
       rec.openBtn.disabled = !ok;
       applyHandwriting(rec);
@@ -757,7 +784,8 @@
         scheduleDraw();
         return;
       }
-      renderCardProps(rec, file);
+      if (isBase) renderBaseCard(rec, file);
+      else renderCardProps(rec, file);
       scheduleDraw();
     }
     function bringToFront(rec) {
@@ -1226,6 +1254,11 @@
         var rec = st.dom.get(path);
         if (!rec) return;
         fillCard(rec, plugin.app.vault.getAbstractFileByPath(path));
+      },
+      basesSoon: function () {
+        if (!st.active) return;
+        st.dom.forEach(function (rec) { if (isBasePath(rec.path)) fillCard(rec, plugin.app.vault.getAbstractFileByPath(rec.path)); });
+        edgesSoon();
       },
       settingsChanged: function () {
         applyBoardStyle();

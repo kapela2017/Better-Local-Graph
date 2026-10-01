@@ -17,13 +17,17 @@ const obsidian = { TFile, TFolder, Notice: class { constructor() {} } };
 const source = fs.readFileSync(path.join(__dirname, "blg-pin-board.js"), "utf8");
 const bundle = fs.readFileSync(path.join(__dirname, "main.js"), "utf8");
 
-/* Paridad: el módulo va incrustado en main.js ANTES del marcador de drops
-   (drops debe seguir siendo marker→EOF para test-folder-drops.js). */
+/* Paridad: el módulo de bases va antes del pin-board, y el pin-board va
+   incrustado en main.js ANTES del marcador de drops (drops debe seguir
+   siendo marker→EOF para test-folder-drops.js). */
+const basesSource = fs.readFileSync(path.join(__dirname, "blg-bases.js"), "utf8");
+const basesMarker = "/* ============================================================\n   Better Local Graph — Nodos de consultas .base";
 const pinMarker = "/* ============================================================\n   Better Local Graph — Pizarra de notas fijadas";
 const dropsMarker = "/* ============================================================\n   Better Local Graph — Gotas de ubicación";
-const pinIdx = bundle.indexOf(pinMarker), dropsIdx = bundle.indexOf(dropsMarker);
-assert.ok(pinIdx >= 0 && dropsIdx > pinIdx, "pin module embedded before drops");
-assert.equal(bundle.slice(pinIdx, dropsIdx), source + "\n");
+const basesIdx = bundle.indexOf(basesMarker), pinIdx = bundle.indexOf(pinMarker), dropsIdx = bundle.indexOf(dropsMarker);
+assert.ok(basesIdx >= 0 && pinIdx > basesIdx && dropsIdx > pinIdx, "bases module embedded before pin-board and pin-board before drops");
+assert.equal(bundle.slice(basesIdx, pinIdx), basesSource.trimEnd() + "\n");
+assert.equal(bundle.slice(pinIdx, dropsIdx), source.trimEnd() + "\n");
 
 /* i18n: toda clave usada existe en es y en */
 const dict = {};
@@ -120,10 +124,10 @@ assert.deepEqual(Object.keys(api), ["addPinMenu", "isPinned", "pin", "unpin", "o
   const sewing = { "a.md": ["b.md", "c.md"], "b.md": new Set(["a.md"]), "c.md": ["a.md"], "d.md": ["c.md"] };
   const edges = pure.deriveEdges(["a.md", "b.md", "c.md"], p => sewing[p]);
   assert.equal(JSON.stringify(edges), JSON.stringify([
-    { from: "a.md", to: "b.md" },
-    { from: "a.md", to: "c.md" },
-    { from: "b.md", to: "a.md" },
-    { from: "c.md", to: "a.md" }
+    { from: "a.md", to: "b.md", kind: "sewing" },
+    { from: "a.md", to: "c.md", kind: "sewing" },
+    { from: "b.md", to: "a.md", kind: "sewing" },
+    { from: "c.md", to: "a.md", kind: "sewing" }
   ]));
   // "d.md" no está fijada: sus costuras no aparecen
   assert.ok(!edges.some(e => e.from === "d.md" || e.to === "d.md"));
@@ -133,6 +137,13 @@ assert.deepEqual(Object.keys(api), ["addPinMenu", "isPinned", "pin", "unpin", "o
   // destino duplicado en la lista de costura no duplica la arista
   const dup = pure.deriveEdges(["a.md", "b.md"], () => ["b.md", "b.md"]);
   assert.equal(dup.length, 1);
+  // una .base fijada conecta con sus resultados fijados; una costura base→nota no se duplica
+  const bases = { "Tablero.base": ["a.md", "b.md", "z.md"] };
+  const bedges = pure.deriveEdges(["a.md", "b.md", "Tablero.base"], p => p === "Tablero.base" ? [] : [], p => bases[p]);
+  assert.equal(JSON.stringify(bedges), JSON.stringify([
+    { from: "Tablero.base", to: "a.md", kind: "base" },
+    { from: "Tablero.base", to: "b.md", kind: "base" }
+  ]));
 }
 
 /* ---------- findSpot: nunca solapa y es determinista ---------- */
@@ -309,12 +320,12 @@ assert.ok(bundle.includes("/* BLG-PIN: Fijar en pizarra */if(!this.plugin.sessio
     assert.equal(JSON.stringify(st1.selected), "[]");
     assert.equal(JSON.stringify(st1.cards.map(c => c.path)), JSON.stringify(["docs/A.md", "docs/B.md"]), "orden por z de llegada");
     assert.ok(st1.cards.every(c => c.available));
-    assert.equal(JSON.stringify(st1.edges), JSON.stringify([{ from: "docs/A.md", to: "docs/B.md", color: null, dash: "dash" }]));
+    assert.equal(JSON.stringify(st1.edges), JSON.stringify([{ from: "docs/A.md", to: "docs/B.md", kind: "sewing", color: null, dash: "dash" }]));
     assert.equal(st1.camera, null);
     // estilo de arista persistido se refleja en el estado
     plugin.settings.pinBoard.edgeStyles["docs/A.md\0docs/B.md"] = { color: "#FF00AA", dash: "solid" };
     const st2 = api.boardState(plugin);
-    assert.equal(JSON.stringify(st2.edges), JSON.stringify([{ from: "docs/A.md", to: "docs/B.md", color: "#ff00aa", dash: "solid" }]));
+    assert.equal(JSON.stringify(st2.edges), JSON.stringify([{ from: "docs/A.md", to: "docs/B.md", kind: "sewing", color: "#ff00aa", dash: "solid" }]));
     // color de tarjeta normalizado; nota borrada → tarjeta no disponible y sin aristas
     plugin.settings.pinBoard.cards["docs/A.md"].color = "#FF00AA";
     plugin._remove("docs/B.md");
