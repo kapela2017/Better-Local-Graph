@@ -19,15 +19,17 @@ const bundle = fs.readFileSync(path.join(__dirname, "main.js"), "utf8");
 
 /* Paridad: el módulo de bases va antes del pin-board, y el pin-board va
    incrustado en main.js ANTES del marcador de drops (drops debe seguir
-   siendo marker→EOF para test-folder-drops.js). */
-const basesSource = fs.readFileSync(path.join(__dirname, "blg-bases.js"), "utf8");
+   siendo marker→EOF para test-folder-drops.js). Los standalone pueden tener
+   CRLF (Windows) y main.js embebe en LF: normalizar antes de comparar. */
+const lf = s => s.replace(/\r\n/g, "\n");
+const basesSource = lf(fs.readFileSync(path.join(__dirname, "blg-bases.js"), "utf8"));
 const basesMarker = "/* ============================================================\n   Better Local Graph — Nodos de consultas .base";
 const pinMarker = "/* ============================================================\n   Better Local Graph — Pizarra de notas fijadas";
 const dropsMarker = "/* ============================================================\n   Better Local Graph — Gotas de ubicación";
 const basesIdx = bundle.indexOf(basesMarker), pinIdx = bundle.indexOf(pinMarker), dropsIdx = bundle.indexOf(dropsMarker);
 assert.ok(basesIdx >= 0 && pinIdx > basesIdx && dropsIdx > pinIdx, "bases module embedded before pin-board and pin-board before drops");
-assert.equal(bundle.slice(basesIdx, pinIdx), basesSource.trimEnd() + "\n");
-assert.equal(bundle.slice(pinIdx, dropsIdx), source.trimEnd() + "\n");
+assert.equal(bundle.slice(basesIdx, pinIdx).replace(/\s+$/, ""), basesSource.replace(/\s+$/, ""), "bases embebido = blg-bases.js");
+assert.equal(bundle.slice(pinIdx, dropsIdx).replace(/\s+$/, ""), lf(source).replace(/\s+$/, ""), "pin-board embebido = blg-pin-board.js");
 
 /* i18n: toda clave usada existe en es y en */
 const dict = {};
@@ -41,7 +43,7 @@ for (const key of ["ctxPinNote", "ctxUnpinNote", "pinBtnShow", "pinBtnHide", "pi
 
 /* Instrumentación: exponer las funciones puras sin tocar el bundle. */
 const instrumented = source.replace("  var _onload = PLUGIN_PROTO.onload",
-  "  globalThis.__BLG_PINBOARD_TEST = { normalizeState, migrateRename, deriveEdges, findSpot, fitCamera, focusCam, anchorPan, previewText, sewCurve, borderPoint, rectsOverlap, folderOf, normalizeColor, edgeKey, relationPairs, tooltipFieldNames, frontmatterValues, formatMtime, dateFont, dateColor };\n  var _onload = PLUGIN_PROTO.onload");
+  "  globalThis.__BLG_PINBOARD_TEST = { normalizeState, migrateRename, deriveEdges, findSpot, fitCamera, focusCam, anchorPan, previewText, sewCurve, borderPoint, rectsOverlap, folderOf, normalizeColor, edgeKey, relationPairs, tooltipFieldNames, frontmatterValues, formatMtime, dateFont, dateColor, baseHidden, visibleBaseResults };\n  var _onload = PLUGIN_PROTO.onload");
 assert.notEqual(instrumented, source);
 const context = { module: { exports: { default: class { onload() {} onunload() {} } } },
   require(name) { if (name === "obsidian") return obsidian; return require(name); },
@@ -144,6 +146,30 @@ assert.deepEqual(Object.keys(api), ["addPinMenu", "isPinned", "pin", "unpin", "o
     { from: "Tablero.base", to: "a.md", kind: "base" },
     { from: "Tablero.base", to: "b.md", kind: "base" }
   ]));
+}
+
+/* ---------- filtro de visibilidad de .base (basesMode none/all/custom) ---------- */
+{
+  // __BLG_BASES stub: solo B.base es visible
+  context.__BLG_BASES = {
+    isVisible: (plugin, p) => p === "B.base",
+    resultsFor: (plugin, p) => ({ "A.base": ["a.md"], "B.base": ["b.md"] }[p] || []),
+    mode: () => "custom"
+  };
+  const plugin = { settings: { basesMode: "custom", basesCustom: ["B.base"] } };
+  assert.equal(pure.baseHidden(plugin, "A.base"), true, "base fuera de la lista = oculta");
+  assert.equal(pure.baseHidden(plugin, "B.base"), false, "base en la lista = visible");
+  assert.equal(pure.baseHidden(plugin, "nota.md"), false, "una nota nunca se oculta por este filtro");
+  /* aristas consulta→nota vacías para bases ocultas, intactas para visibles */
+  assert.equal(JSON.stringify(pure.visibleBaseResults(plugin, "A.base")), "[]");
+  assert.equal(JSON.stringify(pure.visibleBaseResults(plugin, "B.base")), '["b.md"]');
+  /* deriveEdges con la closure de visibilidad: A.base oculta no produce aristas base */
+  const edges = pure.deriveEdges(["a.md", "b.md", "A.base", "B.base"], () => [], p => pure.visibleBaseResults(plugin, p));
+  assert.equal(JSON.stringify(edges), JSON.stringify([{ from: "B.base", to: "b.md", kind: "base" }]));
+  /* sin __BLG_BASES (módulo no cargado): nada se oculta ni se filtra */
+  delete context.__BLG_BASES;
+  assert.equal(pure.baseHidden(plugin, "A.base"), false);
+  assert.equal(JSON.stringify(pure.visibleBaseResults(plugin, "A.base")), "[]");
 }
 
 /* ---------- findSpot: nunca solapa y es determinista ---------- */

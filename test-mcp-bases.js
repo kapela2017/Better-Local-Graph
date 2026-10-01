@@ -72,7 +72,7 @@ function makeApp() {
 /* API de bases falsa con la misma forma que __BLG_BASES. */
 function fakeBasesApi() {
   const records = new Map();
-  return {
+  const api = {
     isBaseFile: f => f instanceof TFile && f.extension === "base",
     record: (plugin, path) => records.get(path) || null,
     files: () => Array.from(records.values()),
@@ -83,8 +83,22 @@ function fakeBasesApi() {
     contains: () => false,
     invalidatePath: () => {},
     notifyFile: () => {},
+    /* store de costuras .md ↔ .base (misma forma que sew de blg-bases.js) */
+    sew: {
+      pairs: [],
+      targetsMap: new Map(), // path -> Set<path>
+      tagsMap: new Map(),    // path -> [tags]
+      pair: async (plugin, parent, child) => {
+        api.sew.pairs.push([parent.path, child.path]);
+        if (!api.sew.targetsMap.has(parent.path)) api.sew.targetsMap.set(parent.path, new Set());
+        api.sew.targetsMap.get(parent.path).add(child.path);
+      },
+      targets: (app, file) => api.sew.targetsMap.get(file.path) || new Set(),
+      tags: (app, file) => (api.sew.tagsMap.get(file.path) || []).slice()
+    },
     _setRecord: (path, rec) => records.set(path, rec)
   };
+  return api;
 }
 
 async function makeServer() {
@@ -258,6 +272,101 @@ const eqJ = (a, b, m) => assert.equal(JSON.stringify(a), JSON.stringify(b), m);
     try { await call(plugin, "blg_update_base_cards", { cards: [] }); } catch (e) { e2 = e; }
     assert.ok(e1 && e1.code === -32603, "blg_get_current_base debe lanzar -32603");
     assert.ok(e2 && (e2.code === -32602 || e2.code === -32603), "blg_update_base_cards sin cards debe lanzar -32602 o -32603");
+  }
+
+  /* ---------- blg_sew con .base: padre base → hija md vía sew.pair ---------- */
+  {
+    const plugin = await makeServer();
+    const base = new TFile("Bases/Tablero.base");
+    const nota = new TFile("Notas/A.md");
+    plugin.app.files.set(base.path, base);
+    plugin.app.files.set(nota.path, nota);
+    plugin.app.metadataCache.getFileCache = () => ({ frontmatter: {} });
+    const r = await call(plugin, "blg_sew", { parent: "Bases/Tablero.base", children: ["Notas/A.md"] });
+    assert.equal(r.ok, true);
+    eqJ(context.__BLG_BASES.sew.pairs, [["Bases/Tablero.base", "Notas/A.md"]],
+      "pareja mixta enrutada al store compartido, no a processFrontMatter");
+  }
+
+  /* ---------- blg_sew md→md sigue por frontmatter (regresión) ---------- */
+  {
+    const plugin = await makeServer();
+    const a = new TFile("Notas/A.md"), b = new TFile("Notas/B.md");
+    plugin.app.files.set(a.path, a); plugin.app.files.set(b.path, b);
+    const fms = { "Notas/A.md": {}, "Notas/B.md": {} };
+    plugin.app.metadataCache.getFileCache = f => ({ frontmatter: fms[f.path] });
+    plugin.app.fileManager.processFrontMatter = async (f, fn) => { fn(fms[f.path]); return fms[f.path]; };
+    const r = await call(plugin, "blg_sew", { parent: "Notas/A.md", children: ["Notas/B.md"] });
+    assert.equal(r.ok, true);
+    eqJ(fms["Notas/A.md"].sewing, ["[[B]]"], "padre md: fm sewing");
+    eqJ(fms["Notas/B.md"].tags, ["a/sewing/b"], "hija md: tag");
+    assert.equal(context.__BLG_BASES.sew.pairs.length, 0, "md→md no toca el store");
+  }
+
+  /* ---------- resolveFile: .base por ruta sin extensión y por basename ---------- */
+  {
+    const plugin = await makeServer();
+    const base = new TFile("Bases/Tablero.base");
+    plugin.app.files.set(base.path, base);
+    plugin.app.metadataCache.getFileCache = () => ({});
+    const r = await call(plugin, "blg_get_note", { note: "Bases/Tablero" });
+    assert.equal(r.path, "Bases/Tablero.base", "resuelve añadiendo .base");
+    assert.equal(r.isBase, true);
+    const r2 = await call(plugin, "blg_get_note", { note: "Tablero" });
+    assert.equal(r2.path, "Bases/Tablero.base", "resuelve por basename");
+  }
+
+  /* ---------- blg_get_note en .base: tags de costura + baseResults ---------- */
+  {
+    const plugin = await makeServer();
+    const base = new TFile("Bases/Tablero.base");
+    const nota = new TFile("Reviews/A.md");
+    plugin.app.files.set(base.path, base);
+    plugin.app.files.set(nota.path, nota);
+    plugin.app.metadataCache.getFileCache = () => ({});
+    context.__BLG_BASES._setRecord("Bases/Tablero.base", { path: "Bases/Tablero.base", parsed: { views: [], properties: {}, formulas: {} }, paths: ["Reviews/A.md"] });
+    context.__BLG_BASES.sew.tagsMap.set("Bases/Tablero.base", ["padre/sewing/tablero"]);
+    context.__BLG_BASES.sew.targetsMap.set("Bases/Tablero.base", new Set(["Reviews/A.md"]));
+    const r = await call(plugin, "blg_get_note", { note: "Bases/Tablero.base" });
+    assert.equal(r.isBase, true);
+    eqJ(r.tags, ["padre/sewing/tablero"], "tags de costura del JSON");
+    eqJ(r.sewing, ["Reviews/A.md"], "costuras salientes del store");
+    eqJ(r.baseResults, ["Reviews/A.md"], "resultados de la consulta");
+    eqJ(r.frontmatter, {}, "sin frontmatter en .base");
+  }
+
+  /* ---------- blg_search_notes incluye .base con ext ---------- */
+  {
+    const plugin = await makeServer();
+    plugin.app.files.set("Notas/Tablero viejo.md", new TFile("Notas/Tablero viejo.md"));
+    plugin.app.files.set("Bases/Tablero.base", new TFile("Bases/Tablero.base"));
+    plugin.app.metadataCache.getFileCache = () => ({});
+    const r = await call(plugin, "blg_search_notes", { query: "tablero" });
+    assert.equal(r.count, 2);
+    const exts = r.results.map(x => x.ext).sort();
+    eqJ(exts, ["base", "md"], "devuelve ambos tipos con ext");
+  }
+
+  /* ---------- blg_get_active_note_relations con .base activa ---------- */
+  {
+    const plugin = await makeServer();
+    const base = new TFile("Bases/Tablero.base");
+    const nota = new TFile("Reviews/A.md");
+    plugin.app.files.set(base.path, base);
+    plugin.app.files.set(nota.path, nota);
+    plugin.app.metadataCache.getFileCache = () => ({});
+    plugin.app.metadataCache.resolvedLinks = {};
+    plugin.app.workspace.getActiveViewOfType = () => null;
+    plugin.app.workspace.getActiveFile = () => base;
+    context.__BLG_BASES._setRecord("Bases/Tablero.base", { path: "Bases/Tablero.base", parsed: { views: [], properties: {}, formulas: {} }, paths: ["Reviews/A.md"] });
+    context.__BLG_BASES.sew.targetsMap.set("Bases/Tablero.base", new Set(["Reviews/A.md"]));
+    const r = await call(plugin, "blg_get_active_note_relations", {});
+    assert.equal(r.active.path, "Bases/Tablero.base");
+    assert.equal(r.active.isBase, true);
+    const edge = r.outgoing.find(e => e.path === "Reviews/A.md");
+    assert.ok(edge, "arista a la nota presente");
+    assert.equal(edge.kind, "sewing", "la costura tiene prioridad sobre base-query");
+    assert.equal(edge.sewn, true);
   }
 
   console.log("test-mcp-bases: all checks passed");

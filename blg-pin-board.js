@@ -184,6 +184,12 @@
     });
     return changed;
   }
+  /* Una .base queda oculta cuando el ajuste basesMode no la permite: conserva
+     su pin y sus costuras, pero no se dibuja tarjeta ni aristas. */
+  function baseHidden(plugin, path) {
+    var B = basesApi(plugin);
+    return !!(B && B.isVisible && isBasePath(path) && !B.isVisible(plugin, path));
+  }
   /* Aristas visibles: costura dirigida fuente→destino cuando ambas notas
      están fijadas, más aristas consulta→nota para cada .base fijada. */
   function deriveEdges(paths, sewingOf, basesOf) {
@@ -208,6 +214,13 @@
       (tg || []).forEach(function (t) { push(p, t, "base"); });
     });
     return edges;
+  }
+  /* Resultados de consulta de una .base, vacíos cuando está oculta por el filtro. */
+  function visibleBaseResults(plugin, p) {
+    var B = basesApi(plugin);
+    if (!B) return [];
+    if (B.isVisible && !B.isVisible(plugin, p)) return [];
+    return B.resultsFor(plugin, p);
   }
   function rectsOverlap(ax, ay, aw, ah, bx, by, bw, bh, gap) {
     gap = gap || 0;
@@ -334,9 +347,13 @@
      getFirstLinkpathDest). */
   function sewingTargets(app, path) {
     var out = new Set();
-    if (isBasePath(path)) return out;
     var f = app.vault.getAbstractFileByPath(path);
     if (!(f instanceof Oe.TFile)) return out;
+    if (isBasePath(path)) {
+      var B = basesApi(pluginInstance);
+      if (B && B.sew && B.sew.targets) { try { return B.sew.targets(app, f); } catch (_) {} }
+      return out;
+    }
     var c = app.metadataCache.getFileCache(f);
     var fm = c && c.frontmatter, sv = fm && fm.sewing;
     if (sv == null) return out;
@@ -457,16 +474,23 @@
         folder: folderOf(p),
         x: Math.round(e.x * 100) / 100, y: Math.round(e.y * 100) / 100, z: e.z,
         color: normalizeColor(e.color),
-        available: ok
+        available: ok,
+        visible: !baseHidden(plugin, p)
       };
     });
-    var edges = deriveEdges(paths, function (p) { return sewingTargets(app, p); }, function (p) { var B = basesApi(plugin); return B ? B.resultsFor(plugin, p) : []; }).map(function (e) {
+    var visMap = {};
+    cards.forEach(function (c) { visMap[c.path] = c.visible; });
+    var edges = deriveEdges(paths, function (p) { return sewingTargets(app, p); }, function (p) { return visibleBaseResults(plugin, p); })
+      .filter(function (e) { return visMap[e.from] !== false && visMap[e.to] !== false; })
+      .map(function (e) {
       var es = st.edgeStyles[edgeKey(e.from, e.to)] || {};
       return { from: e.from, to: e.to, kind: e.kind, color: normalizeColor(es.color), dash: es.dash === "solid" ? "solid" : "dash" };
     });
+    var BB0 = basesApi(plugin);
     return {
       active: !!(h && h.active()),
       pinnedCount: cards.length,
+      basesMode: BB0 && BB0.mode ? BB0.mode(plugin.settings) : "all",
       camera: st.camera ? { x: st.camera.x, y: st.camera.y, z: st.camera.z } : null,
       boardColor: st.boardColor || null,
       selected: h && typeof h.selected === "function" ? h.selected() : [],
@@ -618,6 +642,7 @@
     function cardRects() {
       var state = ensureState(plugin), out = [];
       Object.keys(state.cards).forEach(function (p) {
+        if (baseHidden(plugin, p)) return;
         var e = state.cards[p], rec = st.dom.get(p);
         out.push({ x: e.x, y: e.y, w: rec ? rec.el.offsetWidth || CARD_W : CARD_W, h: rec ? rec.el.offsetHeight || CARD_H_EST : CARD_H_EST });
       });
@@ -651,7 +676,8 @@
     }
 
     function updateEmpty() {
-      var has = Object.keys(ensureState(plugin).cards).length > 0;
+      var cards = ensureState(plugin).cards;
+      var has = Object.keys(cards).some(function (p) { return !baseHidden(plugin, p); });
       empty.hidden = has;
       if (!has) {
         empty.empty();
@@ -665,7 +691,7 @@
     /* --- aristas de costura: diff por lista, redibujado de rutas en un RAF --- */
     function reconcileEdges() {
       var state = ensureState(plugin);
-      st.edges = deriveEdges(Object.keys(state.cards), function (p) { return sewingTargets(plugin.app, p); }, function (p) { var B = basesApi(plugin); return B ? B.resultsFor(plugin, p) : []; });
+      st.edges = deriveEdges(Object.keys(state.cards), function (p) { return sewingTargets(plugin.app, p); }, function (p) { return visibleBaseResults(plugin, p); });
       drawEdges();
     }
     function edgesSoon() {
@@ -685,6 +711,7 @@
         var a = state.cards[e.from], b = state.cards[e.to];
         if (!a || !b) return;
         var ra = st.dom.get(e.from), rb = st.dom.get(e.to);
+        if ((!ra && isBasePath(e.from)) || (!rb && isBasePath(e.to))) return;
         var aw = ra ? ra.el.offsetWidth || CARD_W : CARD_W, ah = ra ? ra.el.offsetHeight || CARD_H_EST : CARD_H_EST;
         var bw = rb ? rb.el.offsetWidth || CARD_W : CARD_W, bh = rb ? rb.el.offsetHeight || CARD_H_EST : CARD_H_EST;
         var ac = { x: a.x + aw / 2, y: a.y + ah / 2 }, bc = { x: b.x + bw / 2, y: b.y + bh / 2 };
@@ -1010,6 +1037,7 @@
     function buildCard(path, entering) {
       var state = ensureState(plugin), e = state.cards[path];
       if (!e || st.dom.has(path)) return st.dom.get(path) || null;
+      if (baseHidden(plugin, path)) return null;
       var file = plugin.app.vault.getAbstractFileByPath(path);
       var el = cardLayer.createDiv({ cls: "blg-pin-card" });
       el.tabIndex = 0;
@@ -1259,6 +1287,15 @@
         if (!st.active) return;
         st.dom.forEach(function (rec) { if (isBasePath(rec.path)) fillCard(rec, plugin.app.vault.getAbstractFileByPath(rec.path)); });
         edgesSoon();
+      },
+      /* Cambio en basesMode/basesCustom: reconstruye tarjetas (las .base
+         ocultas no se dibujan pero conservan su pin) y recalcula aristas. */
+      visibilityChanged: function () {
+        syncButton();
+        if (!st.active) return;
+        buildAll();
+        updateEmpty();
+        reconcileEdges();
       },
       settingsChanged: function () {
         applyBoardStyle();

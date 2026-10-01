@@ -60,9 +60,14 @@
     return out;
   }
 
-  // idéntico a _sewingTargets() del bundle
+  // idéntico a _sewingTargets() del bundle; las .base leen de sewing-bases.json vía __BLG_BASES
   function sewingTargets(app, file) {
     var out = new Set();
+    if (file && String(file.extension).toLowerCase() === "base") {
+      var BB = (typeof globalThis !== "undefined") && globalThis.__BLG_BASES;
+      if (BB && BB.sew && BB.sew.targets) { try { return BB.sew.targets(app, file); } catch (_) {} }
+      return out;
+    }
     var c = app.metadataCache.getFileCache(file);
     var fm = c && c.frontmatter;
     var sv = fm && fm.sewing;
@@ -213,7 +218,7 @@
     return views.map(function (v) { return { type: v.type || null, name: v.name || null, groupBy: v.groupByProperty || null }; });
   }
 
-  // acepta ruta exacta, ruta sin .md, wikilink o basename
+  // acepta ruta exacta, ruta sin extensión (.md/.base), wikilink o basename
   function resolveFile(app, ref) {
     if (!ref) return null;
     ref = String(ref).trim().replace(/^\[\[|\]\]$/g, "");
@@ -222,11 +227,18 @@
     if (f instanceof Oe.TFile) return f;
     f = app.vault.getAbstractFileByPath(ref + ".md");
     if (f instanceof Oe.TFile) return f;
+    f = app.vault.getAbstractFileByPath(ref + ".base");
+    if (f instanceof Oe.TFile) return f;
     f = app.metadataCache.getFirstLinkpathDest(ref, "");
     if (f) return f;
     var low = ref.toLowerCase();
     var all = app.vault.getMarkdownFiles();
     for (var i = 0; i < all.length; i++) if (all[i].basename.toLowerCase() === low) return all[i];
+    // basename entre .base (después de las notas para no romper lo existente)
+    var every = app.vault.getFiles ? app.vault.getFiles() : [];
+    for (var j = 0; j < every.length; j++) {
+      if (String(every[j].extension).toLowerCase() === "base" && every[j].basename.toLowerCase() === low) return every[j];
+    }
     return null;
   }
 
@@ -305,6 +317,28 @@
               tags: fileTags(app, f)
             };
           });
+          // bases visibles (mismo criterio que la vista: basesMode none/all/custom):
+          // entran como nodos kind='base' si su consulta toca notas del tag o si
+          // llevan un tag de costura que coincide; las ocultas no aparecen.
+          var BB = (typeof globalThis !== "undefined") && globalThis.__BLG_BASES;
+          var baseNodes = [];
+          if (BB && BB.resultsFor) {
+            var bfiles = (BB.visible ? BB.visible(plugin) : (BB.files ? BB.files(plugin) : []));
+            bfiles.forEach(function (bf) {
+              var hits = BB.resultsFor(plugin, bf.path).filter(function (p) { return pathSet.has(p); });
+              var sewTags = BB.sew ? BB.sew.tags(app, bf) : [];
+              var tagHit = false;
+              for (var ti = 0; ti < sewTags.length; ti++) if (tagMatches(sewTags[ti], wanted)) { tagHit = true; break; }
+              if (!hits.length && !tagHit) return;
+              pathSet.add(bf.path);
+              baseNodes.push({ file: bf, hits: hits });
+              nodes.push({
+                path: bf.path, basename: bf.basename, kind: "base",
+                ctime: (bf.stat && bf.stat.ctime) || 0, mtime: (bf.stat && bf.stat.mtime) || 0,
+                tags: sewTags
+              });
+            });
+          }
           var edges = [], seen = new Map();
           function pushEdge(A, B, kind) {
             if (!A || !B || A === B) return;
@@ -330,6 +364,11 @@
           files.forEach(function (sf) {
             sewingTargets(app, sf).forEach(function (tp) { pushEdge(sf.path, tp, "sewing"); });
           });
+          // aristas de las bases presentes: consulta→resultado y costuras salientes
+          baseNodes.forEach(function (bn) {
+            bn.hits.forEach(function (hp) { pushEdge(bn.file.path, hp, "base-query"); });
+            sewingTargets(app, bn.file).forEach(function (tp) { pushEdge(bn.file.path, tp, "sewing"); });
+          });
           var orphans = nodes
             .filter(function (n) {
               return !edges.some(function (e) { return e.source === n.path || e.target === n.path; });
@@ -340,10 +379,10 @@
       },
 
       blg_sew: {
-        description: "Cose (relaciona padre→hijos) notas usando el mismo formato del plugin: agrega '[[Hijo]]' a la propiedad frontmatter 'sewing' del padre y el tag 'slug-padre/sewing/slug-hijo' al hijo. Acepta rutas, basenames o wikilinks.",
+        description: "Cose (relaciona padre→hijos) notas .md y archivos .base usando el mismo formato del plugin: en .md agrega '[[Hijo]]' a la propiedad frontmatter 'sewing' del padre y el tag 'slug-padre/sewing/slug-hijo' al hijo; cuando interviene una .base sus metadatos se guardan en sewing-bases.json (referencias por ruta completa). Acepta rutas, basenames o wikilinks.",
         inputSchema: { type: "object", required: ["parent", "children"], properties: {
-          parent: { type: "string", description: "Nota padre (ruta o nombre)" },
-          children: { type: "array", items: { type: "string" }, description: "Notas hijas (rutas o nombres)" }
+          parent: { type: "string", description: "Nota o .base padre (ruta o nombre)" },
+          children: { type: "array", items: { type: "string" }, description: "Notas o .base hijas (rutas o nombres)" }
         } },
         handler: async function (args) {
           var parent = resolveFile(app, args.parent);
@@ -354,21 +393,28 @@
             if (f && f.path !== parent.path) kids.push(f); else missing.push(String(c));
           });
           if (!kids.length) throw { code: -32602, message: "Ningún hijo válido. No encontrados: " + missing.join(", ") };
-          await app.fileManager.processFrontMatter(parent, function (fm) {
-            var o = Array.isArray(fm.sewing) ? fm.sewing.slice() : fm.sewing ? [fm.sewing] : [];
-            var u = new Set(o.map(String));
-            kids.forEach(function (k) { u.add("[[" + k.basename + "]]"); });
-            fm.sewing = Array.from(u);
-          });
-          var pslug = blgSlug(parent.basename);
-          for (var i = 0; i < kids.length; i++) {
-            var k = kids[i];
-            var tag = pslug + "/sewing/" + blgSlug(k.basename);
-            await app.fileManager.processFrontMatter(k, function (fm) {
-              var o = Array.isArray(fm.tags) ? fm.tags.slice() : fm.tags ? [fm.tags] : [];
-              if (o.indexOf(tag) === -1) o.push(tag);
-              fm.tags = o;
+          var BB = (typeof globalThis !== "undefined") && globalThis.__BLG_BASES;
+          var sew = BB && BB.sew;
+          var mixed = String(parent.extension).toLowerCase() !== "md" || kids.some(function (k) { return String(k.extension).toLowerCase() !== "md"; });
+          if (sew && mixed) {
+            for (var i2 = 0; i2 < kids.length; i2++) await sew.pair(plugin, parent, kids[i2]);
+          } else {
+            await app.fileManager.processFrontMatter(parent, function (fm) {
+              var o = Array.isArray(fm.sewing) ? fm.sewing.slice() : fm.sewing ? [fm.sewing] : [];
+              var u = new Set(o.map(String));
+              kids.forEach(function (k) { u.add("[[" + k.basename + "]]"); });
+              fm.sewing = Array.from(u);
             });
+            var pslug = blgSlug(parent.basename);
+            for (var i = 0; i < kids.length; i++) {
+              var k = kids[i];
+              var tag = pslug + "/sewing/" + blgSlug(k.basename);
+              await app.fileManager.processFrontMatter(k, function (fm) {
+                var o = Array.isArray(fm.tags) ? fm.tags.slice() : fm.tags ? [fm.tags] : [];
+                if (o.indexOf(tag) === -1) o.push(tag);
+                fm.tags = o;
+              });
+            }
           }
           var v = plugin.getView && plugin.getView();
           if (v && v.renderMode) { try { v._noRf = false; v._lastSig = null; v.renderMode(); } catch (_) {} }
@@ -408,14 +454,16 @@
       },
 
       blg_get_note: {
-        description: "Devuelve metadatos de una nota: frontmatter, tags, wikilinks salientes, backlinks, costuras y opcionalmente el contenido markdown.",
+        description: "Devuelve metadatos de una nota .md o de una .base: frontmatter (vacío en .base), tags (en .base, los de costura guardados), wikilinks salientes, backlinks, costuras y opcionalmente el contenido. En .base incluye baseResults (resultados de su consulta) y en .md inBaseResults (bases cuya consulta la contiene).",
         inputSchema: { type: "object", required: ["note"], properties: {
-          note: { type: "string", description: "Ruta o nombre de la nota" },
-          includeContent: { type: "boolean", description: "Si true, incluye el markdown completo" }
+          note: { type: "string", description: "Ruta o nombre de la nota o .base" },
+          includeContent: { type: "boolean", description: "Si true, incluye el contenido completo (markdown o YAML de la .base)" }
         } },
         handler: async function (args) {
           var f = resolveFile(app, args.note);
           if (!f) throw { code: -32602, message: "Nota no encontrada: " + args.note };
+          var BB = (typeof globalThis !== "undefined") && globalThis.__BLG_BASES;
+          var isBase = String(f.extension).toLowerCase() === "base";
           var c = app.metadataCache.getFileCache(f) || {};
           var RL = app.metadataCache.resolvedLinks || {};
           var out = Object.keys(RL[f.path] || {});
@@ -424,18 +472,28 @@
           var res = {
             path: f.path, basename: f.basename,
             ctime: f.stat && f.stat.ctime, mtime: f.stat && f.stat.mtime,
-            frontmatter: c.frontmatter || {},
-            tags: fileTags(app, f),
+            frontmatter: isBase ? {} : (c.frontmatter || {}),
+            tags: isBase ? (BB && BB.sew ? BB.sew.tags(app, f) : []) : fileTags(app, f),
             linksOut: out, backlinks: back,
             sewing: Array.from(sewingTargets(app, f))
           };
+          if (isBase) {
+            res.isBase = true;
+            // relación consulta→resultado (distinta de la costura explícita de 'sewing')
+            res.baseResults = BB && BB.resultsFor ? BB.resultsFor(plugin, f.path) : [];
+            var rec = BB && BB.record ? BB.record(plugin, f.path) : null;
+            if (rec && !rec.error) res.baseViews = viewList(rec);
+          } else if (BB && BB.basesContaining) {
+            // consulta directa: incluye bases aunque estén ocultas por el filtro de vistas
+            res.inBaseResults = BB.basesContaining(plugin, f.path);
+          }
           if (args.includeContent) res.content = await app.vault.cachedRead(f);
           return res;
         }
       },
 
       blg_search_notes: {
-        description: "Busca notas por coincidencia parcial en el nombre de archivo. Útil para resolver referencias ambiguas antes de coser.",
+        description: "Busca notas .md y archivos .base por coincidencia parcial en el nombre de archivo. Útil para resolver referencias ambiguas antes de coser. Cada resultado incluye ext ('md'|'base').",
         inputSchema: { type: "object", required: ["query"], properties: {
           query: { type: "string" },
           limit: { type: "number", description: "Máximo de resultados (default 20)" }
@@ -445,9 +503,14 @@
           var lim = Math.max(1, Math.min(100, args.limit || 20));
           var hits = app.vault.getMarkdownFiles()
             .filter(function (f) { return f.basename.toLowerCase().indexOf(q) !== -1; })
-            .slice(0, lim)
-            .map(function (f) { return { path: f.path, basename: f.basename }; });
-          return { count: hits.length, results: hits };
+            .map(function (f) { return { path: f.path, basename: f.basename, ext: "md" } });
+          var bhits = (app.vault.getFiles ? app.vault.getFiles() : [])
+            .filter(function (f) { return String(f.extension).toLowerCase() === "base" && f.basename.toLowerCase().indexOf(q) !== -1; })
+            .map(function (f) { return { path: f.path, basename: f.basename, ext: "base" } });
+          var all = hits.concat(bhits)
+            .sort(function (a, b) { return a.basename.toLowerCase().localeCompare(b.basename.toLowerCase()) || a.path.localeCompare(b.path); })
+            .slice(0, lim);
+          return { count: all.length, results: all };
         }
       },
       /* ===== NUEVA HERRAMIENTA: estado de la vista actual del plugin ===== */
@@ -605,15 +668,16 @@
 
       /* ===== nota activa (vista estándar/local) + relaciones salientes ===== */
       blg_get_active_note_relations: {
-        description: "Detecta la nota ACTIVA en la vista estándar (local) de Obsidian — la misma que muestra el grafo local del plugin — y devuelve sus relaciones SALIENTES: wikilinks resueltos y costuras (sewing). IMPORTANTE: esta herramienta solo aplica cuando el usuario está en la VISTA LOCAL (no en Tag View ni en sesión de costura). Si el usuario dice 'la vista actual' o 'lo que estoy viendo', llama PRIMERO a blg_get_current_view para saber el modo. Las costuras se priorizan y se marcan con kind='sewing'. Si una relación es a la vez wikilink y costura, se marca sewn=true.",
+        description: "Detecta la nota ACTIVA (.md o .base) en la vista estándar (local) de Obsidian — la misma que muestra el grafo local del plugin — y devuelve sus relaciones SALIENTES: wikilinks resueltos y costuras (sewing); si la activa es una .base incluye además los resultados de su consulta como kind='base-query' (relación consulta→resultado, distinta de la costura explícita). IMPORTANTE: esta herramienta solo aplica cuando el usuario está en la VISTA LOCAL (no en Tag View ni en sesión de costura). Si el usuario dice 'la vista actual' o 'lo que estoy viendo', llama PRIMERO a blg_get_current_view para saber el modo. Las costuras se priorizan y se marcan con kind='sewing'. Si una relación es a la vez wikilink y costura, se marca sewn=true.",
         inputSchema: { type: "object", properties: {
-          includeBacklinks: { type: "boolean", description: "Si true, incluye también las relaciones ENTRANTES (backlinks y costuras que apuntan a esta nota). Default false." },
-          includeContent:   { type: "boolean", description: "Si true, incluye el markdown completo de la nota activa. Default false." },
-          sewingOnly:       { type: "boolean", description: "Si true, devuelve únicamente las relaciones de tipo sewing (ignora wikilinks puros). Default false." }
+          includeBacklinks: { type: "boolean", description: "Si true, incluye también las relaciones ENTRANTES (backlinks, costuras que apuntan a esta nota y, en .md, bases cuya consulta la contiene). Default false." },
+          includeContent:   { type: "boolean", description: "Si true, incluye el contenido completo de la nota/.base activa. Default false." },
+          sewingOnly:       { type: "boolean", description: "Si true, devuelve únicamente las relaciones de tipo sewing (ignora wikilinks y base-query). Default false." }
         } },
         handler: async function (args) {
           args = args || {};
           var Oe = require("obsidian");
+          var BB = (typeof globalThis !== "undefined") && globalThis.__BLG_BASES;
 
           // --- 1) resolver la nota activa igual que la vista local del plugin ---
           // preferimos el MarkdownView activo (la nota que el usuario está editando/viendo);
@@ -623,8 +687,9 @@
           if (mv && mv.file) active = mv.file;
           if (!active) active = app.workspace.getActiveFile();
 
-          if (!(active instanceof Oe.TFile) || active.extension !== "md") {
-            throw { code: -32603, message: "No hay ninguna nota markdown activa en la vista estándar." };
+          var activeExt = active && String(active.extension).toLowerCase();
+          if (!(active instanceof Oe.TFile) || (activeExt !== "md" && activeExt !== "base")) {
+            throw { code: -32603, message: "No hay ninguna nota markdown o .base activa en la vista estándar." };
           }
 
           var sewingOnly = !!args.sewingOnly;
@@ -642,15 +707,18 @@
             var tf = app.vault.getAbstractFileByPath(path);
             outMap.set(path, {
               path: path,
-              basename: tf ? tf.basename : path.replace(/\.md$/, "").split("/").pop(),
+              basename: tf ? tf.basename : path.replace(/\.(md|base)$/, "").split("/").pop(),
               kind: kind,
               sewn: kind === "sewing"
             });
           }
-          // costuras primero (prioridad), luego wikilinks
+          // costuras primero (prioridad), luego wikilinks / resultados de consulta
           sewOut.forEach(function (p) { put(p, "sewing"); });
           if (!sewingOnly) {
             for (var dst in linkOut) if (linkOut.hasOwnProperty(dst)) put(dst, "wikilink");
+            if (activeExt === "base" && BB && BB.resultsFor) {
+              BB.resultsFor(plugin, active.path).forEach(function (p) { put(p, "base-query"); });
+            }
           } else {
             // en modo sewingOnly, marcamos sewn en los que además son wikilink
             for (var d2 in linkOut) if (outMap.has(d2)) outMap.get(d2).sewn = true;
@@ -663,12 +731,13 @@
               basename: active.basename,
               ctime: active.stat && active.stat.ctime,
               mtime: active.stat && active.stat.mtime,
-              tags: fileTags(app, active)
+              tags: activeExt === "base" ? (BB && BB.sew ? BB.sew.tags(app, active) : []) : fileTags(app, active)
             },
             outgoing: outgoing,
             sewingOutCount: outgoing.filter(function (e) { return e.kind === "sewing"; }).length,
             outgoingCount: outgoing.length
           };
+          if (activeExt === "base") result.active.isBase = true;
 
           // --- 3) relaciones ENTRANTES (opcional) ---
           if (args.includeBacklinks) {
@@ -680,22 +749,34 @@
               var sf = app.vault.getAbstractFileByPath(srcPath);
               inMap.set(srcPath, {
                 path: srcPath,
-                basename: sf ? sf.basename : srcPath.replace(/\.md$/, "").split("/").pop(),
+                basename: sf ? sf.basename : srcPath.replace(/\.(md|base)$/, "").split("/").pop(),
                 kind: kind,
                 sewn: kind === "sewing"
               });
             }
-            // costuras entrantes: notas cuyo sewing apunta a la activa
+            // costuras entrantes: notas y bases cuyo sewing apunta a la activa
             var all = app.vault.getMarkdownFiles();
             for (var i = 0; i < all.length; i++) {
               var f = all[i];
               if (f.path === active.path) continue;
               if (sewingTargets(app, f).has(active.path)) putIn(f.path, "sewing");
             }
+            if (BB && BB.files) {
+              var bfs = BB.files(plugin); // consulta directa: incluye bases ocultas por el filtro
+              for (var bi = 0; bi < bfs.length; bi++) {
+                var bf = bfs[bi];
+                if (bf.path === active.path) continue;
+                if (sewingTargets(app, bf).has(active.path)) putIn(bf.path, "sewing");
+              }
+            }
             // backlinks por wikilink
             if (!sewingOnly) {
               for (var src in RL) {
                 if (RL[src] && RL[src][active.path]) putIn(src, "wikilink");
+              }
+              // bases cuya consulta contiene a la activa
+              if (activeExt === "md" && BB && BB.basesContaining) {
+                BB.basesContaining(plugin, active.path).forEach(function (bp) { putIn(bp, "base-query"); });
               }
             } else {
               for (var src2 in RL) {

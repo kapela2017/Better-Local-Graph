@@ -585,6 +585,201 @@
     return baseFiles(plugin).filter(function (f) { return record(plugin, f.path).paths.indexOf(notePath) !== -1; }).map(function (f) { return f.path; });
   }
 
+  /* ---------- visibilidad de .base en las vistas (ajuste basesMode) ---------- */
+  /* none = ninguna | all = todas | custom = solo settings.basesCustom (rutas).
+     Las bases ocultas conservan pines y costuras; solo se filtra su dibujo.
+     El mapa mental nunca muestra bases (no entra aquí). */
+  function basesModeOf(settings) { var m = settings && settings.basesMode; return m === "all" || m === "custom" ? m : "none"; }
+  function isVisibleBase(plugin, path) {
+    var m = basesModeOf(plugin && plugin.settings);
+    if (m === "all") return true;
+    if (m === "custom") { var l = plugin.settings.basesCustom; return Array.isArray(l) && l.indexOf(path) !== -1; }
+    return false;
+  }
+  function visibleBases(plugin) { return baseFiles(plugin).filter(function (f) { return isVisibleBase(plugin, f.path); }); }
+
+  /* ---------- costuras .md ↔ .base (metadatos en sewing-bases.json) ---------- */
+  /* Las .base no tienen frontmatter de nota (su YAML es la configuración de la
+     consulta), así que sus metadatos de costura viven en sewing-bases.json
+     dentro de la carpeta del plugin (el deploy NO lo sobrescribe).
+     Formato: { version:1, bases:{ "ruta/base.base": { sewing:[rutas], tags:[...] } } }.
+     Las referencias se guardan como RUTA COMPLETA con extensión para no
+     confundir archivos que comparten basename. En frontmatter .md, un hijo
+     .base se escribe como wikilink de ruta completa ([[carpeta/x.base]]). */
+
+  var SEW_JSON = "sewing-bases.json";
+  function blgSlug(t) { /* idéntico a Qf() del bundle */
+    return String(t).normalize("NFD").replace(/[̀-ͯ]/g, "")
+      .replace(/[^A-Za-z0-9_-]+/g, "-").replace(/-+/g, "-")
+      .replace(/^-|-$/g, "").toLowerCase() || "nota";
+  }
+  function sewFilePath(plugin) { return plugin.manifest.dir + "/" + SEW_JSON; }
+  function sewState(plugin) { var st = live(plugin); if (!st.sew) st.sew = { data: null, loading: null }; return st.sew; }
+  function sewNormalize(data) {
+    var out = { version: 1, bases: {} };
+    if (data && typeof data === "object" && data.bases && typeof data.bases === "object") {
+      Object.keys(data.bases).forEach(function (p) {
+        var r = data.bases[p] || {};
+        out.bases[p] = {
+          sewing: Array.isArray(r.sewing) ? r.sewing.filter(function (x) { return typeof x === "string" && x.trim(); }) : [],
+          tags: Array.isArray(r.tags) ? r.tags.filter(function (x) { return typeof x === "string" && x.trim(); }) : []
+        };
+      });
+    }
+    return out;
+  }
+  async function sewLoad(plugin) {
+    var ss = sewState(plugin);
+    if (ss.data) return ss.data;
+    if (ss.loading) return ss.loading;
+    ss.loading = (async function () {
+      var data = null;
+      try {
+        var p = sewFilePath(plugin);
+        if (await plugin.app.vault.adapter.exists(p)) data = sewNormalize(JSON.parse(await plugin.app.vault.adapter.read(p)));
+      } catch (e) { warn(e); }
+      ss.data = data || { version: 1, bases: {} };
+      ss.loading = null;
+      return ss.data;
+    })();
+    return ss.loading;
+  }
+  function sewDataSync(plugin) {
+    var ss = sewState(plugin);
+    if (!ss.data && !ss.loading) { try { sewLoad(plugin); } catch (_) {} }
+    return ss.data || { version: 1, bases: {} };
+  }
+  async function sewSave(plugin) {
+    var ss = sewState(plugin);
+    if (!ss.data) return;
+    try { await plugin.app.vault.adapter.write(sewFilePath(plugin), JSON.stringify(ss.data, null, 2)); }
+    catch (e) { warn(e); }
+  }
+  function sewRec(data, path, create) {
+    var r = data.bases[path];
+    if (!r && create) { r = { sewing: [], tags: [] }; data.bases[path] = r; }
+    return r || null;
+  }
+  /* Resuelve una referencia guardada: ruta exacta primero, luego wikilink
+     (compatibilidad con entradas [[basename]] heredadas). */
+  function sewResolveRef(app, ref, fromPath) {
+    var it = String(ref == null ? "" : ref).trim();
+    if (!it) return null;
+    var m = it.match(/\[\[([^\]|#]+)/), lt = (m ? m[1] : it).trim();
+    if (!lt) return null;
+    var f = app.vault.getAbstractFileByPath(lt);
+    if (f instanceof Oe.TFile) return f;
+    try { f = app.metadataCache.getFirstLinkpathDest(lt, fromPath || ""); } catch (_) { f = null; }
+    return f || null;
+  }
+  /* Costuras salientes de CUALQUIER archivo cosible (.md vía frontmatter,
+     .base vía sewing-bases.json). Misma semántica que _sewingTargets del bundle. */
+  function sewTargetsOf(app, file) {
+    var out = new Set();
+    if (!(file instanceof Oe.TFile)) return out;
+    if ((file.extension || "").toLowerCase() === "base") {
+      var rec = (pluginInstance ? sewDataSync(pluginInstance) : { bases: {} }).bases[file.path];
+      (rec && rec.sewing || []).forEach(function (it) {
+        var tf = sewResolveRef(app, it, file.path);
+        if (tf) out.add(tf.path);
+      });
+      return out;
+    }
+    var c = app.metadataCache.getFileCache(file), fm = c && c.frontmatter, sv = fm && fm.sewing;
+    if (sv == null) return out;
+    (Array.isArray(sv) ? sv : [sv]).forEach(function (it) {
+      if (typeof it !== "string") return;
+      var tf = sewResolveRef(app, it, file.path);
+      if (tf) out.add(tf.path);
+    });
+    return out;
+  }
+  /* Tags de costura guardados para una .base (los de .md viven en su frontmatter). */
+  function sewTagsOf(app, file) {
+    if (!(file instanceof Oe.TFile) || (file.extension || "").toLowerCase() !== "base") return [];
+    var rec = (pluginInstance ? sewDataSync(pluginInstance) : { bases: {} }).bases[file.path];
+    return rec && Array.isArray(rec.tags) ? rec.tags.slice() : [];
+  }
+  /* Referencia normalizada: acepta TFile o {path,name} de sesión. */
+  function refOf(x) {
+    if (x instanceof Oe.TFile) return { path: x.path, name: x.basename, isBase: (x.extension || "").toLowerCase() === "base" };
+    return { path: String(x && x.path || ""), name: String(x && x.name || ""), isBase: /\.base$/i.test(String(x && x.path || "")) };
+  }
+  function sewRefText(cr) { return cr.isBase ? "[[" + cr.path + "]]" : "[[" + cr.name + "]]"; }
+  function sewTagText(pr, cr) { return blgSlug(pr.name) + "/sewing/" + blgSlug(cr.name); }
+  /* Escribe el lado padre (sewing[]) de una lista de hijos en una sola pasada. */
+  async function sewWriteParent(plugin, pr, childRefs) {
+    if (pr.isBase) {
+      var data = await sewLoad(plugin), rec = sewRec(data, pr.path, true), touched = false;
+      childRefs.forEach(function (cr) { if (rec.sewing.indexOf(cr.path) === -1) { rec.sewing.push(cr.path); touched = true; } });
+      if (touched) await sewSave(plugin);
+      return;
+    }
+    var pf = plugin.app.vault.getAbstractFileByPath(pr.path);
+    if (!(pf instanceof Oe.TFile)) return;
+    await plugin.app.fileManager.processFrontMatter(pf, function (fm) {
+      var o = Array.isArray(fm.sewing) ? fm.sewing.slice() : fm.sewing ? [fm.sewing] : [];
+      var u = new Set(o.map(String));
+      childRefs.forEach(function (cr) { u.add(sewRefText(cr)); });
+      fm.sewing = Array.from(u);
+    });
+  }
+  /* Escribe el lado hijo (tag slug-padre/sewing/slug-hijo). */
+  async function sewWriteChild(plugin, pr, cr) {
+    var tag = sewTagText(pr, cr);
+    if (cr.isBase) {
+      var data = await sewLoad(plugin), rec = sewRec(data, cr.path, true);
+      if (rec.tags.indexOf(tag) === -1) { rec.tags.push(tag); await sewSave(plugin); }
+      return;
+    }
+    var cf = plugin.app.vault.getAbstractFileByPath(cr.path);
+    if (!(cf instanceof Oe.TFile)) return;
+    await plugin.app.fileManager.processFrontMatter(cf, function (fm) {
+      var o = Array.isArray(fm.tags) ? fm.tags.slice() : fm.tags ? [fm.tags] : [];
+      if (o.indexOf(tag) === -1) o.push(tag);
+      fm.tags = o;
+    });
+  }
+  async function sewPair(plugin, parent, child) {
+    var pr = refOf(parent), cr = refOf(child);
+    if (!pr.path || !cr.path || pr.path === cr.path) return;
+    await sewWriteParent(plugin, pr, [cr]);
+    await sewWriteChild(plugin, pr, cr);
+  }
+  /* Sesión de costura completa: un padre, N hijos (mismo resultado que el
+     bundle: una escritura de padre + hijos en lotes de 5). */
+  async function sewApplySession(plugin, parent, children) {
+    var pr = refOf(parent);
+    var refs = (children || []).map(refOf).filter(function (cr) { return cr.path && cr.path !== pr.path; });
+    if (!refs.length) return;
+    await sewWriteParent(plugin, pr, refs);
+    for (var i = 0; i < refs.length; i += 5) {
+      await Promise.all(refs.slice(i, i + 5).map(function (cr) { return sewWriteChild(plugin, pr, cr); }));
+    }
+  }
+  /* Renombrado/movido: migra la clave de la .base y toda referencia por ruta.
+     Los tags slug/sewing/slug quedan como estaban (misma paridad que .md). */
+  async function sewRename(plugin, file, oldPath) {
+    var data = await sewLoad(plugin), changed = false;
+    if (data.bases[oldPath]) { data.bases[file.path] = data.bases[oldPath]; delete data.bases[oldPath]; changed = true; }
+    Object.keys(data.bases).forEach(function (p) {
+      var rec = data.bases[p];
+      var ns = rec.sewing.map(function (x) { return x === oldPath ? file.path : x; });
+      if (ns.join("") !== rec.sewing.join("")) { rec.sewing = ns; changed = true; }
+    });
+    if (changed) await sewSave(plugin);
+  }
+  /* Borrado: elimina la entrada de la .base y las referencias que apuntaban a ella. */
+  async function sewDeletePath(plugin, path) {
+    var data = await sewLoad(plugin), changed = false;
+    if (data.bases[path]) { delete data.bases[path]; changed = true; }
+    Object.keys(data.bases).forEach(function (p) {
+      var rec = data.bases[p], n = rec.sewing.filter(function (x) { return x !== path; });
+      if (n.length !== rec.sewing.length) { rec.sewing = n; changed = true; }
+    });
+    if (changed) await sewSave(plugin);
+  }
+
   /* ---------- integración de UI ---------- */
 
   function icon(settings, ink) {
@@ -618,6 +813,22 @@
     basesContaining: basesContaining,
     contains: function (plugin, basePath, notePath) { var r = record(plugin, basePath); return !!(r && r.paths.indexOf(notePath) !== -1); },
     isBaseFile: function (file) { return !!(file instanceof Oe.TFile && file.extension && file.extension.toLowerCase() === "base"); },
+    /* visibilidad (ajuste basesMode: none/all/custom) */
+    mode: basesModeOf,
+    isVisible: isVisibleBase,
+    visible: visibleBases,
+    refreshViews: refreshViews,
+    /* costuras compartidas .md ↔ .base */
+    sew: {
+      load: sewLoad,
+      targets: sewTargetsOf,
+      tags: sewTagsOf,
+      pair: sewPair,
+      applySession: sewApplySession,
+      refFor: function (child) { return sewRefText(refOf(child)); },
+      tagFor: function (parent, child) { return sewTagText(refOf(parent), refOf(child)); },
+      data: sewDataSync
+    },
     invalidatePath: function (plugin, path) {
       var st = live(plugin);
       if (st.cache.delete(path)) { st.version++; refreshViews(plugin, true); }
@@ -654,6 +865,7 @@
     var plugin = this;
     try {
       refreshAll(plugin).then(function () { refreshViews(plugin, false); }).catch(warn);
+      sewLoad(plugin).catch(warn);
       plugin.registerEvent(plugin.app.vault.on("create", function (f) { api.notifyFile(plugin, f); }));
       plugin.registerEvent(plugin.app.vault.on("modify", function (f) { api.notifyFile(plugin, f); }));
       plugin.registerEvent(plugin.app.vault.on("rename", function (f, oldPath) {
@@ -661,6 +873,15 @@
           var st = live(plugin);
           if (st.cache.delete(oldPath)) st.version++;
           api.notifyFile(plugin, f);
+          if (f instanceof Oe.TFile) {
+            sewRename(plugin, f, oldPath).catch(warn);
+            /* migra la lista personalizada de bases visibles */
+            var bc = plugin.settings && plugin.settings.basesCustom;
+            if (Array.isArray(bc) && bc.indexOf(oldPath) !== -1) {
+              plugin.settings.basesCustom = bc.map(function (p) { return p === oldPath ? f.path : p; });
+              Promise.resolve(plugin.saveSettings()).catch(warn);
+            }
+          }
         } catch (e) { warn(e); }
       }));
       plugin.registerEvent(plugin.app.vault.on("delete", function (f) {
@@ -668,6 +889,7 @@
           if (!(f instanceof Oe.TFile)) return;
           if ((f.extension || "").toLowerCase() === "base") api.invalidatePath(plugin, f.path);
           else api.notifyFile(plugin, f);
+          sewDeletePath(plugin, f.path).catch(warn);
         } catch (e) { warn(e); }
       }));
       plugin.registerEvent(plugin.app.metadataCache.on("changed", function (f) { api.notifyFile(plugin, f); }));
@@ -688,7 +910,12 @@
     globalThis.__BLG_BASES_TEST = {
       parseYaml: parseYaml, stringifyYaml: stringifyYaml, parseBase: parseBase, viewFilters: viewFilters,
       parseFormula: parseFormula, compileFilters: compileFilters, evalAst: evalAst, computeResults: computeResults,
-      normalizeLogic: normalizeLogic, pathInFolder: pathInFolder, looseEqual: looseEqual, baseColor: baseColor
+      normalizeLogic: normalizeLogic, pathInFolder: pathInFolder, looseEqual: looseEqual, baseColor: baseColor,
+      basesModeOf: basesModeOf, isVisibleBase: isVisibleBase,
+      sewNormalize: sewNormalize, sewResolveRef: sewResolveRef, sewTargetsOf: sewTargetsOf, sewTagsOf: sewTagsOf,
+      refOf: refOf, sewPair: sewPair, sewApplySession: sewApplySession, sewRename: sewRename, sewDeletePath: sewDeletePath,
+      sewFilePath: sewFilePath, blgSlug: blgSlug, SEW_JSON: SEW_JSON,
+      _setPluginInstance: function (p) { pluginInstance = p; }
     };
   }
 })();
