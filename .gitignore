@@ -20,3 +20,11 @@ blg-backgrounds.js.bak*
 graphify-out/
 .clipboard_img_vision.png
 deploy-to-obsidian.ps1
+
+# Tooling local (MCP/claude/playwright/repowise/caches/git-story)
+.claude/
+.playwright-mcp/
+.repowise/
+.tmp/
+git-story_media/
+gource.mp4
