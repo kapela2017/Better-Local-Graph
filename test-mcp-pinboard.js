@@ -61,7 +61,14 @@ function fakePinApi(plugin) {
       active: false,
       pinnedCount: Object.keys(pl.settings.pinBoard.cards).length,
       camera: null, boardColor: null, selected: [],
-      cards: Object.keys(pl.settings.pinBoard.cards).map(p => ({ path: p })),
+      cards: Object.keys(pl.settings.pinBoard.cards).map(p => ({
+        path: p,
+        basename: p.replace(/\.md$/i, "").split("/").pop(),
+        isTask: /tarea/i.test(p),
+        task: /tarea/i.test(p)
+          ? { title: "Revisar informe trimestral", status: "open", priority: "high", due: "2026-10-05", scheduled: null }
+          : null
+      })),
       edges: []
     }),
     openBoard: async () => true,
@@ -100,16 +107,28 @@ const eqJ = (a, b, m) => assert.equal(JSON.stringify(a), JSON.stringify(b), m);
   /* ---------- get_current_view: modo pinboard ---------- */
   {
     const plugin = await makeServer();
-    plugin.settings.pinBoard.cards = { "docs/A.md": { x: 0, y: 0, z: 1 }, "docs/B.md": { x: 5, y: 5, z: 2 } };
+    plugin.settings.pinBoard.cards = { "docs/A.md": { x: 0, y: 0, z: 1 }, "docs/B.md": { x: 5, y: 5, z: 2 }, "docs/Tarea A.md": { x: 9, y: 9, z: 3 } };
     plugin.app.files.set("docs/A.md", new TFile("docs/A.md"));
     plugin.app.files.set("docs/B.md", new TFile("docs/B.md"));
+    plugin.app.files.set("docs/Tarea A.md", new TFile("docs/Tarea A.md"));
     plugin._blgPin = { attached: { active: () => true, selected: () => ["docs/B.md"] } };
     const r = await call(plugin, "blg_get_current_view", {});
     assert.equal(r.mode, "pinboard");
-    assert.equal(r.pinnedCount, 2);
+    assert.equal(r.pinnedCount, 3);
     assert.equal(r.selectionCount, 1);
     assert.equal(r.selectedNotes[0].basename, "B");
     assert.ok(r.message.includes("blg_pin_board"));
+    /* Tareas pineadas: enumeradas desde 1 con ruta para ejecutar por número. */
+    assert.equal(r.taskCount, 1);
+    assert.equal(r.tasks.length, 1);
+    assert.equal(r.tasks[0].n, 1);
+    assert.equal(r.tasks[0].path, "docs/Tarea A.md");
+    assert.equal(r.tasks[0].title, "Revisar informe trimestral");
+    assert.equal(r.tasks[0].status, "open");
+    assert.equal(r.tasks[0].priority, "high");
+    assert.equal(r.tasks[0].due, "2026-10-05");
+    assert.ok(/ejecutar/i.test(r.message), "el mensaje instruye ejecutar por número");
+    assert.ok(/blg_get_note/.test(r.message), "el mensaje apunta a blg_get_note para leer la tarea");
     // con la pizarra inactiva no se cuela: cae al modo normal (unknown sin vista)
     plugin._blgPin = { attached: { active: () => false, selected: () => [] } };
     const r2 = await call(plugin, "blg_get_current_view", {});

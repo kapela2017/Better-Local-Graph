@@ -13,7 +13,19 @@ class TFile {
     this.name = pathname.split("/").pop(); this.basename = this.name.replace(/\.md$/i, ""); this.extension = "md";
   }
 }
-const obsidian = { TFile, TFolder, Notice: class { constructor() {} } };
+const obsidian = { TFile, TFolder, Notice: class { constructor() {} },
+  parseYaml(text) {
+    const out = {};
+    String(text || "").split(/\r?\n/).forEach(line => {
+      const m = line.match(/^([^:#][^:]*):\s*(.*)$/);
+      if (!m) return;
+      const key = m[1].trim(), raw = m[2].trim();
+      if (raw.startsWith("[") && raw.endsWith("]")) out[key] = raw.slice(1, -1).split(",").map(x => x.trim().replace(/^['"]|['"]$/g, "")).filter(Boolean);
+      else if (raw === "true" || raw === "false") out[key] = raw === "true";
+      else out[key] = raw.replace(/^['"]|['"]$/g, "");
+    });
+    return out;
+  } };
 const source = fs.readFileSync(path.join(__dirname, "blg-pin-board.js"), "utf8");
 const bundle = fs.readFileSync(path.join(__dirname, "main.js"), "utf8");
 
@@ -43,7 +55,7 @@ for (const key of ["ctxPinNote", "ctxUnpinNote", "pinBtnShow", "pinBtnHide", "pi
 
 /* Instrumentación: exponer las funciones puras sin tocar el bundle. */
 const instrumented = source.replace("  var _onload = PLUGIN_PROTO.onload",
-  "  globalThis.__BLG_PINBOARD_TEST = { normalizeState, migrateRename, deriveEdges, findSpot, fitCamera, focusCam, anchorPan, previewText, sewCurve, borderPoint, rectsOverlap, folderOf, normalizeColor, edgeKey, relationPairs, tooltipFieldNames, frontmatterValues, formatMtime, dateFont, dateColor, baseHidden, visibleBaseResults };\n  var _onload = PLUGIN_PROTO.onload");
+  "  globalThis.__BLG_PINBOARD_TEST = { normalizeState, migrateRename, deriveEdges, findSpot, fitCamera, focusCam, anchorPan, previewText, sewCurve, borderPoint, rectsOverlap, folderOf, normalizeColor, edgeKey, relationPairs, tooltipFieldNames, frontmatterValues, formatMtime, dateFont, dateColor, baseHidden, visibleBaseResults, taskSettings, isTaskNote, taskTitle, taskTemplatePatch, taskTemplatePath, parseFrontmatterBlock, templateMarkdownFiles, cardTaskInfo, DEFAULT_TASK_COLOR };\n  var _onload = PLUGIN_PROTO.onload");
 assert.notEqual(instrumented, source);
 const context = { module: { exports: { default: class { onload() {} onunload() {} } } },
   require(name) { if (name === "obsidian") return obsidian; return require(name); },
@@ -256,6 +268,70 @@ assert.deepEqual(Object.keys(api), ["addPinMenu", "isPinned", "pin", "unpin", "o
   assert.ok(Math.abs(p.x - 54) < 1e-9 && Math.abs(p.y) < 1e-9, "borde derecho con margen");
   assert.equal(pure.folderOf("a/b/Nota.md"), "a/b");
   assert.equal(pure.folderOf("Nota.md"), "");
+}
+
+/* ---------- TaskNotes: detección, plantilla y conversión (puras) ---------- */
+{
+  const taskSettings = { taskIdentificationMethod: "tag", taskTag: "Pendiente", defaultTaskStatus: "open", defaultTaskPriority: "normal" };
+  assert.equal(pure.isTaskNote(null, { path: "docs/Tarea.md" }, { tags: ["Pendiente"] }, null, taskSettings), true, "tag exacto detecta tarea");
+  assert.equal(pure.isTaskNote(null, { path: "docs/Tarea.md" }, { tags: ["pendiente/urgente"] }, null, taskSettings), true, "subtag y case-insensitive");
+  assert.equal(pure.isTaskNote(null, { path: "docs/Nota.md" }, { tags: ["pendienteza"] }, null, taskSettings), false, "un prefijo distinto no es el tag");
+  assert.equal(pure.isTaskNote(null, { path: "docs/Query.base" }, { tags: ["Pendiente"] }, null, taskSettings), false, "una .base nunca es tarea");
+  assert.equal(pure.isTaskNote(null, { path: "docs/Tarea.md" }, { tipo: "task" }, null,
+    { taskIdentificationMethod: "property", taskPropertyName: "tipo", taskPropertyValue: "task" }), true, "identificación por propiedad");
+  assert.equal(pure.taskTitle({ title: "  Revisar informe  " }, { basename: "Tarea" }), "Revisar informe", "el encabezado usa el título");
+  assert.equal(pure.taskTitle({ title: " " }, { basename: "Tarea" }), "Tarea", "sin título cae al basename");
+  /* La plantilla ANEXA propiedades YAML: jamás reemplaza (ni "" ni false ni 0),
+     fusiona tags sin duplicar, jamás toca sewing y añade el identificador. */
+  const patch = pure.taskTemplatePatch(
+    { status: "in-progress", tags: ["Personal"] },
+    { status: "open", priority: "high", icon: "alarm", tags: ["Admin", "personal"] },
+    taskSettings);
+  assert.equal(JSON.stringify(patch), JSON.stringify({ priority: "high", icon: "alarm", tags: ["Personal", "Admin", "Pendiente"] }),
+    "anexa huecos, fusiona tags de la plantilla sin duplicar (case-insensitive) y añade el identificador");
+  assert.equal(pure.taskTemplatePatch(
+    { tags: ["Pendiente"], done: false, count: 0, note: "" },
+    { done: true, count: 5, note: "relleno", sewing: ["[[X]]"] },
+    taskSettings), null, "valores existentes (false/0/\"\") se conservan y sewing jamás se copia");
+  assert.equal(pure.taskTemplatePatch({ tags: ["Pendiente"] }, {}, taskSettings), null, "ya era tarea: no hay toque de archivo");
+  assert.equal(JSON.stringify(pure.taskTemplatePatch(
+    { tags: ["Pendiente"] }, { area: "Casa" }, taskSettings)),
+    JSON.stringify({ area: "Casa" }), "ya siendo tarea aún anexa las propiedades que faltan");
+  assert.equal(JSON.stringify(pure.taskTemplatePatch(
+    {}, { area: "Casa" },
+    { taskIdentificationMethod: "property", taskPropertyName: "tipo", taskPropertyValue: "task" })),
+    JSON.stringify({ area: "Casa", tipo: "task" }), "método property: anexa propiedades e identificador");
+  assert.equal(JSON.stringify(pure.taskTemplatePatch(
+    { tags: "Admin Personal" }, { tags: ["Casa"] }, taskSettings)),
+    JSON.stringify({ tags: ["Admin", "Personal", "Casa", "Pendiente"] }), "tags propios en string se conservan y se anexan");
+  assert.equal(pure.taskTemplatePath("Plantillas/Tarea"), "Plantillas/Tarea.md");
+  assert.equal(pure.taskTemplatePath("[[Plantillas/Tarea.md]]"), "Plantillas/Tarea.md");
+  const parsed = pure.parseFrontmatterBlock("---\nstatus: open\npriority: high\n---\n\n# Cuerpo\nTexto");
+  assert.equal(JSON.stringify(parsed.frontmatter), JSON.stringify({ status: "open", priority: "high" }));
+  assert.ok(parsed.body.includes("# Cuerpo"));
+  const defaults = pure.taskSettings({});
+  assert.equal(defaults.enabled, true);
+  assert.equal(defaults.color, pure.DEFAULT_TASK_COLOR);
+  assert.equal("bodyMode" in defaults, false, "la plantilla ya no tiene modo de cuerpo");
+  /* cardTaskInfo: resumen serializable para el MCP (boardState). */
+  const tnPlugin = {
+    settings: {},
+    app: {
+      plugins: { getPlugin: () => ({ settings: { taskIdentificationMethod: "tag", taskTag: "task", defaultTaskStatus: "open", defaultTaskPriority: "normal" } }) },
+      metadataCache: { getFileCache: () => ({ frontmatter: { tags: ["task"], status: "doing", due: "2026-10-05" } }) }
+    }
+  };
+  const ti = pure.cardTaskInfo(tnPlugin, { path: "docs/T.md", basename: "T" });
+  assert.equal(ti.title, "T", "sin caché de TaskNotes el título cae al basename");
+  assert.equal(ti.status, "doing");
+  assert.equal(ti.priority, "normal");
+  assert.equal(ti.due, "2026-10-05");
+  assert.equal(ti.scheduled, null);
+  assert.equal(pure.cardTaskInfo(tnPlugin, { path: "docs/Q.base", basename: "Q" }), null, "una .base nunca reporta tarea");
+  tnPlugin.app.metadataCache.getFileCache = () => ({ frontmatter: { tags: ["otra"] } });
+  assert.equal(pure.cardTaskInfo(tnPlugin, { path: "docs/N.md", basename: "N" }), null, "sin identificador no es tarea");
+  tnPlugin.settings.pinTasksEnabled = false;
+  assert.equal(pure.cardTaskInfo(tnPlugin, { path: "docs/T.md", basename: "T" }), null, "integración desactivada: sin tareas");
 }
 
 /* ---------- inserción en el menú cxttap del bundle ---------- */

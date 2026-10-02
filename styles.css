@@ -769,6 +769,30 @@ body.blg-drops-node-moving .coser-tooltip { visibility: hidden !important; }
 }
 .blg-pin-card.is-unavailable .blg-pin-card-preview { font-style: italic; }
 
+/* --- tareas de TaskNotes: distintivo visual sin perder el color propio --- */
+.blg-pin-card.is-task {
+  border-left: 4px solid var(--blg-pin-task-color, #00aa88);
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--blg-pin-task-color, #00aa88) 9%, transparent), transparent 38%),
+    var(--blg-pin-card-bg, var(--background-secondary));
+}
+.blg-pin-card.is-task .blg-pin-card-title { color: var(--blg-pin-task-color, #00aa88); }
+.blg-pin-card.is-task .blg-pin-card-date {
+  color: var(--blg-pin-task-color, #00aa88);
+  font-weight: 600;
+  /* El título de la tarea va centrado y en varias líneas: la tarjeta crece
+     hacia abajo en lugar de desbordar el texto fuera del borde. */
+  justify-content: center;
+  align-items: flex-start;
+  text-align: center;
+  transform: none;
+}
+.blg-pin-card.is-task .blg-pin-card-date-text {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 /* --- consultas .base --- */
 .blg-pin-card.is-base {
   border-color: var(--blg-pin-base-color, #8b5cf6);

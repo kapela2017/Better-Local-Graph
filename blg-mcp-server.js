@@ -548,8 +548,29 @@
               return { path: p, basename: pf ? pf.basename : p.replace(/\.md$/, "").split("/").pop() };
             });
             result.selectionCount = result.selectedNotes.length;
+            /* Tareas pineadas (TaskNotes): el modelo las enumera numeradas y,
+               cuando el usuario pida ejecutar una por número, lee su nota con
+               blg_get_note (includeContent:true) y realiza lo que pida. */
+            var pinApi = (typeof globalThis !== "undefined") && globalThis.__BLG_PINBOARD;
+            var pbState = pinApi && typeof pinApi.boardState === "function" ? pinApi.boardState(plugin) : null;
+            var taskCards = pbState && Array.isArray(pbState.cards) ? pbState.cards.filter(function (c) { return c && c.isTask; }) : [];
+            result.tasks = taskCards.map(function (c, i) {
+              var t = c.task || {};
+              return {
+                n: i + 1,
+                path: c.path,
+                basename: c.basename,
+                title: t.title || c.basename,
+                status: t.status || null,
+                priority: t.priority || null,
+                due: t.due || null,
+                scheduled: t.scheduled || null
+              };
+            });
+            result.taskCount = result.tasks.length;
             result.bookmark = bmInfo;
-            result.message = "El usuario está viendo la pizarra de notas fijadas (pin board). Usa la herramienta blg_pin_board con action:'get' para leer su estado completo o con open/close/pin/unpin/focus/fit para manipularla.";
+            result.message = "El usuario está viendo la pizarra de notas fijadas (pin board). Usa la herramienta blg_pin_board con action:'get' para leer su estado completo o con open/close/pin/unpin/focus/fit para manipularla." +
+              (result.taskCount ? " Hay " + result.taskCount + " tarea(s) pineada(s) en el campo 'tasks', numeradas desde 1: enuméralas al usuario con su número y título y ofrécete a ejecutarlas. Cuando pida ejecutar una por número, toma su 'path', léela con blg_get_note (includeContent:true) y realiza lo que la tarea solicite; si pide verla en pantalla, usa blg_pin_board con action:'focus' y esa nota." : "");
             return result;
           }
 
@@ -796,7 +817,7 @@
 
       /* ===== pizarra de notas fijadas (pin board) ===== */
       blg_pin_board: {
-        description: "Gestiona la pizarra de notas fijadas (pin board) de Better Local Graph: el tablero visual donde el usuario fija notas como tarjetas conectadas por costuras. Acciones: 'get' = estado completo (¿activa?, tarjetas con posición/carpeta/disponibilidad, selección, cámara y aristas de costura entre tarjetas) — funciona con la pizarra cerrada; 'open' = abre el panel BLG si hace falta y ACTIVA la pizarra en pantalla; 'close' = sale de la pizarra conservando pines y distribución; 'pin' = fija notas nuevas (no duplica ni mueve las existentes); 'unpin' = quita notas de la pizarra (NO borra las notas ni sus costuras; sirve también para tarjetas cuya nota ya no existe); 'focus' = activa la pizarra si hace falta y centra la cámara en la tarjeta; 'fit' = encuadra todas las tarjetas. Úsala cuando el usuario diga 'mi pizarra', 'lo que tengo pineado/fijado', 'fija esta nota', 'quítala de la pizarra' o pida verla en pantalla. Si una referencia es ambigua (varias notas con el mismo nombre) se devuelven los candidatos sin elegir ninguno: pide al usuario que precise la ruta. Las costuras entre tarjetas se crean con blg_sew, no aquí.",
+        description: "Gestiona la pizarra de notas fijadas (pin board) de Better Local Graph: el tablero visual donde el usuario fija notas como tarjetas conectadas por costuras. Acciones: 'get' = estado completo (¿activa?, tarjetas con posición/carpeta/disponibilidad, selección, cámara y aristas de costura entre tarjetas) — funciona con la pizarra cerrada; 'open' = abre el panel BLG si hace falta y ACTIVA la pizarra en pantalla; 'close' = sale de la pizarra conservando pines y distribución; 'pin' = fija notas nuevas (no duplica ni mueve las existentes); 'unpin' = quita notas de la pizarra (NO borra las notas ni sus costuras; sirve también para tarjetas cuya nota ya no existe); 'focus' = activa la pizarra si hace falta y centra la cámara en la tarjeta; 'fit' = encuadra todas las tarjetas. Cada tarjeta incluye isTask y, cuando la nota es una tarea de TaskNotes, task {title, status, priority, due, scheduled}: úsalo para enumerar las tareas pineadas y resolver por número la que el usuario pida ejecutar (lee su contenido con blg_get_note includeContent:true). Úsala cuando el usuario diga 'mi pizarra', 'lo que tengo pineado/fijado', 'fija esta nota', 'quítala de la pizarra' o pida verla en pantalla. Si una referencia es ambigua (varias notas con el mismo nombre) se devuelven los candidatos sin elegir ninguno: pide al usuario que precise la ruta. Las costuras entre tarjetas se crean con blg_sew, no aquí.",
         inputSchema: { type: "object", required: ["action"], properties: {
           action: { type: "string", enum: ["get", "open", "close", "pin", "unpin", "focus", "fit"], description: "Operación a ejecutar." },
           notes: { type: "array", items: { type: "string" }, description: "Requerido para pin/unpin/focus: rutas, basenames o wikilinks (focus usa solo el primero)." }

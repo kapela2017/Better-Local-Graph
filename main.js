@@ -15,7 +15,7 @@ var BLG_T={
   ctxEditYaml:"Editar propiedades (YAML)",
    ctxWhyRelated:"\u2728 \u00bfPor qu\u00e9 se relacionan?",
    ctxMoveTo:"Mover A",dropsBtnShow:"Mostrar Ubicación",dropsBtnHide:"Ocultar Ubicación",dropsCopyHint:function(m){return m==="none"?"Copia desactivada":"Copiar al soltar con "+m;},dropsExcluded:"Las notas en carpetas excluidas no entran en el modo de ubicación.",dropsCompact:"Muchas carpetas: se usa una disposición compacta.",dropsPanHint:"No caben todos los conjuntos a este zoom; arrastra el fondo para recorrerlos.",dropsCount:function(v,t){return v===t?String(v):v+" de "+t;},dropsTarget:function(p){return "→ "+p;},dropsInvalid:"Destino no válido",dropsNoNodes:"No hay notas Markdown visibles para agrupar.",moveExists:function(p){return "Ya existe: "+p;},moveDone:function(p){return "Nota movida a "+p;},moveCopied:function(p){return "Nota copiada a "+p;},moveResult:function(a,b){return a+" movidas, "+b+" omitidas";},copyResult:function(a,b){return a+" copiadas, "+b+" omitidas";},moveError:function(e){return "No se pudo completar la operación: "+e;},copyUnavailable:"La copia no está disponible; no se ha movido ninguna nota.",moveFolderPicker:"Buscar carpeta de destino…",moveFolderTitle:"Mover A",moveFolderCount:function(n){return n+" notas";},moveCurrent:"(actual)",moveRoot:"Raíz",moveNewFolder:function(p){return "Crear carpeta «"+p+"»";},moveNewFolderTitle:"Crear carpeta de destino",moveNewFolderBody:function(p){return "¿Crear «"+p+"» y usarla como destino?";},moveCreate:"Crear carpeta",moveBadFolder:"Ruta de carpeta no válida.",mmMoveTitle:"Mover notas del tag",mmMoveBody:function(n,t,p){return "Se moverán "+n+" notas directas con #"+t+" a "+p+".";},mmMoveOk:"Mover notas",mmMoveResult:function(a,b){return a+" movidas, "+b+" omitidas";},
-       n_drops:"Conjuntos de ubicación",d_drops:"Agrupa las notas visibles por carpeta y permite moverlas entre conjuntos.",n_dropsColor:"Color del conjunto",d_dropsColor:"Color base de los conjuntos; el contraste se adapta al tema.",n_dropsOpacity:"Opacidad del conjunto",d_dropsOpacity:"Transparencia del relleno del conjunto.",n_dropsSize:"Tamaño del conjunto",d_dropsSize:"Escala los conjuntos y recalcula su encuadre.",n_dropsBorderColor:"Color del borde",n_dropsBorderWidth:"Grosor del borde",n_dropsGoo:"Fusión líquida",n_dropsSpeed:"Velocidad del líquido",n_dropsLabels:"Rótulos de carpetas",n_dropsLabelSize:"Tamaño del rótulo",d_dropsLabelSize:"Escala del nombre de la carpeta (0,85 = 15 % más pequeño).",n_dropsLegend:"Panel de carpetas",n_dropsZoomOut:"Encuadrar al activar",n_dropsMinZoom:"Zoom mínimo",n_dropsCopyMod:"Modificador para copiar",n_dropsMaxFolders:"Umbral de modo compacto",dropsReset:"Restablecer conjuntos",dropsCopyCtrl:"Ctrl",dropsCopyAlt:"Alt",dropsCopyNone:"Ninguno",dropsLegendTitle:"Carpetas visibles",dropsLegendCollapse:"Ocultar lista de carpetas",dropsLegendExpand:"Mostrar lista de carpetas",dropsSetColor:"Cambiar color del conjunto",dropsResetColor:"Usar color predeterminado",dropsColorFor:function(p){return "Color de «"+p+"»";},dropsApplyColor:"Aplicar",pinBtnShow:"Mostrar pizarra",pinBtnHide:"Ocultar pizarra",pinCount:function(n){return n===1?"1 nota fijada":n+" notas fijadas";},ctxPinNote:"Fijar en pizarra",ctxUnpinNote:"Quitar de la pizarra",pinAdded:function(n){return 'Fijada en la pizarra: "'+n+'"';},pinRemoved:function(n){return 'Quitada de la pizarra: "'+n+'"';},pinEmptyTitle:"Pizarra vacía",pinEmptyHint:"Fija notas con clic derecho sobre un nodo: «Fijar en pizarra».",pinUnavailable:"Nota no disponible",pinOpen:"Abrir nota",pinUnpin:"Desfijar",pinFit:"Encuadrar todo",pinModified:"Última modificación",pinCardColor:"Color de tarjeta",pinBoardColor:"Color de la pizarra",pinEdgeColor:"Color de relación",pinResetColor:"Restablecer color",pinResetStyle:"Restablecer estilo",pinApply:"Aplicar",pinRelateCount:function(n){return "Relacionar "+n+" tarjetas";},pinSewTwo:function(a,b){return '¿Realizar costura? "'+a+'" será padre de "'+b+'".';},pinSewParentAll:function(a,n){return '1. "'+a+'" como padre de '+n+' tarjetas';},pinSewChain:"2. En cadena por orden (1→2→3…)",pinLineSolid:"Línea continua",pinLineDashed:"Línea discontinua",pinClearSelection:"Limpiar selección",pinTab:"Pizarra",pinSettingsTitle:"Pizarra",pinDateFont:"Fuente de la fecha",pinDateFontDesc:"Fuente usada para la fecha de modificación sobre cada tarjeta.",pinDateColor:"Color de la fecha",pinDateColorDesc:"Color de la fecha manuscrita sobre cada tarjeta.",
+       n_drops:"Conjuntos de ubicación",d_drops:"Agrupa las notas visibles por carpeta y permite moverlas entre conjuntos.",n_dropsColor:"Color del conjunto",d_dropsColor:"Color base de los conjuntos; el contraste se adapta al tema.",n_dropsOpacity:"Opacidad del conjunto",d_dropsOpacity:"Transparencia del relleno del conjunto.",n_dropsSize:"Tamaño del conjunto",d_dropsSize:"Escala los conjuntos y recalcula su encuadre.",n_dropsBorderColor:"Color del borde",n_dropsBorderWidth:"Grosor del borde",n_dropsGoo:"Fusión líquida",n_dropsSpeed:"Velocidad del líquido",n_dropsLabels:"Rótulos de carpetas",n_dropsLabelSize:"Tamaño del rótulo",d_dropsLabelSize:"Escala del nombre de la carpeta (0,85 = 15 % más pequeño).",n_dropsLegend:"Panel de carpetas",n_dropsZoomOut:"Encuadrar al activar",n_dropsMinZoom:"Zoom mínimo",n_dropsCopyMod:"Modificador para copiar",n_dropsMaxFolders:"Umbral de modo compacto",dropsReset:"Restablecer conjuntos",dropsCopyCtrl:"Ctrl",dropsCopyAlt:"Alt",dropsCopyNone:"Ninguno",dropsLegendTitle:"Carpetas visibles",dropsLegendCollapse:"Ocultar lista de carpetas",dropsLegendExpand:"Mostrar lista de carpetas",dropsSetColor:"Cambiar color del conjunto",dropsResetColor:"Usar color predeterminado",dropsColorFor:function(p){return "Color de «"+p+"»";},dropsApplyColor:"Aplicar",pinBtnShow:"Mostrar pizarra",pinBtnHide:"Ocultar pizarra",pinCount:function(n){return n===1?"1 nota fijada":n+" notas fijadas";},ctxPinNote:"Fijar en pizarra",ctxUnpinNote:"Quitar de la pizarra",pinAdded:function(n){return 'Fijada en la pizarra: "'+n+'"';},pinRemoved:function(n){return 'Quitada de la pizarra: "'+n+'"';},pinEmptyTitle:"Pizarra vacía",pinEmptyHint:"Fija notas con clic derecho sobre un nodo: «Fijar en pizarra».",pinUnavailable:"Nota no disponible",pinOpen:"Abrir nota",pinUnpin:"Desfijar",pinFit:"Encuadrar todo",pinModified:"Última modificación",pinCardColor:"Color de tarjeta",pinBoardColor:"Color de la pizarra",pinEdgeColor:"Color de relación",pinResetColor:"Restablecer color",pinResetStyle:"Restablecer estilo",pinApply:"Aplicar",pinRelateCount:function(n){return "Relacionar "+n+" tarjetas";},pinSewTwo:function(a,b){return '¿Realizar costura? "'+a+'" será padre de "'+b+'".';},pinSewParentAll:function(a,n){return '1. "'+a+'" como padre de '+n+' tarjetas';},pinSewChain:"2. En cadena por orden (1→2→3…)",pinLineSolid:"Línea continua",pinLineDashed:"Línea discontinua",pinClearSelection:"Limpiar selección",pinTab:"Pizarra",pinSettingsTitle:"Pizarra",pinDateFont:"Fuente de la fecha",pinDateFontDesc:"Fuente usada para la fecha de modificación sobre cada tarjeta.",pinDateColor:"Color de la fecha",pinDateColorDesc:"Color de la fecha manuscrita sobre cada tarjeta.",pinTaskSettingsTitle:"TaskNotes",pinTasksEnabled:"Integrar TaskNotes",pinTasksEnabledDesc:"Muestra tareas con distintivo y permite convertir tarjetas desde el clic derecho.",pinTaskColor:"Color de tarea",pinTaskColorDesc:"Color del distintivo de las tarjetas gestionadas por TaskNotes.",pinTaskIcon:"Icono de tarea",pinTaskIconDesc:"Icono visual para tareas; vacío usa el icono del estado de TaskNotes o el icono propio de la nota.",pinTaskTemplate:"Plantilla al convertir",pinTaskTemplateDesc:"Nota de plantilla elegida en opciones; sus propiedades YAML se anexan a la nota sin reemplazar las existentes.",pinTaskTemplateNone:"Sin plantilla",pinConvertTask:"Convertir en tarea",pinTaskTitle:"Título de la tarea",pinTaskNotesUnavailable:"TaskNotes no está disponible.",pinTaskTemplateMissing:function(p){return "Plantilla no encontrada: "+p;},pinTaskConverted:function(n){return 'Convertida en tarea: "'+n+'".';},
   noteMarked:function(n){return 'Nota marcada: "'+n+'".';},
   ctxSewToBookmark:function(n){return 'Coser a bookmark: "'+n+'"';},
   bookmarkNotFound:"No se encontro la nota marcada.",
@@ -129,7 +129,7 @@ var BLG_T={
   ctxEditYaml:"Edit properties (YAML)",
    ctxWhyRelated:"\u2728 Why are they related?",
    ctxMoveTo:"Move To",dropsBtnShow:"Show Locations",dropsBtnHide:"Hide Locations",dropsCopyHint:function(m){return m==="none"?"Copy disabled":"Hold "+m+" when dropping to copy";},dropsExcluded:"Notes in excluded folders are not included in location mode.",dropsCompact:"Many folders: using a compact arrangement.",dropsPanHint:"The sets cannot all fit at this zoom; drag the background to explore them.",dropsCount:function(v,t){return v===t?String(v):v+" of "+t;},dropsTarget:function(p){return "→ "+p;},dropsInvalid:"Invalid destination",dropsNoNodes:"No visible Markdown notes to group.",moveExists:function(p){return "Already exists: "+p;},moveDone:function(p){return "Note moved to "+p;},moveCopied:function(p){return "Note copied to "+p;},moveResult:function(a,b){return a+" moved, "+b+" skipped";},copyResult:function(a,b){return a+" copied, "+b+" skipped";},moveError:function(e){return "Could not complete the operation: "+e;},copyUnavailable:"Copy is unavailable; no notes were moved.",moveFolderPicker:"Search for a destination folder…",moveFolderTitle:"Move To",moveFolderCount:function(n){return n+" notes";},moveCurrent:"(current)",moveRoot:"Vault root",moveNewFolder:function(p){return "Create folder “"+p+"”";},moveNewFolderTitle:"Create destination folder",moveNewFolderBody:function(p){return "Create “"+p+"” and use it as the destination?";},moveCreate:"Create folder",moveBadFolder:"Invalid folder path.",mmMoveTitle:"Move tagged notes",mmMoveBody:function(n,t,p){return "Move "+n+" direct notes tagged #"+t+" to "+p+".";},mmMoveOk:"Move notes",mmMoveResult:function(a,b){return a+" moved, "+b+" skipped";},
-       n_drops:"Location sets",d_drops:"Groups visible notes by folder and lets you move them between sets.",n_dropsColor:"Set color",d_dropsColor:"Base set color; contrast adapts to the theme.",n_dropsOpacity:"Set opacity",d_dropsOpacity:"Transparency of the set fill.",n_dropsSize:"Set size",d_dropsSize:"Scales the sets and recalculates the camera framing.",n_dropsBorderColor:"Border color",n_dropsBorderWidth:"Border width",n_dropsGoo:"Liquid fusion",n_dropsSpeed:"Liquid speed",n_dropsLabels:"Folder labels",n_dropsLabelSize:"Label size",d_dropsLabelSize:"Scale of the folder name (0.85 = 15% smaller).",n_dropsLegend:"Folder panel",n_dropsZoomOut:"Fit on activation",n_dropsMinZoom:"Minimum zoom",n_dropsCopyMod:"Copy modifier",n_dropsMaxFolders:"Compact-mode threshold",dropsReset:"Reset sets",dropsCopyCtrl:"Ctrl",dropsCopyAlt:"Alt",dropsCopyNone:"None",dropsLegendTitle:"Visible folders",dropsLegendCollapse:"Hide folder list",dropsLegendExpand:"Show folder list",dropsSetColor:"Change set color",dropsResetColor:"Use default color",dropsColorFor:function(p){return "Color for “"+p+"”";},dropsApplyColor:"Apply",pinBtnShow:"Show board",pinBtnHide:"Hide board",pinCount:function(n){return n===1?"1 pinned note":n+" pinned notes";},ctxPinNote:"Pin to board",ctxUnpinNote:"Unpin from board",pinAdded:function(n){return 'Pinned to board: "'+n+'"';},pinRemoved:function(n){return 'Removed from board: "'+n+'"';},pinEmptyTitle:"Empty board",pinEmptyHint:'Pin notes by right-clicking a node: "Pin to board".',pinUnavailable:"Note unavailable",pinOpen:"Open note",pinUnpin:"Unpin",pinFit:"Fit all",pinModified:"Last modified",pinCardColor:"Card color",pinBoardColor:"Board color",pinEdgeColor:"Relationship color",pinResetColor:"Reset color",pinResetStyle:"Reset style",pinApply:"Apply",pinRelateCount:function(n){return "Relate "+n+" cards";},pinSewTwo:function(a,b){return 'Sew? "'+a+'" will be the parent of "'+b+'".';},pinSewParentAll:function(a,n){return '1. "'+a+'" as parent of '+n+' cards';},pinSewChain:"2. Chain by order (1→2→3…)",pinLineSolid:"Solid line",pinLineDashed:"Dashed line",pinClearSelection:"Clear selection",pinTab:"Board",pinSettingsTitle:"Board",pinDateFont:"Date font",pinDateFontDesc:"Font used for the modification date above each card.",pinDateColor:"Date color",pinDateColorDesc:"Color of the handwritten date above each card.",
+       n_drops:"Location sets",d_drops:"Groups visible notes by folder and lets you move them between sets.",n_dropsColor:"Set color",d_dropsColor:"Base set color; contrast adapts to the theme.",n_dropsOpacity:"Set opacity",d_dropsOpacity:"Transparency of the set fill.",n_dropsSize:"Set size",d_dropsSize:"Scales the sets and recalculates the camera framing.",n_dropsBorderColor:"Border color",n_dropsBorderWidth:"Border width",n_dropsGoo:"Liquid fusion",n_dropsSpeed:"Liquid speed",n_dropsLabels:"Folder labels",n_dropsLabelSize:"Label size",d_dropsLabelSize:"Scale of the folder name (0.85 = 15% smaller).",n_dropsLegend:"Folder panel",n_dropsZoomOut:"Fit on activation",n_dropsMinZoom:"Minimum zoom",n_dropsCopyMod:"Copy modifier",n_dropsMaxFolders:"Compact-mode threshold",dropsReset:"Reset sets",dropsCopyCtrl:"Ctrl",dropsCopyAlt:"Alt",dropsCopyNone:"None",dropsLegendTitle:"Visible folders",dropsLegendCollapse:"Hide folder list",dropsLegendExpand:"Show folder list",dropsSetColor:"Change set color",dropsResetColor:"Use default color",dropsColorFor:function(p){return "Color for “"+p+"”";},dropsApplyColor:"Apply",pinBtnShow:"Show board",pinBtnHide:"Hide board",pinCount:function(n){return n===1?"1 pinned note":n+" pinned notes";},ctxPinNote:"Pin to board",ctxUnpinNote:"Unpin from board",pinAdded:function(n){return 'Pinned to board: "'+n+'"';},pinRemoved:function(n){return 'Removed from board: "'+n+'"';},pinEmptyTitle:"Empty board",pinEmptyHint:'Pin notes by right-clicking a node: "Pin to board".',pinUnavailable:"Note unavailable",pinOpen:"Open note",pinUnpin:"Unpin",pinFit:"Fit all",pinModified:"Last modified",pinCardColor:"Card color",pinBoardColor:"Board color",pinEdgeColor:"Relationship color",pinResetColor:"Reset color",pinResetStyle:"Reset style",pinApply:"Apply",pinRelateCount:function(n){return "Relate "+n+" cards";},pinSewTwo:function(a,b){return 'Sew? "'+a+'" will be the parent of "'+b+'".';},pinSewParentAll:function(a,n){return '1. "'+a+'" as parent of '+n+' cards';},pinSewChain:"2. Chain by order (1→2→3…)",pinLineSolid:"Solid line",pinLineDashed:"Dashed line",pinClearSelection:"Clear selection",pinTab:"Board",pinSettingsTitle:"Board",pinDateFont:"Date font",pinDateFontDesc:"Font used for the modification date above each card.",pinDateColor:"Date color",pinDateColorDesc:"Color of the handwritten date above each card.",pinTaskSettingsTitle:"TaskNotes",pinTasksEnabled:"Integrate TaskNotes",pinTasksEnabledDesc:"Shows a task badge and lets you convert cards from the right-click menu.",pinTaskColor:"Task color",pinTaskColorDesc:"Badge color for cards managed by TaskNotes.",pinTaskIcon:"Task icon",pinTaskIconDesc:"Visual icon for tasks; empty uses the TaskNotes status icon or the note's own icon.",pinTaskTemplate:"Conversion template",pinTaskTemplateDesc:"Template note chosen in options; its YAML properties are annexed to the note without replacing existing ones.",pinTaskTemplateNone:"No template",pinConvertTask:"Convert to task",pinTaskTitle:"Task title",pinTaskNotesUnavailable:"TaskNotes is unavailable.",pinTaskTemplateMissing:function(p){return "Template not found: "+p;},pinTaskConverted:function(n){return 'Converted to task: "'+n+'".';},
   noteMarked:function(n){return 'Note bookmarked: "'+n+'".';},
   ctxSewToBookmark:function(n){return 'Sew to bookmark: "'+n+'"';},
   bookmarkNotFound:"Bookmarked note not found.",
@@ -1480,8 +1480,29 @@ cytoscape/dist/cytoscape.esm.mjs:
               return { path: p, basename: pf ? pf.basename : p.replace(/\.md$/, "").split("/").pop() };
             });
             result.selectionCount = result.selectedNotes.length;
+            /* Tareas pineadas (TaskNotes): el modelo las enumera numeradas y,
+               cuando el usuario pida ejecutar una por número, lee su nota con
+               blg_get_note (includeContent:true) y realiza lo que pida. */
+            var pinApi = (typeof globalThis !== "undefined") && globalThis.__BLG_PINBOARD;
+            var pbState = pinApi && typeof pinApi.boardState === "function" ? pinApi.boardState(plugin) : null;
+            var taskCards = pbState && Array.isArray(pbState.cards) ? pbState.cards.filter(function (c) { return c && c.isTask; }) : [];
+            result.tasks = taskCards.map(function (c, i) {
+              var t = c.task || {};
+              return {
+                n: i + 1,
+                path: c.path,
+                basename: c.basename,
+                title: t.title || c.basename,
+                status: t.status || null,
+                priority: t.priority || null,
+                due: t.due || null,
+                scheduled: t.scheduled || null
+              };
+            });
+            result.taskCount = result.tasks.length;
             result.bookmark = bmInfo;
-            result.message = "El usuario está viendo la pizarra de notas fijadas (pin board). Usa la herramienta blg_pin_board con action:'get' para leer su estado completo o con open/close/pin/unpin/focus/fit para manipularla.";
+            result.message = "El usuario está viendo la pizarra de notas fijadas (pin board). Usa la herramienta blg_pin_board con action:'get' para leer su estado completo o con open/close/pin/unpin/focus/fit para manipularla." +
+              (result.taskCount ? " Hay " + result.taskCount + " tarea(s) pineada(s) en el campo 'tasks', numeradas desde 1: enuméralas al usuario con su número y título y ofrécete a ejecutarlas. Cuando pida ejecutar una por número, toma su 'path', léela con blg_get_note (includeContent:true) y realiza lo que la tarea solicite; si pide verla en pantalla, usa blg_pin_board con action:'focus' y esa nota." : "");
             return result;
           }
 
@@ -1728,7 +1749,7 @@ cytoscape/dist/cytoscape.esm.mjs:
 
       /* ===== pizarra de notas fijadas (pin board) ===== */
       blg_pin_board: {
-        description: "Gestiona la pizarra de notas fijadas (pin board) de Better Local Graph: el tablero visual donde el usuario fija notas como tarjetas conectadas por costuras. Acciones: 'get' = estado completo (¿activa?, tarjetas con posición/carpeta/disponibilidad, selección, cámara y aristas de costura entre tarjetas) — funciona con la pizarra cerrada; 'open' = abre el panel BLG si hace falta y ACTIVA la pizarra en pantalla; 'close' = sale de la pizarra conservando pines y distribución; 'pin' = fija notas nuevas (no duplica ni mueve las existentes); 'unpin' = quita notas de la pizarra (NO borra las notas ni sus costuras; sirve también para tarjetas cuya nota ya no existe); 'focus' = activa la pizarra si hace falta y centra la cámara en la tarjeta; 'fit' = encuadra todas las tarjetas. Úsala cuando el usuario diga 'mi pizarra', 'lo que tengo pineado/fijado', 'fija esta nota', 'quítala de la pizarra' o pida verla en pantalla. Si una referencia es ambigua (varias notas con el mismo nombre) se devuelven los candidatos sin elegir ninguno: pide al usuario que precise la ruta. Las costuras entre tarjetas se crean con blg_sew, no aquí.",
+        description: "Gestiona la pizarra de notas fijadas (pin board) de Better Local Graph: el tablero visual donde el usuario fija notas como tarjetas conectadas por costuras. Acciones: 'get' = estado completo (¿activa?, tarjetas con posición/carpeta/disponibilidad, selección, cámara y aristas de costura entre tarjetas) — funciona con la pizarra cerrada; 'open' = abre el panel BLG si hace falta y ACTIVA la pizarra en pantalla; 'close' = sale de la pizarra conservando pines y distribución; 'pin' = fija notas nuevas (no duplica ni mueve las existentes); 'unpin' = quita notas de la pizarra (NO borra las notas ni sus costuras; sirve también para tarjetas cuya nota ya no existe); 'focus' = activa la pizarra si hace falta y centra la cámara en la tarjeta; 'fit' = encuadra todas las tarjetas. Cada tarjeta incluye isTask y, cuando la nota es una tarea de TaskNotes, task {title, status, priority, due, scheduled}: úsalo para enumerar las tareas pineadas y resolver por número la que el usuario pida ejecutar (lee su contenido con blg_get_note includeContent:true). Úsala cuando el usuario diga 'mi pizarra', 'lo que tengo pineado/fijado', 'fija esta nota', 'quítala de la pizarra' o pida verla en pantalla. Si una referencia es ambigua (varias notas con el mismo nombre) se devuelven los candidatos sin elegir ninguno: pide al usuario que precise la ruta. Las costuras entre tarjetas se crean con blg_sew, no aquí.",
         inputSchema: { type: "object", required: ["action"], properties: {
           action: { type: "string", enum: ["get", "open", "close", "pin", "unpin", "focus", "fit"], description: "Operación a ejecutar." },
           notes: { type: "array", items: { type: "string" }, description: "Requerido para pin/unpin/focus: rutas, basenames o wikilinks (focus usa solo el primero)." }
@@ -5239,6 +5260,14 @@ cytoscape/dist/cytoscape.esm.mjs:
     var ls = Array.isArray(v) ? v : [v];
     return ls.filter(function (x) { return x != null && String(x).length > 0; }).map(function (x) { return String(x); });
   }
+  function parseFrontmatterBlock(content) {
+    var m = String(content || "").match(/^---\s*\r?\n([\s\S]*?)\r?\n---\s*(?:\r?\n|$)/);
+    if (!m) return null;
+    try {
+      var fm = typeof Oe.parseYaml === "function" ? Oe.parseYaml(m[1]) : null;
+      return { frontmatter: fm && typeof fm === "object" ? fm : {}, body: String(content).slice(m[0].length) };
+    } catch (_) { return { frontmatter: {}, body: String(content).slice(m[0].length) }; }
+  }
   function formatMtime(mtime, lang) {
     var d = new Date(+mtime || 0);
     if (!(d.getTime() > 0)) return "—";
@@ -5481,6 +5510,194 @@ cytoscape/dist/cytoscape.esm.mjs:
   function isBasePath(path) { return /\.base$/i.test(String(path || "")); }
   function basesApi(plugin) { return plugin && globalThis.__BLG_BASES || null; }
 
+  /* ---------- TaskNotes: detección, plantilla y conversión (puras) ---------- */
+
+  var DEFAULT_TASK_COLOR = "#00aa88";
+
+  /* Configuración propia en settings (top-level, como pinDateFont): color del
+     distintivo, icono de tarea y plantilla elegida en opciones. La plantilla
+     es SOLO un grupo de propiedades YAML: se anexan, nunca reemplazan. */
+  function taskSettings(settings) {
+    settings = settings || {};
+    return {
+      enabled: settings.pinTasksEnabled !== false,
+      color: normalizeColor(settings.pinTaskColor) || DEFAULT_TASK_COLOR,
+      icon: String(settings.pinTaskIcon || "").trim(),
+      template: String(settings.pinTaskTemplate || "").trim()
+    };
+  }
+  function taskNotesPlugin(plugin) {
+    try {
+      var pl = plugin && plugin.app && plugin.app.plugins;
+      return pl && typeof pl.getPlugin === "function" ? pl.getPlugin("tasknotes") : null;
+    } catch (_) { return null; }
+  }
+  function taskNotesApi(plugin) {
+    try {
+      var api = taskNotesPlugin(plugin) && taskNotesPlugin(plugin).api;
+      return api && +api.apiVersion >= 1 ? api : null;
+    } catch (_) { return null; }
+  }
+  function taskNotesSettings(plugin) {
+    try {
+      var tn = taskNotesPlugin(plugin);
+      if (tn && tn.settings) return tn.settings;
+      var api = taskNotesApi(plugin);
+      return api && api.settings && typeof api.settings.snapshot === "function" ? api.settings.snapshot() : null;
+    } catch (_) { return null; }
+  }
+  /* El icono configurado en opciones se resuelve con el mismo resolver del
+     bundle (Lucide, emoji, Notebook Navigator/Iconize) que el frontmatter icon. */
+  function taskIconUri(plugin, settings, task) {
+    try {
+      var conf = taskSettings(settings);
+      var icon = conf.icon;
+      if (!icon && plugin) icon = taskIconFromSettings(taskNotesSettings(plugin), task);
+      if (!icon || typeof _blgFmIcon !== "function") return null;
+      return _blgFmIcon(icon, conf.color) || null;
+    } catch (_) { return null; }
+  }
+  /* Prioriza el icono visual de BLG; si no hay, usa el icono del estado
+     configurado en TaskNotes cuando exista. */
+  function taskIconFromSettings(s, task) {
+    var list = s && Array.isArray(s.customStatuses) ? s.customStatuses : [];
+    var status = String(task && task.status || s && s.defaultTaskStatus || "");
+    for (var i = 0; i < list.length; i++) {
+      if (String(list[i] && list[i].value || "") === status && list[i].icon) return String(list[i].icon);
+    }
+    return "";
+  }
+  /* Es tarea si TaskNotes ya la tiene en caché o si el frontmatter cumple el
+     identificador configurado (tag, default "task"; también property). El tag
+     funciona case-insensitive como Obsidian y admite subtags (#task/urgente).
+     `settings` puede venir precargado para no consultar el plugin en cada tarjeta. */
+  function isTaskNote(plugin, file, fm, task, settings) {
+    try {
+      if (task && typeof task === "object") return true;
+      if (file && isBasePath(file.path || "")) return false;
+      if (!fm) return false;
+      var s = settings || taskNotesSettings(plugin);
+      var method = String(s && s.taskIdentificationMethod || "tag");
+      if (method === "property") {
+        var pn = String(s && s.taskPropertyName || "").trim(), pv = String(s && s.taskPropertyValue || "").trim();
+        if (!pn) return false;
+        var v = fm[pn];
+        if (v == null) return false;
+        return !pv || String(v) === pv;
+      }
+      var root = String(s && s.taskTag || "task").trim().replace(/^#/, "").toLowerCase();
+      if (!root) return false;
+      if (!fm) return false;
+      var tags = fm.tags != null ? fm.tags : fm.tag;
+      if (tags == null) return false;
+      var ls = Array.isArray(tags) ? tags : String(tags).split(/[\s,]+/);
+      for (var i = 0; i < ls.length; i++) {
+        var t = String(ls[i] == null ? "" : ls[i]).trim().replace(/^#/, "").toLowerCase();
+        if (t && (t === root || t.indexOf(root + "/") === 0)) return true;
+      }
+      return false;
+    } catch (_) { return false; }
+  }
+  function taskTitle(task, file) {
+    var title = task && typeof task.title === "string" ? task.title.trim() : "";
+    return title || (file && file.basename) || "";
+  }
+  /* Info de tarea de UNA tarjeta, síncrona y serializable (la usa boardState
+     para el MCP, también con la pizarra cerrada): caché de TaskNotes si está
+     lista; si no, el frontmatter basta. null cuando no es tarea o la
+     integración está inactiva. */
+  function cardTaskInfo(plugin, file) {
+    try {
+      if (!plugin || !file || isBasePath(file.path || "")) return null;
+      if (!taskSettings(plugin.settings).enabled) return null;
+      var tnS = taskNotesSettings(plugin);
+      if (!tnS) return null;
+      var fm = ((plugin.app.metadataCache.getFileCache(file) || {}).frontmatter) || null;
+      var cached = null;
+      var tn = taskNotesPlugin(plugin), cm = tn && tn.cacheManager;
+      if (cm && typeof cm.getCachedTaskInfoSync === "function") cached = cm.getCachedTaskInfoSync(file.path);
+      if (!isTaskNote(plugin, file, fm, cached, tnS)) return null;
+      fm = fm || {};
+      function pick() {
+        for (var i = 0; i < arguments.length; i++) {
+          var v = arguments[i];
+          if (v != null && v !== "") return String(v);
+        }
+        return null;
+      }
+      return {
+        title: taskTitle(cached, file),
+        status: pick(cached && cached.status, fm.status, tnS.defaultTaskStatus),
+        priority: pick(cached && cached.priority, fm.priority, tnS.defaultTaskPriority),
+        due: pick(cached && cached.due, fm.due),
+        scheduled: pick(cached && cached.scheduled, fm.scheduled)
+      };
+    } catch (_) { return null; }
+  }
+  /* La plantilla elegida en opciones es un GRUPO DE PROPIEDADES que se ANEXAN
+     al frontmatter de la nota: jamás reemplaza un valor existente (ni "" ni
+     false ni 0), nunca toca `sewing`, fusiona los tags de la plantilla con los
+     propios (sin duplicar, case-insensitive) y añade el identificador que
+     TaskNotes tenga configurado. Devuelve null si no hay nada que escribir
+     (evita toques de archivo innecesarios). */
+  function taskTemplatePatch(fm, templateFm, settings) {
+    var current = fm || {}, out = null;
+    function set(k, v) { if (!out) out = {}; out[k] = v; }
+    function splitTags(v) {
+      if (v == null) return [];
+      var ls = Array.isArray(v) ? v.slice() : String(v).split(/[\s,]+/);
+      return ls.map(function (t) { return String(t == null ? "" : t).trim(); }).filter(Boolean);
+    }
+    var tfm = templateFm && typeof templateFm === "object" ? templateFm : {};
+    var tagAdds = [];
+    Object.keys(tfm).forEach(function (k) {
+      if (!k || k === "sewing") return;
+      var v = tfm[k];
+      if (typeof v === "function" || v === undefined) return;
+      if (k === "tags" || k === "tag") { tagAdds = tagAdds.concat(splitTags(v)); return; }
+      if (current[k] === undefined) set(k, v);
+    });
+    /* Tags propios (verbatim) + los de la plantilla (anexo) + identificador. */
+    var tags = splitTags(current.tags != null ? current.tags : current.tag);
+    var lows = tags.map(function (t) { return t.replace(/^#/, "").toLowerCase(); });
+    var added = 0;
+    function addTag(t) {
+      t = String(t == null ? "" : t).trim().replace(/^#/, "");
+      var l = t.toLowerCase();
+      if (!l || lows.indexOf(l) >= 0) return;
+      tags.push(t); lows.push(l); added++;
+    }
+    tagAdds.forEach(addTag);
+    var s = settings || {};
+    if (String(s.taskIdentificationMethod || "tag") === "property") {
+      var pn = String(s.taskPropertyName || "").trim(), pv = String(s.taskPropertyValue || "").trim();
+      if (pn && current[pn] === undefined) set(pn, pv || true);
+    } else {
+      var root = String(s.taskTag || "task").trim().replace(/^#/, "");
+      if (root) {
+        var lroot = root.toLowerCase(), has = false;
+        lows.forEach(function (l) { if (l === lroot || l.indexOf(lroot + "/") === 0) has = true; });
+        if (!has) addTag(root);
+      }
+    }
+    if (added) set("tags", tags);
+    return out;
+  }
+  function taskTemplatePath(path) {
+    var p = String(path || "").trim().replace(/^\[\[|\]\]$/g, "");
+    if (!p) return "";
+    if (!/\.md$/i.test(p)) p += ".md";
+    return p;
+  }
+  function templateMarkdownFiles(app) {
+    var out = [];
+    try {
+      var files = app && app.vault && typeof app.vault.getMarkdownFiles === "function" ? app.vault.getMarkdownFiles() : [];
+      files.forEach(function (f) { if (f && f.path) out.push(f.path); });
+    } catch (_) {}
+    return out.sort(function (a, b) { return a.localeCompare(b); });
+  }
+
   /* ---------- estado y persistencia ---------- */
 
   /* Vive en settings.pinBoard: saveSettings() del bundle lo conserva al ser
@@ -5637,6 +5854,7 @@ cytoscape/dist/cytoscape.esm.mjs:
       var e = st.cards[p];
       var f = app.vault.getAbstractFileByPath(p);
       var ok = f instanceof Oe.TFile;
+      var ti = ok ? cardTaskInfo(plugin, f) : null;
       return {
         path: p,
         basename: ok ? f.basename : baseOf(p),
@@ -5644,7 +5862,9 @@ cytoscape/dist/cytoscape.esm.mjs:
         x: Math.round(e.x * 100) / 100, y: Math.round(e.y * 100) / 100, z: e.z,
         color: normalizeColor(e.color),
         available: ok,
-        visible: !baseHidden(plugin, p)
+        visible: !baseHidden(plugin, p),
+        isTask: !!ti,
+        task: ti
       };
     });
     var visMap = {};
@@ -5700,6 +5920,28 @@ cytoscape/dist/cytoscape.esm.mjs:
       c.setValue(dateColor(plugin.settings))
         .onChange(async function (v) { plugin.settings.pinDateColor = normalizeColor(v) || DEFAULT_DATE_COLOR; await plugin.saveSettings(); });
     });
+    if (taskNotesPlugin(plugin)) {
+      myPanel.createEl("h3", { text: T("pinTaskSettingsTitle") });
+      new Oe.Setting(myPanel).setName(T("pinTasksEnabled")).setDesc(T("pinTasksEnabledDesc")).addToggle(function (t) {
+        t.setValue(plugin.settings.pinTasksEnabled !== false)
+          .onChange(async function (v) { plugin.settings.pinTasksEnabled = !!v; await plugin.saveSettings(); });
+      });
+      new Oe.Setting(myPanel).setName(T("pinTaskColor")).setDesc(T("pinTaskColorDesc")).addColorPicker(function (c) {
+        c.setValue(taskSettings(plugin.settings).color)
+          .onChange(async function (v) { plugin.settings.pinTaskColor = normalizeColor(v) || DEFAULT_TASK_COLOR; await plugin.saveSettings(); });
+      });
+      new Oe.Setting(myPanel).setName(T("pinTaskIcon")).setDesc(T("pinTaskIconDesc")).addText(function (t) {
+        t.setPlaceholder("list-checks").setValue(plugin.settings.pinTaskIcon || "")
+          .onChange(async function (v) { plugin.settings.pinTaskIcon = v.trim(); await plugin.saveSettings(); });
+      });
+      new Oe.Setting(myPanel).setName(T("pinTaskTemplate")).setDesc(T("pinTaskTemplateDesc")).addDropdown(function (d) {
+        d.addOption("", T("pinTaskTemplateNone"));
+        templateMarkdownFiles(plugin.app).forEach(function (p) { d.addOption(p, p); });
+        d.setValue(taskTemplatePath(plugin.settings.pinTaskTemplate || ""));
+        d.selectEl.style.maxWidth = "280px";
+        d.onChange(async function (v) { plugin.settings.pinTaskTemplate = v; await plugin.saveSettings(); });
+      });
+    }
     var wasActive = false;
     try { wasActive = plugin.settings.lastSettingsTab === TAB_KEY; } catch (e) {}
     if (myBtn && wasActive) {
@@ -5926,6 +6168,75 @@ cytoscape/dist/cytoscape.esm.mjs:
         return _blgFmIcon(fm.icon, dateColor(settings)) || null;
       } catch (_) { return null; }
     }
+    /* Lectura única por relleno: la caché de TaskNotes completa el título, pero
+       el frontmatter ya basta para el distintivo si la caché aún no está lista. */
+    function taskInfoFor(file, fm) {
+      var out = { isTask: false, task: null, settings: taskNotesSettings(plugin) };
+      if (!taskSettings(settings).enabled || !file || !out.settings) return out;
+      var tn = taskNotesPlugin(plugin), cached = null;
+      try {
+        var cm = tn && tn.cacheManager;
+        if (cm && typeof cm.getCachedTaskInfoSync === "function") cached = cm.getCachedTaskInfoSync(file.path);
+      } catch (_) { cached = null; }
+      out.task = cached || null;
+      if (!cached) {
+        var api = taskNotesApi(plugin);
+        if (api && api.tasks && typeof api.tasks.get === "function") {
+          try {
+            var maybe = api.tasks.get(file.path);
+            if (maybe && typeof maybe.then === "function") maybe.then(function (task) {
+              if (task && !st.destroying) {
+                var cur = st.dom.get(file.path);
+                if (cur) fillCard(cur, plugin.app.vault.getAbstractFileByPath(file.path));
+              }
+            }).catch(function () {});
+          } catch (_) {}
+        }
+      }
+      out.isTask = isTaskNote(plugin, file, fm, out.task, out.settings);
+      return out;
+    }
+    function taskMenuPopulate(menu, rec, file) {
+      var api = taskNotesApi(plugin);
+      if (!api || !api.ui || !api.ui.taskMenu || typeof api.ui.taskMenu.populate !== "function") return false;
+      Promise.resolve(api.ui.taskMenu.populate(menu, {
+        taskPath: file.path,
+        onUpdate: function () { var r = st.dom.get(rec.path); if (r && !st.destroying) fillCard(r, plugin.app.vault.getAbstractFileByPath(rec.path)); }
+      })).catch(warn);
+      return true;
+    }
+    /* Convierte la nota de ESA tarjeta: conserva ruta, costuras, cuerpo y
+       propiedades; solo ANEXA las propiedades de la plantilla elegida en
+       opciones (las existentes nunca se reemplazan). */
+    async function convertCardToTask(rec) {
+      var file = currentFile(rec);
+      if (!file || isBasePath(file.path)) return;
+      var tnSettings = taskNotesSettings(plugin);
+      if (!tnSettings) { notice("pinTaskNotesUnavailable"); return; }
+      var fm = ((plugin.app.metadataCache.getFileCache(file) || {}).frontmatter) || {};
+      var conf = taskSettings(settings), templateFm = null;
+      if (conf.template) {
+        var tf = plugin.app.vault.getAbstractFileByPath(taskTemplatePath(conf.template));
+        if (!(tf instanceof Oe.TFile)) { notice("pinTaskTemplateMissing", taskTemplatePath(conf.template)); return; }
+        var parsed = parseFrontmatterBlock(await plugin.app.vault.read(tf)) || { frontmatter: {} };
+        templateFm = parsed.frontmatter;
+      }
+      var patch = taskTemplatePatch(fm, templateFm, tnSettings) || {};
+      var changed = false;
+      if (Object.keys(patch).length) {
+        if (plugin.app.fileManager && typeof plugin.app.fileManager.processFrontMatter === "function") {
+          await plugin.app.fileManager.processFrontMatter(file, function (frontmatter) {
+            Object.keys(patch).forEach(function (k) { frontmatter[k] = patch[k]; });
+          });
+        } else {
+          throw new Error("processFrontMatter unavailable");
+        }
+        changed = true;
+      }
+      notice("pinTaskConverted", file.basename);
+      fillCard(rec, file);
+      if (changed && view && typeof view._scheduleRefresh === "function") view._scheduleRefresh(true);
+    }
     function renderBaseCard(rec, file) {
       rec.previewEl.empty();
       var B = basesApi(plugin), count = B ? B.resultsFor(plugin, rec.path).length : 0;
@@ -5952,21 +6263,29 @@ cytoscape/dist/cytoscape.esm.mjs:
       var ok = file instanceof Oe.TFile;
       var isBase = ok && file.extension && file.extension.toLowerCase() === "base";
       var B = basesApi(plugin);
+      var fm = ok ? ((plugin.app.metadataCache.getFileCache(file) || {}).frontmatter || null) : null;
+      var taskInfo = ok && !isBase ? taskInfoFor(file, fm) : { isTask: false, task: null, settings: null };
+      var task = taskInfo.isTask;
+      rec.isTask = task;
       rec.el.classList.toggle("is-unavailable", !ok);
       rec.el.classList.toggle("is-base", isBase);
+      rec.el.classList.toggle("is-task", task);
       rec.el.style.setProperty("--blg-pin-base-color", B ? B.color(settings) : "#8b5cf6");
+      rec.el.style.setProperty("--blg-pin-task-color", taskSettings(settings).color);
       rec.titleEl.setText(ok ? file.basename : baseOf(rec.path));
       var folder = folderOf(rec.path);
       rec.folderEl.setText(folder || T("moveRoot"));
       rec.folderEl.title = folder || T("moveRoot");
-      var fc = isBase && B ? B.color(settings) : (settings.dropsFolderColors || {})[folder] || settings.dropsColor || "#63bfe7";
+      var fc = task ? taskSettings(settings).color : (isBase && B ? B.color(settings) : (settings.dropsFolderColors || {})[folder] || settings.dropsColor || "#63bfe7");
       rec.dot.style.background = fc;
       rec.openBtn.disabled = !ok;
       applyHandwriting(rec);
       applyCardColor(rec);
-      rec.dateTextEl.setText(ok ? formatMtime(file.stat && file.stat.mtime, settings.uiLang) : "—");
-      rec.dateEl.title = T("pinModified");
-      var iconUri = ok ? cardIconUri(file) : null;
+      /* Encabezado superior: las tareas muestran el TÍTULO de TaskNotes;
+         el resto conserva la fecha de última edición manuscrita. */
+      rec.dateTextEl.setText(ok ? (task ? taskTitle(taskInfo.task, file) : formatMtime(file.stat && file.stat.mtime, settings.uiLang)) : "—");
+      rec.dateEl.title = ok && task ? T("pinTaskTitle") : T("pinModified");
+      var iconUri = ok ? (task ? (taskIconUri(plugin, settings, taskInfo.task) || cardIconUri(file)) : cardIconUri(file)) : null;
       if (iconUri) {
         rec.dateIconEl.hidden = false;
         rec.dateIconEl.style.backgroundImage = "url(\"" + iconUri + "\")";
@@ -6122,6 +6441,17 @@ cytoscape/dist/cytoscape.esm.mjs:
     function cardMenu(e, rec) {
       e.preventDefault(); e.stopPropagation(); bringToFront(rec);
       var menu = new Oe.Menu(), file = currentFile(rec), state = ensureState(plugin);
+      if (file && !isBasePath(file.path) && taskSettings(settings).enabled) {
+        var fm = ((plugin.app.metadataCache.getFileCache(file) || {}).frontmatter) || null;
+        var ti = taskInfoFor(file, fm);
+        if (ti.isTask) taskMenuPopulate(menu, rec, file);
+        else if (ti.settings) {
+          menu.addItem(function (item) {
+            item.setTitle(T("pinConvertTask")).setIcon("list-checks").onClick(function () { convertCardToTask(rec).catch(warn); });
+          });
+        }
+        menu.addSeparator();
+      }
       if (file && typeof Wq === "function") {
         menu.addItem(function (item) {
           item.setTitle(T("ctxEditYaml")).setIcon("pencil").onClick(function () { new Wq(plugin.app, file, view).open(); });

@@ -70,6 +70,14 @@
     var ls = Array.isArray(v) ? v : [v];
     return ls.filter(function (x) { return x != null && String(x).length > 0; }).map(function (x) { return String(x); });
   }
+  function parseFrontmatterBlock(content) {
+    var m = String(content || "").match(/^---\s*\r?\n([\s\S]*?)\r?\n---\s*(?:\r?\n|$)/);
+    if (!m) return null;
+    try {
+      var fm = typeof Oe.parseYaml === "function" ? Oe.parseYaml(m[1]) : null;
+      return { frontmatter: fm && typeof fm === "object" ? fm : {}, body: String(content).slice(m[0].length) };
+    } catch (_) { return { frontmatter: {}, body: String(content).slice(m[0].length) }; }
+  }
   function formatMtime(mtime, lang) {
     var d = new Date(+mtime || 0);
     if (!(d.getTime() > 0)) return "—";
@@ -312,6 +320,194 @@
   function isBasePath(path) { return /\.base$/i.test(String(path || "")); }
   function basesApi(plugin) { return plugin && globalThis.__BLG_BASES || null; }
 
+  /* ---------- TaskNotes: detección, plantilla y conversión (puras) ---------- */
+
+  var DEFAULT_TASK_COLOR = "#00aa88";
+
+  /* Configuración propia en settings (top-level, como pinDateFont): color del
+     distintivo, icono de tarea y plantilla elegida en opciones. La plantilla
+     es SOLO un grupo de propiedades YAML: se anexan, nunca reemplazan. */
+  function taskSettings(settings) {
+    settings = settings || {};
+    return {
+      enabled: settings.pinTasksEnabled !== false,
+      color: normalizeColor(settings.pinTaskColor) || DEFAULT_TASK_COLOR,
+      icon: String(settings.pinTaskIcon || "").trim(),
+      template: String(settings.pinTaskTemplate || "").trim()
+    };
+  }
+  function taskNotesPlugin(plugin) {
+    try {
+      var pl = plugin && plugin.app && plugin.app.plugins;
+      return pl && typeof pl.getPlugin === "function" ? pl.getPlugin("tasknotes") : null;
+    } catch (_) { return null; }
+  }
+  function taskNotesApi(plugin) {
+    try {
+      var api = taskNotesPlugin(plugin) && taskNotesPlugin(plugin).api;
+      return api && +api.apiVersion >= 1 ? api : null;
+    } catch (_) { return null; }
+  }
+  function taskNotesSettings(plugin) {
+    try {
+      var tn = taskNotesPlugin(plugin);
+      if (tn && tn.settings) return tn.settings;
+      var api = taskNotesApi(plugin);
+      return api && api.settings && typeof api.settings.snapshot === "function" ? api.settings.snapshot() : null;
+    } catch (_) { return null; }
+  }
+  /* El icono configurado en opciones se resuelve con el mismo resolver del
+     bundle (Lucide, emoji, Notebook Navigator/Iconize) que el frontmatter icon. */
+  function taskIconUri(plugin, settings, task) {
+    try {
+      var conf = taskSettings(settings);
+      var icon = conf.icon;
+      if (!icon && plugin) icon = taskIconFromSettings(taskNotesSettings(plugin), task);
+      if (!icon || typeof _blgFmIcon !== "function") return null;
+      return _blgFmIcon(icon, conf.color) || null;
+    } catch (_) { return null; }
+  }
+  /* Prioriza el icono visual de BLG; si no hay, usa el icono del estado
+     configurado en TaskNotes cuando exista. */
+  function taskIconFromSettings(s, task) {
+    var list = s && Array.isArray(s.customStatuses) ? s.customStatuses : [];
+    var status = String(task && task.status || s && s.defaultTaskStatus || "");
+    for (var i = 0; i < list.length; i++) {
+      if (String(list[i] && list[i].value || "") === status && list[i].icon) return String(list[i].icon);
+    }
+    return "";
+  }
+  /* Es tarea si TaskNotes ya la tiene en caché o si el frontmatter cumple el
+     identificador configurado (tag, default "task"; también property). El tag
+     funciona case-insensitive como Obsidian y admite subtags (#task/urgente).
+     `settings` puede venir precargado para no consultar el plugin en cada tarjeta. */
+  function isTaskNote(plugin, file, fm, task, settings) {
+    try {
+      if (task && typeof task === "object") return true;
+      if (file && isBasePath(file.path || "")) return false;
+      if (!fm) return false;
+      var s = settings || taskNotesSettings(plugin);
+      var method = String(s && s.taskIdentificationMethod || "tag");
+      if (method === "property") {
+        var pn = String(s && s.taskPropertyName || "").trim(), pv = String(s && s.taskPropertyValue || "").trim();
+        if (!pn) return false;
+        var v = fm[pn];
+        if (v == null) return false;
+        return !pv || String(v) === pv;
+      }
+      var root = String(s && s.taskTag || "task").trim().replace(/^#/, "").toLowerCase();
+      if (!root) return false;
+      if (!fm) return false;
+      var tags = fm.tags != null ? fm.tags : fm.tag;
+      if (tags == null) return false;
+      var ls = Array.isArray(tags) ? tags : String(tags).split(/[\s,]+/);
+      for (var i = 0; i < ls.length; i++) {
+        var t = String(ls[i] == null ? "" : ls[i]).trim().replace(/^#/, "").toLowerCase();
+        if (t && (t === root || t.indexOf(root + "/") === 0)) return true;
+      }
+      return false;
+    } catch (_) { return false; }
+  }
+  function taskTitle(task, file) {
+    var title = task && typeof task.title === "string" ? task.title.trim() : "";
+    return title || (file && file.basename) || "";
+  }
+  /* Info de tarea de UNA tarjeta, síncrona y serializable (la usa boardState
+     para el MCP, también con la pizarra cerrada): caché de TaskNotes si está
+     lista; si no, el frontmatter basta. null cuando no es tarea o la
+     integración está inactiva. */
+  function cardTaskInfo(plugin, file) {
+    try {
+      if (!plugin || !file || isBasePath(file.path || "")) return null;
+      if (!taskSettings(plugin.settings).enabled) return null;
+      var tnS = taskNotesSettings(plugin);
+      if (!tnS) return null;
+      var fm = ((plugin.app.metadataCache.getFileCache(file) || {}).frontmatter) || null;
+      var cached = null;
+      var tn = taskNotesPlugin(plugin), cm = tn && tn.cacheManager;
+      if (cm && typeof cm.getCachedTaskInfoSync === "function") cached = cm.getCachedTaskInfoSync(file.path);
+      if (!isTaskNote(plugin, file, fm, cached, tnS)) return null;
+      fm = fm || {};
+      function pick() {
+        for (var i = 0; i < arguments.length; i++) {
+          var v = arguments[i];
+          if (v != null && v !== "") return String(v);
+        }
+        return null;
+      }
+      return {
+        title: taskTitle(cached, file),
+        status: pick(cached && cached.status, fm.status, tnS.defaultTaskStatus),
+        priority: pick(cached && cached.priority, fm.priority, tnS.defaultTaskPriority),
+        due: pick(cached && cached.due, fm.due),
+        scheduled: pick(cached && cached.scheduled, fm.scheduled)
+      };
+    } catch (_) { return null; }
+  }
+  /* La plantilla elegida en opciones es un GRUPO DE PROPIEDADES que se ANEXAN
+     al frontmatter de la nota: jamás reemplaza un valor existente (ni "" ni
+     false ni 0), nunca toca `sewing`, fusiona los tags de la plantilla con los
+     propios (sin duplicar, case-insensitive) y añade el identificador que
+     TaskNotes tenga configurado. Devuelve null si no hay nada que escribir
+     (evita toques de archivo innecesarios). */
+  function taskTemplatePatch(fm, templateFm, settings) {
+    var current = fm || {}, out = null;
+    function set(k, v) { if (!out) out = {}; out[k] = v; }
+    function splitTags(v) {
+      if (v == null) return [];
+      var ls = Array.isArray(v) ? v.slice() : String(v).split(/[\s,]+/);
+      return ls.map(function (t) { return String(t == null ? "" : t).trim(); }).filter(Boolean);
+    }
+    var tfm = templateFm && typeof templateFm === "object" ? templateFm : {};
+    var tagAdds = [];
+    Object.keys(tfm).forEach(function (k) {
+      if (!k || k === "sewing") return;
+      var v = tfm[k];
+      if (typeof v === "function" || v === undefined) return;
+      if (k === "tags" || k === "tag") { tagAdds = tagAdds.concat(splitTags(v)); return; }
+      if (current[k] === undefined) set(k, v);
+    });
+    /* Tags propios (verbatim) + los de la plantilla (anexo) + identificador. */
+    var tags = splitTags(current.tags != null ? current.tags : current.tag);
+    var lows = tags.map(function (t) { return t.replace(/^#/, "").toLowerCase(); });
+    var added = 0;
+    function addTag(t) {
+      t = String(t == null ? "" : t).trim().replace(/^#/, "");
+      var l = t.toLowerCase();
+      if (!l || lows.indexOf(l) >= 0) return;
+      tags.push(t); lows.push(l); added++;
+    }
+    tagAdds.forEach(addTag);
+    var s = settings || {};
+    if (String(s.taskIdentificationMethod || "tag") === "property") {
+      var pn = String(s.taskPropertyName || "").trim(), pv = String(s.taskPropertyValue || "").trim();
+      if (pn && current[pn] === undefined) set(pn, pv || true);
+    } else {
+      var root = String(s.taskTag || "task").trim().replace(/^#/, "");
+      if (root) {
+        var lroot = root.toLowerCase(), has = false;
+        lows.forEach(function (l) { if (l === lroot || l.indexOf(lroot + "/") === 0) has = true; });
+        if (!has) addTag(root);
+      }
+    }
+    if (added) set("tags", tags);
+    return out;
+  }
+  function taskTemplatePath(path) {
+    var p = String(path || "").trim().replace(/^\[\[|\]\]$/g, "");
+    if (!p) return "";
+    if (!/\.md$/i.test(p)) p += ".md";
+    return p;
+  }
+  function templateMarkdownFiles(app) {
+    var out = [];
+    try {
+      var files = app && app.vault && typeof app.vault.getMarkdownFiles === "function" ? app.vault.getMarkdownFiles() : [];
+      files.forEach(function (f) { if (f && f.path) out.push(f.path); });
+    } catch (_) {}
+    return out.sort(function (a, b) { return a.localeCompare(b); });
+  }
+
   /* ---------- estado y persistencia ---------- */
 
   /* Vive en settings.pinBoard: saveSettings() del bundle lo conserva al ser
@@ -468,6 +664,7 @@
       var e = st.cards[p];
       var f = app.vault.getAbstractFileByPath(p);
       var ok = f instanceof Oe.TFile;
+      var ti = ok ? cardTaskInfo(plugin, f) : null;
       return {
         path: p,
         basename: ok ? f.basename : baseOf(p),
@@ -475,7 +672,9 @@
         x: Math.round(e.x * 100) / 100, y: Math.round(e.y * 100) / 100, z: e.z,
         color: normalizeColor(e.color),
         available: ok,
-        visible: !baseHidden(plugin, p)
+        visible: !baseHidden(plugin, p),
+        isTask: !!ti,
+        task: ti
       };
     });
     var visMap = {};
@@ -531,6 +730,28 @@
       c.setValue(dateColor(plugin.settings))
         .onChange(async function (v) { plugin.settings.pinDateColor = normalizeColor(v) || DEFAULT_DATE_COLOR; await plugin.saveSettings(); });
     });
+    if (taskNotesPlugin(plugin)) {
+      myPanel.createEl("h3", { text: T("pinTaskSettingsTitle") });
+      new Oe.Setting(myPanel).setName(T("pinTasksEnabled")).setDesc(T("pinTasksEnabledDesc")).addToggle(function (t) {
+        t.setValue(plugin.settings.pinTasksEnabled !== false)
+          .onChange(async function (v) { plugin.settings.pinTasksEnabled = !!v; await plugin.saveSettings(); });
+      });
+      new Oe.Setting(myPanel).setName(T("pinTaskColor")).setDesc(T("pinTaskColorDesc")).addColorPicker(function (c) {
+        c.setValue(taskSettings(plugin.settings).color)
+          .onChange(async function (v) { plugin.settings.pinTaskColor = normalizeColor(v) || DEFAULT_TASK_COLOR; await plugin.saveSettings(); });
+      });
+      new Oe.Setting(myPanel).setName(T("pinTaskIcon")).setDesc(T("pinTaskIconDesc")).addText(function (t) {
+        t.setPlaceholder("list-checks").setValue(plugin.settings.pinTaskIcon || "")
+          .onChange(async function (v) { plugin.settings.pinTaskIcon = v.trim(); await plugin.saveSettings(); });
+      });
+      new Oe.Setting(myPanel).setName(T("pinTaskTemplate")).setDesc(T("pinTaskTemplateDesc")).addDropdown(function (d) {
+        d.addOption("", T("pinTaskTemplateNone"));
+        templateMarkdownFiles(plugin.app).forEach(function (p) { d.addOption(p, p); });
+        d.setValue(taskTemplatePath(plugin.settings.pinTaskTemplate || ""));
+        d.selectEl.style.maxWidth = "280px";
+        d.onChange(async function (v) { plugin.settings.pinTaskTemplate = v; await plugin.saveSettings(); });
+      });
+    }
     var wasActive = false;
     try { wasActive = plugin.settings.lastSettingsTab === TAB_KEY; } catch (e) {}
     if (myBtn && wasActive) {
@@ -757,6 +978,75 @@
         return _blgFmIcon(fm.icon, dateColor(settings)) || null;
       } catch (_) { return null; }
     }
+    /* Lectura única por relleno: la caché de TaskNotes completa el título, pero
+       el frontmatter ya basta para el distintivo si la caché aún no está lista. */
+    function taskInfoFor(file, fm) {
+      var out = { isTask: false, task: null, settings: taskNotesSettings(plugin) };
+      if (!taskSettings(settings).enabled || !file || !out.settings) return out;
+      var tn = taskNotesPlugin(plugin), cached = null;
+      try {
+        var cm = tn && tn.cacheManager;
+        if (cm && typeof cm.getCachedTaskInfoSync === "function") cached = cm.getCachedTaskInfoSync(file.path);
+      } catch (_) { cached = null; }
+      out.task = cached || null;
+      if (!cached) {
+        var api = taskNotesApi(plugin);
+        if (api && api.tasks && typeof api.tasks.get === "function") {
+          try {
+            var maybe = api.tasks.get(file.path);
+            if (maybe && typeof maybe.then === "function") maybe.then(function (task) {
+              if (task && !st.destroying) {
+                var cur = st.dom.get(file.path);
+                if (cur) fillCard(cur, plugin.app.vault.getAbstractFileByPath(file.path));
+              }
+            }).catch(function () {});
+          } catch (_) {}
+        }
+      }
+      out.isTask = isTaskNote(plugin, file, fm, out.task, out.settings);
+      return out;
+    }
+    function taskMenuPopulate(menu, rec, file) {
+      var api = taskNotesApi(plugin);
+      if (!api || !api.ui || !api.ui.taskMenu || typeof api.ui.taskMenu.populate !== "function") return false;
+      Promise.resolve(api.ui.taskMenu.populate(menu, {
+        taskPath: file.path,
+        onUpdate: function () { var r = st.dom.get(rec.path); if (r && !st.destroying) fillCard(r, plugin.app.vault.getAbstractFileByPath(rec.path)); }
+      })).catch(warn);
+      return true;
+    }
+    /* Convierte la nota de ESA tarjeta: conserva ruta, costuras, cuerpo y
+       propiedades; solo ANEXA las propiedades de la plantilla elegida en
+       opciones (las existentes nunca se reemplazan). */
+    async function convertCardToTask(rec) {
+      var file = currentFile(rec);
+      if (!file || isBasePath(file.path)) return;
+      var tnSettings = taskNotesSettings(plugin);
+      if (!tnSettings) { notice("pinTaskNotesUnavailable"); return; }
+      var fm = ((plugin.app.metadataCache.getFileCache(file) || {}).frontmatter) || {};
+      var conf = taskSettings(settings), templateFm = null;
+      if (conf.template) {
+        var tf = plugin.app.vault.getAbstractFileByPath(taskTemplatePath(conf.template));
+        if (!(tf instanceof Oe.TFile)) { notice("pinTaskTemplateMissing", taskTemplatePath(conf.template)); return; }
+        var parsed = parseFrontmatterBlock(await plugin.app.vault.read(tf)) || { frontmatter: {} };
+        templateFm = parsed.frontmatter;
+      }
+      var patch = taskTemplatePatch(fm, templateFm, tnSettings) || {};
+      var changed = false;
+      if (Object.keys(patch).length) {
+        if (plugin.app.fileManager && typeof plugin.app.fileManager.processFrontMatter === "function") {
+          await plugin.app.fileManager.processFrontMatter(file, function (frontmatter) {
+            Object.keys(patch).forEach(function (k) { frontmatter[k] = patch[k]; });
+          });
+        } else {
+          throw new Error("processFrontMatter unavailable");
+        }
+        changed = true;
+      }
+      notice("pinTaskConverted", file.basename);
+      fillCard(rec, file);
+      if (changed && view && typeof view._scheduleRefresh === "function") view._scheduleRefresh(true);
+    }
     function renderBaseCard(rec, file) {
       rec.previewEl.empty();
       var B = basesApi(plugin), count = B ? B.resultsFor(plugin, rec.path).length : 0;
@@ -783,21 +1073,29 @@
       var ok = file instanceof Oe.TFile;
       var isBase = ok && file.extension && file.extension.toLowerCase() === "base";
       var B = basesApi(plugin);
+      var fm = ok ? ((plugin.app.metadataCache.getFileCache(file) || {}).frontmatter || null) : null;
+      var taskInfo = ok && !isBase ? taskInfoFor(file, fm) : { isTask: false, task: null, settings: null };
+      var task = taskInfo.isTask;
+      rec.isTask = task;
       rec.el.classList.toggle("is-unavailable", !ok);
       rec.el.classList.toggle("is-base", isBase);
+      rec.el.classList.toggle("is-task", task);
       rec.el.style.setProperty("--blg-pin-base-color", B ? B.color(settings) : "#8b5cf6");
+      rec.el.style.setProperty("--blg-pin-task-color", taskSettings(settings).color);
       rec.titleEl.setText(ok ? file.basename : baseOf(rec.path));
       var folder = folderOf(rec.path);
       rec.folderEl.setText(folder || T("moveRoot"));
       rec.folderEl.title = folder || T("moveRoot");
-      var fc = isBase && B ? B.color(settings) : (settings.dropsFolderColors || {})[folder] || settings.dropsColor || "#63bfe7";
+      var fc = task ? taskSettings(settings).color : (isBase && B ? B.color(settings) : (settings.dropsFolderColors || {})[folder] || settings.dropsColor || "#63bfe7");
       rec.dot.style.background = fc;
       rec.openBtn.disabled = !ok;
       applyHandwriting(rec);
       applyCardColor(rec);
-      rec.dateTextEl.setText(ok ? formatMtime(file.stat && file.stat.mtime, settings.uiLang) : "—");
-      rec.dateEl.title = T("pinModified");
-      var iconUri = ok ? cardIconUri(file) : null;
+      /* Encabezado superior: las tareas muestran el TÍTULO de TaskNotes;
+         el resto conserva la fecha de última edición manuscrita. */
+      rec.dateTextEl.setText(ok ? (task ? taskTitle(taskInfo.task, file) : formatMtime(file.stat && file.stat.mtime, settings.uiLang)) : "—");
+      rec.dateEl.title = ok && task ? T("pinTaskTitle") : T("pinModified");
+      var iconUri = ok ? (task ? (taskIconUri(plugin, settings, taskInfo.task) || cardIconUri(file)) : cardIconUri(file)) : null;
       if (iconUri) {
         rec.dateIconEl.hidden = false;
         rec.dateIconEl.style.backgroundImage = "url(\"" + iconUri + "\")";
@@ -953,6 +1251,17 @@
     function cardMenu(e, rec) {
       e.preventDefault(); e.stopPropagation(); bringToFront(rec);
       var menu = new Oe.Menu(), file = currentFile(rec), state = ensureState(plugin);
+      if (file && !isBasePath(file.path) && taskSettings(settings).enabled) {
+        var fm = ((plugin.app.metadataCache.getFileCache(file) || {}).frontmatter) || null;
+        var ti = taskInfoFor(file, fm);
+        if (ti.isTask) taskMenuPopulate(menu, rec, file);
+        else if (ti.settings) {
+          menu.addItem(function (item) {
+            item.setTitle(T("pinConvertTask")).setIcon("list-checks").onClick(function () { convertCardToTask(rec).catch(warn); });
+          });
+        }
+        menu.addSeparator();
+      }
       if (file && typeof Wq === "function") {
         menu.addItem(function (item) {
           item.setTitle(T("ctxEditYaml")).setIcon("pencil").onClick(function () { new Wq(plugin.app, file, view).open(); });
