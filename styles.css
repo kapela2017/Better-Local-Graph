@@ -792,6 +792,51 @@ body.blg-drops-node-moving .coser-tooltip { visibility: hidden !important; }
   overflow-wrap: anywhere;
   word-break: break-word;
 }
+/* Check de completado junto al título de la tarea: pendiente = casilla
+   vacía con el color de tarea; completada = ✅ (aria-pressed). */
+.blg-pin-card-check {
+  width: 16px;
+  height: 16px;
+  margin: 0 3px 0 0;
+  align-self: flex-start;
+  color: var(--blg-pin-task-color, #00aa88);
+  font-size: 13px;
+  line-height: 1;
+}
+.blg-pin-card-check[hidden] { display: none; }
+.blg-pin-card-check::before {
+  content: "";
+  width: 11px;
+  height: 11px;
+  border: 1.6px solid var(--blg-pin-task-color, #00aa88);
+  border-radius: 4px;
+  opacity: 0.7;
+  transition: opacity 120ms ease, box-shadow 120ms ease;
+}
+.blg-pin-card-check:hover {
+  color: var(--blg-pin-task-color, #00aa88);
+  background: transparent;
+}
+.blg-pin-card-check:hover::before {
+  opacity: 1;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--blg-pin-task-color, #00aa88) 22%, transparent);
+}
+.blg-pin-card-check[aria-pressed="true"]::before {
+  content: "✅";
+  width: auto;
+  height: auto;
+  border: none;
+  border-radius: 0;
+  opacity: 1;
+  box-shadow: none;
+}
+.blg-pin-card-check:focus-visible {
+  outline: 1px solid var(--blg-pin-task-color, #00aa88);
+  border-radius: 4px;
+}
+/* Tarea completada: el título se atenúa discretamente (la tarjeta conserva
+   su color; solo cambia el énfasis del texto). */
+.blg-pin-card.is-done .blg-pin-card-date-text { opacity: 0.62; }
 
 /* --- consultas .base --- */
 .blg-pin-card.is-base {

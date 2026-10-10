@@ -564,13 +564,19 @@
                 status: t.status || null,
                 priority: t.priority || null,
                 due: t.due || null,
-                scheduled: t.scheduled || null
+                scheduled: t.scheduled || null,
+                /* El check ✅ visible en el encabezado de la tarjeta: true =
+                   tarea completada. Es el MISMO estado que verás/marcarás con
+                   blg_pin_board action:'set-task-completed' y se actualiza
+                   solo cuando cambia en TaskNotes o en la tarjeta. */
+                completed: t.completed === true
               };
             });
             result.taskCount = result.tasks.length;
             result.bookmark = bmInfo;
             result.message = "El usuario está viendo la pizarra de notas fijadas (pin board). Usa la herramienta blg_pin_board con action:'get' para leer su estado completo o con open/close/pin/unpin/focus/fit para manipularla." +
-              (result.taskCount ? " Hay " + result.taskCount + " tarea(s) pineada(s) en el campo 'tasks', numeradas desde 1: enuméralas al usuario con su número y título y ofrécete a ejecutarlas. Cuando pida ejecutar una por número, toma su 'path', léela con blg_get_note (includeContent:true) y realiza lo que la tarea solicite; si pide verla en pantalla, usa blg_pin_board con action:'focus' y esa nota." : "");
+              (result.taskCount ? " Hay " + result.taskCount + " tarea(s) pineada(s) en el campo 'tasks', numeradas desde 1: enuméralas al usuario con su número y título y ofrécete a ejecutarlas. Cuando pida ejecutar una por número, toma su 'path', léela con blg_get_note (includeContent:true) y realiza lo que la tarea solicite; si pide verla en pantalla, usa blg_pin_board con action:'focus' y esa nota." +
+                " Cada tarea incluye 'completed': es el check ✅ del encabezado de su tarjeta (true = completada, false = pendiente). Si el usuario pide marcarla como completada o pendiente, usa blg_pin_board con action:'set-task-completed', notes:[su path] y completed:true/false — es el mismo check de la tarjeta, respeta los estados configurados en TaskNotes y el cambio se refleja al instante en la pizarra. La sincronización es bidireccional: lo que cambie en la tarjeta o en TaskNotes actualiza este 'completed'." : "");
             return result;
           }
 
@@ -817,10 +823,11 @@
 
       /* ===== pizarra de notas fijadas (pin board) ===== */
       blg_pin_board: {
-        description: "Gestiona la pizarra de notas fijadas (pin board) de Better Local Graph: el tablero visual donde el usuario fija notas como tarjetas conectadas por costuras. Acciones: 'get' = estado completo (¿activa?, tarjetas con posición/carpeta/disponibilidad, selección, cámara y aristas de costura entre tarjetas) — funciona con la pizarra cerrada; 'open' = abre el panel BLG si hace falta y ACTIVA la pizarra en pantalla; 'close' = sale de la pizarra conservando pines y distribución; 'pin' = fija notas nuevas (no duplica ni mueve las existentes); 'unpin' = quita notas de la pizarra (NO borra las notas ni sus costuras; sirve también para tarjetas cuya nota ya no existe); 'focus' = activa la pizarra si hace falta y centra la cámara en la tarjeta; 'fit' = encuadra todas las tarjetas. Cada tarjeta incluye isTask y, cuando la nota es una tarea de TaskNotes, task {title, status, priority, due, scheduled}: úsalo para enumerar las tareas pineadas y resolver por número la que el usuario pida ejecutar (lee su contenido con blg_get_note includeContent:true). Úsala cuando el usuario diga 'mi pizarra', 'lo que tengo pineado/fijado', 'fija esta nota', 'quítala de la pizarra' o pida verla en pantalla. Si una referencia es ambigua (varias notas con el mismo nombre) se devuelven los candidatos sin elegir ninguno: pide al usuario que precise la ruta. Las costuras entre tarjetas se crean con blg_sew, no aquí.",
+        description: "Gestiona la pizarra de notas fijadas (pin board) de Better Local Graph: el tablero visual donde el usuario fija notas como tarjetas conectadas por costuras. Acciones: 'get' = estado completo (¿activa?, tarjetas con posición/carpeta/disponibilidad, selección, cámara y aristas de costura entre tarjetas) — funciona con la pizarra cerrada; 'open' = abre el panel BLG si hace falta y ACTIVA la pizarra en pantalla; 'close' = sale de la pizarra conservando pines y distribución; 'pin' = fija notas nuevas (no duplica ni mueve las existentes); 'unpin' = quita notas de la pizarra (NO borra las notas ni sus costuras; sirve también para tarjetas cuya nota ya no existe); 'focus' = activa la pizarra si hace falta y centra la cámara en la tarjeta; 'fit' = encuadra todas las tarjetas; 'set-task-completed' = marca el check ✅ del encabezado de una tarjeta de tarea (completed:true = completada, false = pendiente), con la MISMA escritura nativa de TaskNotes (respeta sus estados completados configurados) que usa el clic en la tarjeta. Cada tarjeta incluye isTask y, cuando la nota es una tarea de TaskNotes, task {title, status, priority, due, scheduled, completed}: 'completed' es exactamente el check ✅ visible en la tarjeta — úsalo para enumerar las tareas pineadas con su estado, resolver por número la que el usuario pida ejecutar (lee su contenido con blg_get_note includeContent:true) y marcarla completada/pendiente cuando lo pida. La sincronización es bidireccional: marcar aquí actualiza la tarjeta y TaskNotes al instante, y marcar en la tarjeta o en TaskNotes actualiza el 'completed' que devuelves aquí (el estado se lee fresco en cada 'get', funciona con la pizarra cerrada). Úsala cuando el usuario diga 'mi pizarra', 'lo que tengo pineado/fijado', 'fija esta nota', 'quítala de la pizarra', 'márcala completada/pendiente' o pida verla en pantalla. Si una referencia es ambigua (varias notas con el mismo nombre) se devuelven los candidatos sin elegir ninguno: pide al usuario que precise la ruta. Las costuras entre tarjetas se crean con blg_sew, no aquí.",
         inputSchema: { type: "object", required: ["action"], properties: {
-          action: { type: "string", enum: ["get", "open", "close", "pin", "unpin", "focus", "fit"], description: "Operación a ejecutar." },
-          notes: { type: "array", items: { type: "string" }, description: "Requerido para pin/unpin/focus: rutas, basenames o wikilinks (focus usa solo el primero)." }
+          action: { type: "string", enum: ["get", "open", "close", "pin", "unpin", "focus", "fit", "set-task-completed"], description: "Operación a ejecutar." },
+          notes: { type: "array", items: { type: "string" }, description: "Requerido para pin/unpin/focus/set-task-completed: rutas, basenames o wikilinks (focus y set-task-completed usan solo el primero)." },
+          completed: { type: "boolean", description: "Requerido para set-task-completed: true = marcar la tarea completada (✅), false = reabrirla (pendiente)." }
         } },
         handler: async function (args) {
           args = args || {};
@@ -918,8 +925,22 @@
               return { ok: !notFound2.length && !ambiguous2.length, unpinned: unpinned, notPinned: notPinned,
                 notFound: notFound2, ambiguous: ambiguous2, pinnedCount: api.boardState(plugin).pinnedCount };
             }
+            case "set-task-completed": {
+              /* El check ✅ de la tarjeta: completed:true = completada,
+                 false = pendiente. Misma escritura que el clic (API nativa de
+                 TaskNotes): al instante se ve en la pizarra y en TaskNotes. */
+              if (!refs.length) throw { code: -32602, message: "set-task-completed requiere 'notes' con la ruta de la tarea pineada" };
+              if (typeof args.completed !== "boolean") throw { code: -32602, message: "set-task-completed requiere 'completed' (true = completada ✅, false = pendiente)" };
+              var cp = resolvePinned(refs[0]);
+              if (cp.ambiguous) return { ok: false, error: "ambiguous", ref: String(refs[0]), candidates: cp.ambiguous };
+              if (!cp.path) throw { code: -32602, message: "No hay ninguna tarjeta pineada para: " + refs[0] };
+              if (typeof api.setTaskCompleted !== "function") throw { code: -32603, message: "El módulo de la pizarra no soporta completar tareas en esta sesión." };
+              var rc = await api.setTaskCompleted(plugin, cp.path, args.completed);
+              if (!rc) return { ok: false, error: "not-a-task", path: cp.path, message: "La nota no es una tarea de TaskNotes o TaskNotes no está disponible/activado." };
+              return { ok: true, path: cp.path, completed: rc.completed === true, unchanged: rc.unchanged === true };
+            }
             default:
-              throw { code: -32602, message: "action desconocida: '" + action + "'. Usa get|open|close|pin|unpin|focus|fit." };
+              throw { code: -32602, message: "action desconocida: '" + action + "'. Usa get|open|close|pin|unpin|focus|fit|set-task-completed." };
           }
         }
       },

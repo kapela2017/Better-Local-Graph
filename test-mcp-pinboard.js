@@ -66,7 +66,9 @@ function fakePinApi(plugin) {
         basename: p.replace(/\.md$/i, "").split("/").pop(),
         isTask: /tarea/i.test(p),
         task: /tarea/i.test(p)
-          ? { title: "Revisar informe trimestral", status: "open", priority: "high", due: "2026-10-05", scheduled: null }
+          ? { title: "Revisar informe trimestral", status: pl.completedTasks && pl.completedTasks[p] ? "done" : "open",
+              priority: "high", due: "2026-10-05", scheduled: null,
+              completed: !!(pl.completedTasks && pl.completedTasks[p]) }
           : null
       })),
       edges: []
@@ -74,7 +76,18 @@ function fakePinApi(plugin) {
     openBoard: async () => true,
     closeBoard: () => true,
     focusCard: (pl, p) => !!pl.settings.pinBoard.cards[p],
-    fitBoard: () => true
+    fitBoard: () => true,
+    /* Misma firma que el módulo real: (plugin, path, completed) → {completed, unchanged} | null. */
+    setTaskCompleted: async (pl, p, completed) => {
+      if (!/tarea/i.test(p)) return null; // no es tarea de TaskNotes
+      pl.completedCalls = pl.completedCalls || [];
+      pl.completedCalls.push([p, completed]);
+      pl.completedTasks = pl.completedTasks || {};
+      const was = !!pl.completedTasks[p];
+      if (was === !!completed) return { completed: was, unchanged: true };
+      pl.completedTasks[p] = !!completed;
+      return { completed: !!completed, unchanged: false };
+    }
   };
 }
 
@@ -101,7 +114,10 @@ const eqJ = (a, b, m) => assert.equal(JSON.stringify(a), JSON.stringify(b), m);
     const t = reply.result.tools.find(t => t.name === "blg_pin_board");
     /* Los objetos vienen del realm vm: comparar serializados, no por prototipo. */
     assert.equal(JSON.stringify(t.inputSchema.required), JSON.stringify(["action"]));
-    assert.equal(JSON.stringify(t.inputSchema.properties.action.enum), JSON.stringify(["get", "open", "close", "pin", "unpin", "focus", "fit"]));
+    assert.equal(JSON.stringify(t.inputSchema.properties.action.enum), JSON.stringify(["get", "open", "close", "pin", "unpin", "focus", "fit", "set-task-completed"]));
+    assert.equal(t.inputSchema.properties.completed.type, "boolean", "el esquema expone 'completed' para el check");
+    assert.ok(/set-task-completed/.test(t.description), "la descripción documenta el check ✅");
+    assert.ok(/completed/.test(t.description), "la descripción documenta el campo completed");
   }
 
   /* ---------- get_current_view: modo pinboard ---------- */
@@ -127,8 +143,16 @@ const eqJ = (a, b, m) => assert.equal(JSON.stringify(a), JSON.stringify(b), m);
     assert.equal(r.tasks[0].status, "open");
     assert.equal(r.tasks[0].priority, "high");
     assert.equal(r.tasks[0].due, "2026-10-05");
+    assert.equal(r.tasks[0].completed, false, "la tarea pendiente expone el check en false");
     assert.ok(/ejecutar/i.test(r.message), "el mensaje instruye ejecutar por número");
     assert.ok(/blg_get_note/.test(r.message), "el mensaje apunta a blg_get_note para leer la tarea");
+    assert.ok(/set-task-completed/.test(r.message), "el mensaje explica cómo marcar el check ✅");
+    assert.ok(/bidireccional/.test(r.message), "el mensaje deja clara la sincronización bidireccional");
+    /* Con la tarea completada en TaskNotes, el check se refleja aquí. */
+    plugin.completedTasks = { "docs/Tarea A.md": true };
+    const rDone = await call(plugin, "blg_get_current_view", {});
+    assert.equal(rDone.tasks[0].completed, true, "completada fuera → completed:true (bidireccional)");
+    assert.equal(rDone.tasks[0].status, "done");
     // con la pizarra inactiva no se cuela: cae al modo normal (unknown sin vista)
     plugin._blgPin = { attached: { active: () => false, selected: () => [] } };
     const r2 = await call(plugin, "blg_get_current_view", {});
@@ -180,6 +204,46 @@ const eqJ = (a, b, m) => assert.equal(JSON.stringify(a), JSON.stringify(b), m);
     eqJ(await call(plugin, "blg_pin_board", { action: "close" }), { ok: true, active: false });
     await assert.rejects(() => call(plugin, "blg_pin_board", { action: "focus", notes: ["B"] }),
       e => e.code === -32602 && /ninguna tarjeta pineada/.test(e.message));
+  }
+
+  /* ---------- set-task-completed: el check ✅ de la tarjeta ---------- */
+  {
+    const plugin = await makeServer();
+    plugin.app.files.set("docs/Tarea A.md", new TFile("docs/Tarea A.md"));
+    plugin.app.files.set("docs/A.md", new TFile("docs/A.md"));
+    plugin.settings.pinBoard.cards["docs/Tarea A.md"] = { x: 0, y: 0, z: 1 };
+    plugin.settings.pinBoard.cards["docs/A.md"] = { x: 5, y: 5, z: 2 };
+    /* Marcar completada: llega al módulo con la ruta pineada y true. */
+    eqJ(await call(plugin, "blg_pin_board", { action: "set-task-completed", notes: ["Tarea A"], completed: true }),
+      { ok: true, path: "docs/Tarea A.md", completed: true, unchanged: false });
+    eqJ(plugin.completedCalls, [["docs/Tarea A.md", true]], "el módulo recibió path + completed");
+    /* Idempotente: ya completada devuelve unchanged sin reescribir. */
+    eqJ(await call(plugin, "blg_pin_board", { action: "set-task-completed", notes: ["docs/Tarea A.md"], completed: true }),
+      { ok: true, path: "docs/Tarea A.md", completed: true, unchanged: true });
+    /* Reabrir (pendiente): completed:false. */
+    eqJ(await call(plugin, "blg_pin_board", { action: "set-task-completed", notes: ["Tarea A"], completed: false }),
+      { ok: true, path: "docs/Tarea A.md", completed: false, unchanged: false });
+    /* Una nota pineada que NO es tarea: ok:false con motivo claro. */
+    const rNotTask = await call(plugin, "blg_pin_board", { action: "set-task-completed", notes: ["A"], completed: true });
+    assert.equal(rNotTask.ok, false);
+    assert.equal(rNotTask.error, "not-a-task");
+    /* Validaciones: sin notes, sin completed booleano, tarjeta no pineada. */
+    await assert.rejects(() => call(plugin, "blg_pin_board", { action: "set-task-completed", completed: true }),
+      e => e.code === -32602 && /notes/.test(e.message));
+    await assert.rejects(() => call(plugin, "blg_pin_board", { action: "set-task-completed", notes: ["Tarea A"] }),
+      e => e.code === -32602 && /completed/.test(e.message));
+    await assert.rejects(() => call(plugin, "blg_pin_board", { action: "set-task-completed", notes: ["B"], completed: true }),
+      e => e.code === -32602 && /ninguna tarjeta pineada/.test(e.message));
+    /* Ambigüedad: se reportan candidatos sin elegir. */
+    plugin.app.files.set("x/Tarea D.md", new TFile("x/Tarea D.md"));
+    plugin.app.files.set("y/Tarea D.md", new TFile("y/Tarea D.md"));
+    plugin.settings.pinBoard.cards["x/Tarea D.md"] = { x: 0, y: 0, z: 3 };
+    plugin.settings.pinBoard.cards["y/Tarea D.md"] = { x: 0, y: 0, z: 4 };
+    const rAmb = await call(plugin, "blg_pin_board", { action: "set-task-completed", notes: ["Tarea D"], completed: true });
+    assert.equal(rAmb.ok, false);
+    assert.equal(rAmb.error, "ambiguous");
+    eqJ(rAmb.candidates.sort(), ["x/Tarea D.md", "y/Tarea D.md"]);
+    assert.equal(plugin.completedCalls.length, 3, "el ambiguo NO marcó nada");
   }
 
   /* ---------- errores de validación ---------- */

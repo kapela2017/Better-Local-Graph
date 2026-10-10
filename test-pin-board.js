@@ -55,7 +55,7 @@ for (const key of ["ctxPinNote", "ctxUnpinNote", "pinBtnShow", "pinBtnHide", "pi
 
 /* Instrumentación: exponer las funciones puras sin tocar el bundle. */
 const instrumented = source.replace("  var _onload = PLUGIN_PROTO.onload",
-  "  globalThis.__BLG_PINBOARD_TEST = { normalizeState, migrateRename, deriveEdges, findSpot, fitCamera, focusCam, anchorPan, previewText, sewCurve, borderPoint, rectsOverlap, folderOf, normalizeColor, edgeKey, relationPairs, tooltipFieldNames, frontmatterValues, formatMtime, dateFont, dateColor, baseHidden, visibleBaseResults, taskSettings, isTaskNote, taskTitle, taskTemplatePatch, taskTemplatePath, parseFrontmatterBlock, templateMarkdownFiles, cardTaskInfo, DEFAULT_TASK_COLOR };\n  var _onload = PLUGIN_PROTO.onload");
+  "  globalThis.__BLG_PINBOARD_TEST = { normalizeState, migrateRename, deriveEdges, findSpot, fitCamera, focusCam, anchorPan, previewText, sewCurve, borderPoint, rectsOverlap, folderOf, normalizeColor, edgeKey, relationPairs, tooltipFieldNames, frontmatterValues, formatMtime, dateFont, dateColor, baseHidden, visibleBaseResults, taskSettings, isTaskNote, taskTitle, taskTitleProp, taskCompletedValues, taskStatusValue, taskIsCompleted, setTaskCompleted, taskTemplatePatch, taskTemplatePath, parseFrontmatterBlock, templateMarkdownFiles, cardTaskInfo, taskNotesEnabled, taskNotesPlugin, askTaskTitle, DEFAULT_TASK_COLOR };\n  var _onload = PLUGIN_PROTO.onload");
 assert.notEqual(instrumented, source);
 const context = { module: { exports: { default: class { onload() {} onunload() {} } } },
   require(name) { if (name === "obsidian") return obsidian; return require(name); },
@@ -63,7 +63,7 @@ const context = { module: { exports: { default: class { onload() {} onunload() {
 context.globalThis = context;
 vm.runInNewContext(instrumented, context, { filename: "blg-pin-board.js" });
 const api = context.__BLG_PINBOARD, pure = context.__BLG_PINBOARD_TEST;
-assert.deepEqual(Object.keys(api), ["addPinMenu", "isPinned", "pin", "unpin", "openBoard", "closeBoard", "boardState", "focusCard", "fitBoard", "layoutButtons"]);
+assert.deepEqual(Object.keys(api), ["addPinMenu", "isPinned", "pin", "unpin", "openBoard", "closeBoard", "boardState", "focusCard", "fitBoard", "setTaskCompleted", "layoutButtons"]);
 
 /* ---------- normalizeState ---------- */
 {
@@ -304,8 +304,46 @@ assert.deepEqual(Object.keys(api), ["addPinMenu", "isPinned", "pin", "unpin", "o
   assert.equal(JSON.stringify(pure.taskTemplatePatch(
     { tags: "Admin Personal" }, { tags: ["Casa"] }, taskSettings)),
     JSON.stringify({ tags: ["Admin", "Personal", "Casa", "Pendiente"] }), "tags propios en string se conservan y se anexan");
+  /* La fusión respeta la propiedad que la nota YA use (`tag` singular) y
+     rellena la propiedad cuando está nula. */
+  assert.equal(JSON.stringify(pure.taskTemplatePatch(
+    { tag: ["Personal"] }, { tags: ["Admin"] }, taskSettings)),
+    JSON.stringify({ tag: ["Personal", "Admin", "Pendiente"] }), "nota con `tag` singular: la fusión se escribe en `tag`");
+  assert.equal(JSON.stringify(pure.taskTemplatePatch(
+    { tags: null }, {}, taskSettings)),
+    JSON.stringify({ tags: ["Pendiente"] }), "tags nulo se rellena con el identificador");
+  /* Título: prioridad caché TaskNotes → fm.title → basename. */
+  assert.equal(pure.taskTitle(null, { basename: "N" }, { title: "  Mi tarea  " }), "Mi tarea", "el encabezado usa fm.title");
+  assert.equal(pure.taskTitle(null, { basename: "N" }, { title: "" }), "N", "title vacío cae al basename");
+  assert.equal(pure.taskTitle(null, { basename: "N" }, { title: null }), "N", "title nulo cae al basename");
+  assert.equal(pure.taskTitle({ title: "Cache" }, { basename: "N" }, { title: "Fm" }), "Cache", "la caché de TaskNotes manda");
+  /* El modal solo se pide si `title` existe en la nota O en la plantilla. */
+  assert.equal(pure.taskTitleProp({}, {}), null, "sin title en ninguna: no se pregunta");
+  assert.equal(pure.taskTitleProp({ Date: "2026-10-02" }, { status: "open" }), null, "otras propiedades no activan el modal");
+  assert.equal(JSON.stringify(pure.taskTitleProp({}, { title: null })), JSON.stringify({ prefill: "" }), "title nulo en plantilla: se pregunta sin prefill");
+  assert.equal(JSON.stringify(pure.taskTitleProp({ title: "Mi tarea" }, {})), JSON.stringify({ prefill: "Mi tarea" }), "title de la nota se prefiere como prefill");
+  assert.equal(JSON.stringify(pure.taskTitleProp({ title: "  " }, { title: "X" })), JSON.stringify({ prefill: "" }), "title en blanco: prefill vacío");
   assert.equal(pure.taskTemplatePath("Plantillas/Tarea"), "Plantillas/Tarea.md");
   assert.equal(pure.taskTemplatePath("[[Plantillas/Tarea.md]]"), "Plantillas/Tarea.md");
+  /* Las plantillas se buscan SOLO en la carpeta configurada (subcarpetas
+     incluidas, sin distinguir mayúsculas); sin carpeta no se lista nada. */
+  const tplApp = { vault: { getMarkdownFiles: () => [
+    { path: "Templater/Tpl TaskNotes.md" },
+    { path: "Templater/Sub/Diaria.md" },
+    { path: "Otras/Nota.md" },
+    { path: "TemplaterX/Fuera.md" },
+    { path: "Raiz.md" }
+  ] } };
+  const j = JSON.stringify;
+  assert.equal(j(pure.templateMarkdownFiles(tplApp, "Templater")),
+    j(["Templater/Sub/Diaria.md", "Templater/Tpl TaskNotes.md"]), "solo la carpeta y sus subcarpetas");
+  assert.equal(j(pure.templateMarkdownFiles(tplApp, "templater")),
+    j(["Templater/Sub/Diaria.md", "Templater/Tpl TaskNotes.md"]), "la carpeta no distingue mayúsculas");
+  assert.equal(j(pure.templateMarkdownFiles(tplApp, " Templater/ ")),
+    j(["Templater/Sub/Diaria.md", "Templater/Tpl TaskNotes.md"]), "espacios y barra final se limpian");
+  assert.equal(j(pure.templateMarkdownFiles(tplApp, "")), j([]), "sin carpeta configurada: no lista toda la bóveda");
+  assert.equal(j(pure.templateMarkdownFiles(tplApp, "Otras")), j(["Otras/Nota.md"]), "otra carpeta solo da sus notas");
+  assert.equal(j(pure.templateMarkdownFiles(tplApp, "Inexistente")), j([]), "carpeta inexistente: vacío");
   const parsed = pure.parseFrontmatterBlock("---\nstatus: open\npriority: high\n---\n\n# Cuerpo\nTexto");
   assert.equal(JSON.stringify(parsed.frontmatter), JSON.stringify({ status: "open", priority: "high" }));
   assert.ok(parsed.body.includes("# Cuerpo"));
@@ -317,7 +355,7 @@ assert.deepEqual(Object.keys(api), ["addPinMenu", "isPinned", "pin", "unpin", "o
   const tnPlugin = {
     settings: {},
     app: {
-      plugins: { getPlugin: () => ({ settings: { taskIdentificationMethod: "tag", taskTag: "task", defaultTaskStatus: "open", defaultTaskPriority: "normal" } }) },
+      plugins: { enabledPlugins: new Set(["tasknotes"]), getPlugin: () => ({ settings: { taskIdentificationMethod: "tag", taskTag: "task", defaultTaskStatus: "open", defaultTaskPriority: "normal" } }) },
       metadataCache: { getFileCache: () => ({ frontmatter: { tags: ["task"], status: "doing", due: "2026-10-05" } }) }
     }
   };
@@ -332,6 +370,70 @@ assert.deepEqual(Object.keys(api), ["addPinMenu", "isPinned", "pin", "unpin", "o
   assert.equal(pure.cardTaskInfo(tnPlugin, { path: "docs/N.md", basename: "N" }), null, "sin identificador no es tarea");
   tnPlugin.settings.pinTasksEnabled = false;
   assert.equal(pure.cardTaskInfo(tnPlugin, { path: "docs/T.md", basename: "T" }), null, "integración desactivada: sin tareas");
+  /* TaskNotes debe estar instalado Y habilitado en Obsidian. */
+  const tnEnabledSet = new Set(["tasknotes"]);
+  const tnPlugins = { tasknotes: { settings: { taskTag: "task" } } };
+  /* Mock fiel a Obsidian: un plugin desactivado NO tiene instancia cargada. */
+  const mkPl = () => ({ app: { plugins: { enabledPlugins: tnEnabledSet,
+    getPlugin: id => tnEnabledSet.has(id) ? tnPlugins[id] : undefined, plugins: {} } } });
+  assert.equal(pure.taskNotesEnabled(mkPl()), true, "Set habilita");
+  tnEnabledSet.delete("tasknotes");
+  assert.equal(pure.taskNotesEnabled(mkPl()), false, "desactivado: sin instancia cargada");
+  assert.equal(pure.taskNotesPlugin(mkPl()), null, "getPlugin devuelve null si no está habilitado");
+  tnEnabledSet.add("tasknotes");
+  assert.equal(pure.taskNotesPlugin(mkPl()), tnPlugins.tasknotes, "habilitado devuelve el plugin");
+  /* Better Plugins Manager con DELAY: la instancia está cargada aunque el id
+     no figure en enabledPlugins (que solo contiene al gestor). */
+  const bpmPl = { app: { plugins: { enabledPlugins: new Set(["better-plugins-manager"]),
+    plugins: { tasknotes: tnPlugins.tasknotes }, getPlugin: id => ({ tasknotes: tnPlugins.tasknotes })[id] } } };
+  assert.equal(pure.taskNotesEnabled(bpmPl), true, "BPM diferido: instancia cargada habilita");
+  assert.equal(pure.taskNotesPlugin(bpmPl), tnPlugins.tasknotes, "BPM diferido: devuelve la instancia");
+  /* Registro como Map (algunas versiones) */
+  assert.equal(pure.taskNotesEnabled({ app: { plugins: { enabledPlugins: new Set(), plugins: new Map([["tasknotes", {}]]) } } }), true, "registry Map habilita");
+  /* Array en vez de Set */
+  assert.equal(pure.taskNotesEnabled({ app: { plugins: { enabledPlugins: ["tasknotes"] } } }), true, "Array habilita");
+  assert.equal(pure.taskNotesEnabled({ app: { plugins: { enabledPlugins: [] } } }), false, "Array sin tasknotes ni instancia");
+  /* Solo registry (móvil / fallbacks antiguos) */
+  assert.equal(pure.taskNotesEnabled({ app: { plugins: { plugins: { tasknotes: {} } } } }), true, "registry habilita");
+  assert.equal(pure.taskNotesEnabled({ app: { plugins: {} } }), false, "sin registry no está habilitado");
+  assert.equal(pure.taskNotesPlugin({ app: { plugins: {} } }), null, "sin registry plugin null");
+}
+
+/* ---------- check ✅ de tarea: estado completado (lectura) ---------- */
+{
+  /* taskCompletedValues: solo cuentan los estados con isCompleted=true. */
+  assert.equal(JSON.stringify(pure.taskCompletedValues({ customStatuses: [
+    { value: "open", isCompleted: false }, { value: "done", isCompleted: true },
+    { value: "cancelled", isCompleted: true }, { value: "doing" }, { isCompleted: true } ] })),
+    JSON.stringify(["done", "cancelled"]), "solo isCompleted=true y con valor cuentan");
+  assert.equal(JSON.stringify(pure.taskCompletedValues({})), JSON.stringify([]), "sin customStatuses: vacío");
+  /* taskStatusValue: caché → frontmatter → estado por defecto. */
+  assert.equal(pure.taskStatusValue({ status: "doing" }, { status: "done" }, { defaultTaskStatus: "open" }), "doing");
+  assert.equal(pure.taskStatusValue(null, { status: "done" }, { defaultTaskStatus: "open" }), "done");
+  assert.equal(pure.taskStatusValue(null, {}, { defaultTaskStatus: "open" }), "open");
+  assert.equal(pure.taskStatusValue(null, null, null), "");
+  /* taskIsCompleted: statusManager de TaskNotes > customStatuses > convenio. */
+  const withMgr = { app: { plugins: { enabledPlugins: new Set(["tasknotes"]),
+    getPlugin: () => ({ statusManager: { isCompletedStatus: s => s === "weird" } }) } } };
+  assert.equal(pure.taskIsCompleted(withMgr, "weird", {}), true, "el statusManager de TaskNotes manda");
+  assert.equal(pure.taskIsCompleted(withMgr, "done", {}), false, "el statusManager puede redefinir 'done'");
+  const tnSet = { customStatuses: [{ value: "done", isCompleted: true }] };
+  assert.equal(pure.taskIsCompleted(null, "done", tnSet), true, "customStatuses: done completada");
+  assert.equal(pure.taskIsCompleted(null, "open", tnSet), false, "customStatuses: open pendiente");
+  assert.equal(pure.taskIsCompleted(null, "done", {}), true, "convenio: done sin configuración");
+  assert.equal(pure.taskIsCompleted(null, "completed", {}), true, "convenio: completed sin configuración");
+  assert.equal(pure.taskIsCompleted(null, "open", {}), false, "convenio: open pendiente");
+  /* cardTaskInfo incluye completed = el check visible de la tarjeta. */
+  const tnPl2 = { settings: {}, app: {
+    plugins: { enabledPlugins: new Set(["tasknotes"]), getPlugin: () => ({ settings: {
+      taskTag: "task", defaultTaskStatus: "open",
+      customStatuses: [{ value: "open", isCompleted: false }, { value: "done", isCompleted: true }] } }) },
+    metadataCache: { getFileCache: () => ({ frontmatter: { tags: ["task"], status: "done" } }) } } };
+  const tiDone = pure.cardTaskInfo(tnPl2, { path: "docs/T.md", basename: "T" });
+  assert.equal(tiDone.status, "done");
+  assert.equal(tiDone.completed, true, "cardTaskInfo reporta el check completado");
+  tnPl2.app.metadataCache.getFileCache = () => ({ frontmatter: { tags: ["task"], status: "open" } });
+  assert.equal(pure.cardTaskInfo(tnPl2, { path: "docs/T.md", basename: "T" }).completed, false, "pendiente: check en false");
 }
 
 /* ---------- inserción en el menú cxttap del bundle ---------- */
@@ -458,6 +560,133 @@ assert.ok(bundle.includes("/* BLG-PIN: Fijar en pizarra */if(!this.plugin.sessio
     assert.equal(plugin.settings.pinBoard.cards["docs/B.md"].z, 2, "nextZ crece");
   }
 
+  /* Contrato del modal "Asigne el Nombre de la Tarea": aceptar resuelve el
+     valor (Guardar, Enter, usar título de la nota) aunque Modal.close()
+     dispare onClose; cancelar/ESC resuelve null y no tocaría la nota. */
+  {
+    function fakeModalOe() {
+      const els = [];
+      function mkEl(tag, opts) {
+        const el = {
+          tag, style: {}, value: "", text: (opts && opts.text) || "",
+          listeners: {}, hidden: false,
+          setText() {}, focus() {}, select() {},
+          createEl(t, o) { const c = mkEl(t, o); els.push(c); return c; },
+          createDiv() { const c = mkEl("div"); els.push(c); return c; },
+          addEventListener(type, fn) { (el.listeners[type] = el.listeners[type] || []).push(fn); },
+          click() { (el.listeners.click || []).forEach(fn => fn()); },
+          pressKey(key) { (el.listeners.keydown || []).forEach(fn => fn({ key, preventDefault() {} })); }
+        };
+        return el;
+      }
+      class Modal {
+        constructor() { this.titleEl = mkEl("h2"); this.contentEl = mkEl("div"); }
+        open() {}
+        close() { this.onClose(); }
+      }
+      const OeX = { Modal };
+      return {
+        OeX,
+        input: () => els.find(e => e.tag === "input"),
+        buttons: () => els.filter(e => e.tag === "button")
+      };
+    }
+    const FILE = { basename: "Untitled 2" };
+    // Guardar con texto escrito → ese texto recortado (pese al onClose de close())
+    {
+      const r = fakeModalOe();
+      const p = pure.askTaskTitle(r.OeX, {}, FILE, "");
+      r.input().value = "  Revisar informe  ";
+      r.buttons()[0].click(); // Guardar (mod-cta, primero)
+      assert.equal(await p, "Revisar informe", "Guardar resuelve el texto escrito");
+    }
+    // Guardar con campo vacío → basename de la nota
+    {
+      const r = fakeModalOe();
+      const p = pure.askTaskTitle(r.OeX, {}, FILE, "");
+      r.input().value = "   ";
+      r.buttons()[0].click();
+      assert.equal(await p, "Untitled 2", "campo vacío cae al nombre de la nota");
+    }
+    // Enter en el cuadro → confirma lo escrito
+    {
+      const r = fakeModalOe();
+      const p = pure.askTaskTitle(r.OeX, {}, FILE, "");
+      r.input().value = "Por Enter";
+      r.input().pressKey("Enter");
+      assert.equal(await p, "Por Enter", "Enter confirma el texto");
+    }
+    // "Usar título de la nota" → basename directo
+    {
+      const r = fakeModalOe();
+      const p = pure.askTaskTitle(r.OeX, {}, FILE, "Otro");
+      r.input().value = "Cualquier cosa";
+      r.buttons()[1].click();
+      assert.equal(await p, "Untitled 2", "el botón usa el título de la nota");
+    }
+    // Cancelar → null (la conversión no toca la nota)
+    {
+      const r = fakeModalOe();
+      const p = pure.askTaskTitle(r.OeX, {}, FILE, "");
+      r.buttons()[2].click();
+      assert.equal(await p, null, "Cancelar resuelve null");
+    }
+    // Prefill: con valor lo usa; sin valor usa el basename
+    {
+      const r = fakeModalOe();
+      const p = pure.askTaskTitle(r.OeX, {}, FILE, "Mi tarea previa");
+      assert.equal(r.input().value, "Mi tarea previa", "prefill rellena el cuadro");
+      r.buttons()[2].click();
+      await p;
+      const r2 = fakeModalOe();
+      const p2 = pure.askTaskTitle(r2.OeX, {}, FILE, "");
+      assert.equal(r2.input().value, "Untitled 2", "sin prefill el cuadro muestra el nombre de la nota");
+      r2.buttons()[2].click();
+      await p2;
+    }
+  }
+
+  /* ---------- check ✅ de tarea: escritura bidireccional (setTaskCompleted) ---------- */
+  {
+    const calls = [];
+    const tnInst3 = {
+      settings: { taskTag: "task", defaultTaskStatus: "open",
+        customStatuses: [{ value: "open", isCompleted: false }, { value: "done", isCompleted: true }] },
+      api: { apiVersion: 1, tasks: {
+        complete: async p => { calls.push(["complete", p]); tnPl3.fm.status = "done"; },
+        uncomplete: async p => { calls.push(["uncomplete", p]); tnPl3.fm.status = "open"; } } }
+    };
+    const tnPl3 = { settings: {}, fm: { tags: ["task"], status: "open" }, app: {
+      plugins: { enabledPlugins: new Set(["tasknotes"]), getPlugin: () => tnInst3, plugins: { tasknotes: tnInst3 } },
+      metadataCache: { getFileCache: () => ({ frontmatter: tnPl3.fm }) }, vault: {} } };
+    const tf = { path: "docs/T.md", basename: "T" };
+    let r = await pure.setTaskCompleted(tnPl3, tf, true);
+    assert.equal(JSON.stringify(r), JSON.stringify({ completed: true, unchanged: false }), "marcar ✅ escribe vía api.tasks.complete");
+    assert.equal(JSON.stringify(calls), JSON.stringify([["complete", "docs/T.md"]]));
+    r = await pure.setTaskCompleted(tnPl3, tf, true);
+    assert.equal(r.unchanged, true, "ya completada: no reescribe (idempotente)");
+    assert.equal(calls.length, 1, "sin segunda llamada a la API");
+    r = await pure.setTaskCompleted(tnPl3, tf, false);
+    assert.equal(JSON.stringify(r), JSON.stringify({ completed: false, unchanged: false }), "desmarcar reabre vía api.tasks.uncomplete");
+    assert.equal(JSON.stringify(calls[1]), JSON.stringify(["uncomplete", "docs/T.md"]));
+    assert.equal(tnPl3.fm.status, "open", "el frontmatter quedó pendiente (lo leerá la tarjeta)");
+    /* Respaldo sin API pública: el toggle de la instancia de TaskNotes. */
+    const toggles = [];
+    const tnInst4 = { settings: tnInst3.settings, toggleTaskStatus: async t => { toggles.push(t.path); } };
+    const tnPl4 = { settings: {}, app: {
+      plugins: { enabledPlugins: new Set(["tasknotes"]), getPlugin: () => tnInst4, plugins: { tasknotes: tnInst4 } },
+      metadataCache: { getFileCache: f => f && f.path === "docs/T.md" ? { frontmatter: { tags: ["task"], status: "open" } } : null }, vault: {} } };
+    r = await pure.setTaskCompleted(tnPl4, { path: "docs/T.md", basename: "T" }, true);
+    assert.equal(r.completed, true);
+    assert.equal(JSON.stringify(toggles), JSON.stringify(["docs/T.md"]), "sin API usa toggleTaskStatus de la instancia");
+    /* Guardas: integración desactivada, TaskNotes ausente y no-tarea → null. */
+    const tnPl5 = { settings: { pinTasksEnabled: false }, app: tnPl4.app };
+    assert.equal(await pure.setTaskCompleted(tnPl5, tf, true), null, "integración desactivada: null");
+    assert.equal(await pure.setTaskCompleted({ settings: {}, app: { plugins: {}, metadataCache: { getFileCache: () => null }, vault: {} } }, tf, true), null, "sin TaskNotes: null");
+    assert.equal(await pure.setTaskCompleted(tnPl4, { path: "docs/N.md", basename: "N" }, true), null, "nota que no es tarea: null");
+    assert.equal(await pure.setTaskCompleted(tnPl4, { path: "docs/Q.base", basename: "Q" }, true), null, "una .base nunca se completa");
+  }
+
   /* Seguridad sin panel adjunto: nada explota y los retornos son falsos. */
   {
     const plugin = fakePlugin();
@@ -469,6 +698,16 @@ assert.ok(bundle.includes("/* BLG-PIN: Fijar en pizarra */if(!this.plugin.sessio
     noPanel.activateView = async () => {};
     assert.equal(await api.openBoard(noPanel, 0), false, "openBoard sin panel = false (sin espera)");
     assert.equal(api.boardState(null), null, "boardState sin plugin = null");
+  }
+
+  /* Borrar una nota la desfija: el handler de vault "delete" llama unpinPath
+     (no availability): la tarjeta desaparece de la pizarra, abierta o no. */
+  {
+    const delBlock = source.match(/vault\.on\("delete"[\s\S]{0,420}?\}\)\);/);
+    assert.ok(delBlock, "hay handler de borrado");
+    assert.ok(/unpinPath\(plugin, file\.path\)/.test(delBlock[0]), "borrar desfija la tarjeta");
+    assert.ok(!/availability\(file\.path, false\)/.test(delBlock[0]), "ya no conserva el pin como no disponible");
+    /* comportamiento: unpin retira tarjeta y estilos (cubierto arriba con api.unpin) */
   }
 
   console.log("test-pin-board: all checks passed");

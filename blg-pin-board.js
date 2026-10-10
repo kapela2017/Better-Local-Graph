@@ -336,10 +336,32 @@
       template: String(settings.pinTaskTemplate || "").trim()
     };
   }
-  function taskNotesPlugin(plugin) {
+  /* TaskNotes solo cuenta cuando está INSTALADO Y ACTIVADO. Vía nativa:
+     enabledPlugins (Set/Array). Pero gestores como Better Plugins Manager
+     con carga diferida (DELAY) cargan la instancia SIN incluirla en
+     enabledPlugins: entonces la prueba real es la instancia ya cargada
+     (registro plugins o getPlugin). Un plugin solo instalado nunca cuenta. */
+  function taskNotesEnabled(plugin) {
     try {
       var pl = plugin && plugin.app && plugin.app.plugins;
-      return pl && typeof pl.getPlugin === "function" ? pl.getPlugin("tasknotes") : null;
+      if (!pl) return false;
+      var en = pl.enabledPlugins;
+      if (en && typeof en.has === "function" && en.has("tasknotes")) return true;
+      if (Array.isArray(en) && en.indexOf("tasknotes") >= 0) return true;
+      var reg = pl.plugins;
+      if (reg && typeof reg.has === "function") { if (reg.has("tasknotes")) return true; }
+      else if (reg && typeof reg === "object" && reg.tasknotes) return true;
+      if (typeof pl.getPlugin === "function") {
+        try { if (pl.getPlugin("tasknotes")) return true; } catch (_) {}
+      }
+      return false;
+    } catch (_) { return false; }
+  }
+  function taskNotesPlugin(plugin) {
+    try {
+      if (!taskNotesEnabled(plugin)) return null;
+      var pl = plugin.app.plugins;
+      return typeof pl.getPlugin === "function" ? pl.getPlugin("tasknotes") : (pl.plugins && pl.plugins.tasknotes) || null;
     } catch (_) { return null; }
   }
   function taskNotesApi(plugin) {
@@ -377,6 +399,38 @@
     }
     return "";
   }
+  /* Modal "Asigne el Nombre de la Tarea": cuadro de texto + botón para usar
+     el título de la nota. Resuelve el título elegido o null si se cancela
+     (ESC/X/Cancelar): en ese caso la conversión NO toca la nota. Nivel de
+     módulo con dependencias inyectadas para poder probar el contrato. */
+  function askTaskTitle(OeX, app, file, prefill) {
+    return new Promise(function (resolve) {
+      var m = new OeX.Modal(app), settled = false;
+      /* Resolver SIEMPRE antes de cerrar: Modal.close() dispara onClose y,
+         si resolvemos después, la cancelación ganaría la carrera. */
+      function done(v) { if (!settled) { settled = true; resolve(v); } }
+      m.titleEl.setText(T("pinTaskTitleAsk"));
+      var input = m.contentEl.createEl("input", { type: "text" });
+      input.style.width = "100%";
+      input.style.marginBottom = "12px";
+      input.value = prefill || file.basename;
+      function accept(v) { done(v); m.close(); }
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") { e.preventDefault(); accept(input.value.trim() || file.basename); }
+      });
+      var row = m.contentEl.createDiv({ cls: "blg-pin-color-actions" });
+      var ok = row.createEl("button", { text: T("pinTaskTitleSave"), cls: "mod-cta" });
+      ok.addEventListener("click", function () { accept(input.value.trim() || file.basename); });
+      var useNote = row.createEl("button", { text: T("pinTaskTitleUseNote") });
+      useNote.addEventListener("click", function () { accept(file.basename); });
+      var cancel = row.createEl("button", { text: T("cancel") });
+      cancel.addEventListener("click", function () { done(null); m.close(); });
+      m.onClose = function () { done(null); };
+      m.open();
+      input.focus();
+      input.select();
+    });
+  }
   /* Es tarea si TaskNotes ya la tiene en caché o si el frontmatter cumple el
      identificador configurado (tag, default "task"; también property). El tag
      funciona case-insensitive como Obsidian y admite subtags (#task/urgente).
@@ -408,9 +462,108 @@
       return false;
     } catch (_) { return false; }
   }
-  function taskTitle(task, file) {
+  /* Título visible de la tarea: caché de TaskNotes → propiedad `title` del
+     frontmatter → nombre de la nota (basename). */
+  function taskTitle(task, file, fm) {
     var title = task && typeof task.title === "string" ? task.title.trim() : "";
-    return title || (file && file.basename) || "";
+    if (title) return title;
+    var v = fm && fm.title;
+    if (v != null && String(v).trim()) return String(v).trim();
+    return (file && file.basename) || "";
+  }
+  /* Estados completados configurados en TaskNotes (customStatuses con
+     isCompleted=true). Lista vacía = no hay configuración: cae al convenio
+     "done"/"completed". */
+  function taskCompletedValues(settings) {
+    var list = settings && Array.isArray(settings.customStatuses) ? settings.customStatuses : [];
+    var out = [];
+    for (var i = 0; i < list.length; i++) {
+      var s = list[i];
+      if (s && s.isCompleted === true && s.value != null && String(s.value)) out.push(String(s.value));
+    }
+    return out;
+  }
+  /* Estado vigente de la tarea: caché de TaskNotes → frontmatter → estado
+     por defecto configurado (misma prioridad que cardTaskInfo). */
+  function taskStatusValue(task, fm, settings) {
+    var v = task && task.status;
+    if (v != null && v !== "") return String(v);
+    v = fm && fm.status;
+    if (v != null && v !== "") return String(v);
+    v = settings && settings.defaultTaskStatus;
+    return v != null && v !== "" ? String(v) : "";
+  }
+  /* ¿La tarea está completada? Prioriza el statusManager de TaskNotes (la
+     misma regla que su UI), luego los customStatuses y por último el
+     convenio: el check respeta estados personalizados. */
+  function taskIsCompleted(plugin, status, settings) {
+    try {
+      var tn = plugin && taskNotesPlugin(plugin);
+      if (tn && tn.statusManager && typeof tn.statusManager.isCompletedStatus === "function")
+        return !!tn.statusManager.isCompletedStatus(status);
+    } catch (_) {}
+    var v = String(status == null ? "" : status);
+    var done = taskCompletedValues(settings);
+    if (done.length) return done.indexOf(v) >= 0;
+    return v === "done" || v === "completed";
+  }
+  /* Marca la tarea completada (✅) o la reabre (pendiente) escribiendo COMO
+     TaskNotes: su API pública (complete/uncomplete, que valida los estados
+     configurados) y, sin ella, el toggle de la instancia (la misma acción
+     que su lista). Devuelve {completed, unchanged} o null si no se pudo
+     (TaskNotes ausente/desactivado, no es tarea o la escritura falló). La
+     escritura toca el frontmatter → metadataCache "changed" → la tarjeta se
+     repinta sola: ese mismo camino cubre TaskNotes → pizarra. */
+  async function setTaskCompleted(plugin, file, completed) {
+    try {
+      if (!plugin || !plugin.app || !file || isBasePath(file.path || "")) return null;
+      if (!taskSettings(plugin.settings).enabled) return null;
+      var tnSettings = taskNotesSettings(plugin);
+      if (!taskNotesEnabled(plugin) || !tnSettings) return null;
+      var fm = ((plugin.app.metadataCache.getFileCache(file) || {}).frontmatter) || null;
+      var tn = taskNotesPlugin(plugin), cached = null;
+      var cm = tn && tn.cacheManager;
+      if (cm && typeof cm.getCachedTaskInfoSync === "function") { try { cached = cm.getCachedTaskInfoSync(file.path); } catch (_) { cached = null; } }
+      if (!isTaskNote(plugin, file, fm, cached, tnSettings)) return null;
+      var done = taskIsCompleted(plugin, taskStatusValue(cached, fm, tnSettings), tnSettings);
+      completed = !!completed;
+      if (done === completed) return { completed: done, unchanged: true };
+      var wrote = false;
+      var api = taskNotesApi(plugin);
+      if (api && api.tasks) {
+        var fn = completed ? api.tasks.complete : api.tasks.uncomplete;
+        if (typeof fn === "function") { await fn.call(api.tasks, file.path); wrote = true; }
+      }
+      if (!wrote) {
+        /* Respaldo sin API: el toggle de la instancia (misma acción que su
+           lista). Como ya devolvimos unchanged cuando el estado coincide,
+           aquí el toggle siempre apunta al estado deseado. */
+        var task = cached;
+        if (!task && cm && typeof cm.getTaskInfo === "function") { try { task = await cm.getTaskInfo(file.path); } catch (_) {} }
+        if (!task) task = { path: file.path, status: taskStatusValue(null, fm, tnSettings) };
+        if (tn && typeof tn.toggleTaskStatus === "function") { await tn.toggleTaskStatus(task); wrote = true; }
+      }
+      if (!wrote) return null;
+      return { completed: completed, unchanged: false };
+    } catch (e) { warn(e); return null; }
+  }
+  /* Variante por ruta para el MCP: resuelve la nota y delega. */
+  async function setTaskCompletedByPath(plugin, path, completed) {
+    try {
+      var f = plugin && plugin.app && plugin.app.vault.getAbstractFileByPath(path);
+      if (!(f instanceof Oe.TFile)) return null;
+      return await setTaskCompleted(plugin, f, completed);
+    } catch (e) { warn(e); return null; }
+  }
+  /* ¿Hay que pedir el nombre de la tarea? Solo cuando la propiedad `title`
+     existe en la nota O en la plantilla (aunque sea nula): TaskNotes la
+     requiere. null = no preguntar; si no, devuelve el prefill (puede ser ""). */
+  function taskTitleProp(fm, templateFm) {
+    var has = (fm && typeof fm === "object" && Object.prototype.hasOwnProperty.call(fm, "title")) ||
+              (templateFm && typeof templateFm === "object" && Object.prototype.hasOwnProperty.call(templateFm, "title"));
+    if (!has) return null;
+    var v = fm && fm.title;
+    return { prefill: v != null && String(v).trim() ? String(v).trim() : "" };
   }
   /* Info de tarea de UNA tarjeta, síncrona y serializable (la usa boardState
      para el MCP, también con la pizarra cerrada): caché de TaskNotes si está
@@ -435,12 +588,16 @@
         }
         return null;
       }
+      var status = pick(cached && cached.status, fm.status, tnS.defaultTaskStatus);
       return {
-        title: taskTitle(cached, file),
-        status: pick(cached && cached.status, fm.status, tnS.defaultTaskStatus),
+        title: taskTitle(cached, file, fm),
+        status: status,
         priority: pick(cached && cached.priority, fm.priority, tnS.defaultTaskPriority),
         due: pick(cached && cached.due, fm.due),
-        scheduled: pick(cached && cached.scheduled, fm.scheduled)
+        scheduled: pick(cached && cached.scheduled, fm.scheduled),
+        /* El check ✅ de la tarjeta: true cuando el estado es uno de los
+           completados configurados en TaskNotes. */
+        completed: taskIsCompleted(plugin, status, tnS)
       };
     } catch (_) { return null; }
   }
@@ -467,8 +624,11 @@
       if (k === "tags" || k === "tag") { tagAdds = tagAdds.concat(splitTags(v)); return; }
       if (current[k] === undefined) set(k, v);
     });
-    /* Tags propios (verbatim) + los de la plantilla (anexo) + identificador. */
-    var tags = splitTags(current.tags != null ? current.tags : current.tag);
+    /* Tags propios (verbatim) + los de la plantilla (anexo) + identificador.
+       Se escriben en la propiedad que la nota YA use (`tag` o `tags`, aunque
+       esté nula); si no tiene ninguna, se crea `tags`. */
+    var tagKey = current.tags !== undefined ? "tags" : (current.tag !== undefined ? "tag" : "tags");
+    var tags = splitTags(current[tagKey]);
     var lows = tags.map(function (t) { return t.replace(/^#/, "").toLowerCase(); });
     var added = 0;
     function addTag(t) {
@@ -490,7 +650,7 @@
         if (!has) addTag(root);
       }
     }
-    if (added) set("tags", tags);
+    if (added) set(tagKey, tags);
     return out;
   }
   function taskTemplatePath(path) {
@@ -499,13 +659,52 @@
     if (!/\.md$/i.test(p)) p += ".md";
     return p;
   }
-  function templateMarkdownFiles(app) {
+  /* Plantillas .md disponibles: SOLO las de la carpeta configurada (ruta
+     relativa, subcarpetas incluidas, comparación sin distinguir mayúsculas).
+     Sin carpeta configurada devuelve []: jamás lista toda la bóveda. */
+  function templateMarkdownFiles(app, folder) {
     var out = [];
+    var dir = String(folder || "").trim().replace(/^\/+|\/+$/g, "").toLowerCase();
+    if (!dir) return out;
     try {
       var files = app && app.vault && typeof app.vault.getMarkdownFiles === "function" ? app.vault.getMarkdownFiles() : [];
-      files.forEach(function (f) { if (f && f.path) out.push(f.path); });
+      var pre = dir + "/";
+      files.forEach(function (f) {
+        if (f && f.path && f.path.toLowerCase().indexOf(pre) === 0) out.push(f.path);
+      });
     } catch (_) {}
     return out.sort(function (a, b) { return a.localeCompare(b); });
+  }
+  /* Autocompletado de carpetas EXISTENTES para el ajuste "Carpeta de
+     plantillas": prefijo primero, substring después, tope 20. */
+  function attachFolderSuggest(app, inputEl) {
+    try {
+      var folders = [];
+      (app.vault.getAllLoadedFiles() || []).forEach(function (f) {
+        if (f instanceof Oe.TFolder && f.path !== "/") folders.push(f.path);
+      });
+      folders.sort(function (a, b) { return a.localeCompare(b); });
+      var Sug = class extends Oe.AbstractInputSuggest {
+        getSuggestions(query) {
+          var q = String(query || "").trim().toLowerCase();
+          if (!q) return folders.slice(0, 20);
+          var pre = [], sub = [];
+          folders.forEach(function (p) {
+            var lp = p.toLowerCase();
+            if (lp.indexOf(q) === 0) pre.push(p);
+            else if (lp.indexOf(q) >= 0) sub.push(p);
+          });
+          return pre.concat(sub).slice(0, 20);
+        }
+        renderSuggestion(p, el) { el.setText(p); }
+        selectSuggestion(p) {
+          inputEl.value = p;
+          inputEl.dispatchEvent(new Event("input"));
+          this.close();
+        }
+      };
+      return new Sug(app, inputEl);
+    } catch (_) { return null; }
   }
 
   /* ---------- estado y persistencia ---------- */
@@ -744,13 +943,38 @@
         t.setPlaceholder("list-checks").setValue(plugin.settings.pinTaskIcon || "")
           .onChange(async function (v) { plugin.settings.pinTaskIcon = v.trim(); await plugin.saveSettings(); });
       });
-      new Oe.Setting(myPanel).setName(T("pinTaskTemplate")).setDesc(T("pinTaskTemplateDesc")).addDropdown(function (d) {
-        d.addOption("", T("pinTaskTemplateNone"));
-        templateMarkdownFiles(plugin.app).forEach(function (p) { d.addOption(p, p); });
-        d.setValue(taskTemplatePath(plugin.settings.pinTaskTemplate || ""));
-        d.selectEl.style.maxWidth = "280px";
-        d.onChange(async function (v) { plugin.settings.pinTaskTemplate = v; await plugin.saveSettings(); });
+      /* Carpeta de plantillas: la búsqueda se limita a ella (nunca toda la
+         bóveda). Cambiarla limpia la plantilla elegida si queda fuera. */
+      var tplSetting = null;
+      function rebuildTemplateDropdown() {
+        if (!tplSetting) return;
+        var dir = String(plugin.settings.pinTaskTemplateFolder || "").trim();
+        var files = templateMarkdownFiles(plugin.app, dir);
+        var cur = taskTemplatePath(plugin.settings.pinTaskTemplate || "");
+        if (dir && cur && files.indexOf(cur) < 0) {
+          plugin.settings.pinTaskTemplate = ""; cur = "";
+          try { Promise.resolve(plugin.saveSettings()).catch(warn); } catch (e) { warn(e); }
+        }
+        tplSetting.controlEl.empty();
+        tplSetting.addDropdown(function (d) {
+          d.addOption("", dir ? T("pinTaskTemplateNone") : T("pinTaskTemplatePickFolder"));
+          files.forEach(function (p) { d.addOption(p, p); });
+          d.setValue(cur);
+          d.selectEl.style.maxWidth = "280px";
+          d.onChange(async function (v) { plugin.settings.pinTaskTemplate = v; await plugin.saveSettings(); });
+        });
+      }
+      new Oe.Setting(myPanel).setName(T("pinTaskTemplateFolder")).setDesc(T("pinTaskTemplateFolderDesc")).addText(function (t) {
+        t.setPlaceholder("Templater").setValue(plugin.settings.pinTaskTemplateFolder || "")
+          .onChange(async function (v) {
+            plugin.settings.pinTaskTemplateFolder = v.trim().replace(/^\/+|\/+$/g, "");
+            await plugin.saveSettings();
+            rebuildTemplateDropdown();
+          });
+        attachFolderSuggest(plugin.app, t.inputEl);
       });
+      tplSetting = new Oe.Setting(myPanel).setName(T("pinTaskTemplate")).setDesc(T("pinTaskTemplateDesc"));
+      rebuildTemplateDropdown();
     }
     var wasActive = false;
     try { wasActive = plugin.settings.lastSettingsTab === TAB_KEY; } catch (e) {}
@@ -783,6 +1007,9 @@
   var sharedApi = { addPinMenu: addPinMenu, isPinned: isPinned, pin: pinFile, unpin: unpinPath,
     openBoard: openBoard, closeBoard: closeBoard, boardState: boardState,
     focusCard: focusBoardCard, fitBoard: fitBoard,
+    /* El check ✅ de la tarjeta también desde el MCP (misma escritura que el
+       clic: API de TaskNotes → toggle de la instancia). */
+    setTaskCompleted: setTaskCompletedByPath,
     layoutButtons: function () { if (pluginInstance) syncButtons(pluginInstance); } };
   if (typeof globalThis !== "undefined") globalThis.__BLG_PINBOARD = sharedApi;
 
@@ -1015,14 +1242,40 @@
       })).catch(warn);
       return true;
     }
+    function askCardTaskTitle(file, prefill) { return askTaskTitle(Oe, plugin.app, file, prefill); }
+    /* El check del encabezado: marca ✅ o reabre la tarea con la MISMA
+       escritura que TaskNotes. Bidireccional: la escritura toca frontmatter
+       (metadataCache "changed" repinta la tarjeta) y TaskNotes emite
+       "task-updated" (suscripción en attachView); los cambios hechos desde
+       TaskNotes llegan por ese mismo camino. */
+    async function toggleCardTask(rec) {
+      var file = currentFile(rec);
+      if (!file || isBasePath(file.path)) return;
+      var fm = ((plugin.app.metadataCache.getFileCache(file) || {}).frontmatter) || null;
+      var ti = taskInfoFor(file, fm);
+      if (!ti.isTask) return;
+      var done = taskIsCompleted(plugin, taskStatusValue(ti.task, fm, ti.settings), ti.settings);
+      var r = await setTaskCompleted(plugin, file, !done);
+      if (!r) { notice("pinTaskNotesUnavailable"); return; }
+      fillCard(rec, file);
+      /* La caché de TaskNotes se asienta asíncrona: un repintado diferido
+         asegura el estado final aunque el primero leyera la caché vieja. */
+      setTimeout(function () {
+        if (st.destroying) return;
+        var cur = st.dom.get(rec.path);
+        if (cur) fillCard(cur, plugin.app.vault.getAbstractFileByPath(rec.path));
+      }, 350);
+    }
     /* Convierte la nota de ESA tarjeta: conserva ruta, costuras, cuerpo y
        propiedades; solo ANEXA las propiedades de la plantilla elegida en
-       opciones (las existentes nunca se reemplazan). */
+       opciones (las existentes nunca se reemplazan). Si la nota o la
+       plantilla tienen la propiedad `title` (TaskNotes la requiere), primero
+       pide el nombre de la tarea y lo guarda en `title`. */
     async function convertCardToTask(rec) {
       var file = currentFile(rec);
       if (!file || isBasePath(file.path)) return;
       var tnSettings = taskNotesSettings(plugin);
-      if (!tnSettings) { notice("pinTaskNotesUnavailable"); return; }
+      if (!taskNotesEnabled(plugin) || !tnSettings) { notice("pinTaskNotesUnavailable"); return; }
       var fm = ((plugin.app.metadataCache.getFileCache(file) || {}).frontmatter) || {};
       var conf = taskSettings(settings), templateFm = null;
       if (conf.template) {
@@ -1031,7 +1284,13 @@
         var parsed = parseFrontmatterBlock(await plugin.app.vault.read(tf)) || { frontmatter: {} };
         templateFm = parsed.frontmatter;
       }
+      var ask = taskTitleProp(fm, templateFm);
       var patch = taskTemplatePatch(fm, templateFm, tnSettings) || {};
+      if (ask) {
+        var title = await askCardTaskTitle(file, ask.prefill);
+        if (title == null) return;
+        patch.title = title;
+      }
       var changed = false;
       if (Object.keys(patch).length) {
         if (plugin.app.fileManager && typeof plugin.app.fileManager.processFrontMatter === "function") {
@@ -1080,6 +1339,17 @@
       rec.el.classList.toggle("is-unavailable", !ok);
       rec.el.classList.toggle("is-base", isBase);
       rec.el.classList.toggle("is-task", task);
+      /* Check ✅ del encabezado: solo en tareas; refleja el estado real de
+         TaskNotes (statusManager → customStatuses → convenio). */
+      var taskDone = !!task && taskIsCompleted(plugin, taskStatusValue(taskInfo.task, fm, taskInfo.settings), taskInfo.settings);
+      rec.el.classList.toggle("is-done", taskDone);
+      rec.checkEl.hidden = !task;
+      if (task) {
+        rec.checkEl.setAttribute("aria-pressed", taskDone ? "true" : "false");
+        var checkLbl = T(taskDone ? "pinTaskReopen" : "pinTaskDone");
+        rec.checkEl.title = checkLbl;
+        rec.checkEl.setAttribute("aria-label", checkLbl);
+      }
       rec.el.style.setProperty("--blg-pin-base-color", B ? B.color(settings) : "#8b5cf6");
       rec.el.style.setProperty("--blg-pin-task-color", taskSettings(settings).color);
       rec.titleEl.setText(ok ? file.basename : baseOf(rec.path));
@@ -1093,7 +1363,7 @@
       applyCardColor(rec);
       /* Encabezado superior: las tareas muestran el TÍTULO de TaskNotes;
          el resto conserva la fecha de última edición manuscrita. */
-      rec.dateTextEl.setText(ok ? (task ? taskTitle(taskInfo.task, file) : formatMtime(file.stat && file.stat.mtime, settings.uiLang)) : "—");
+      rec.dateTextEl.setText(ok ? (task ? taskTitle(taskInfo.task, file, fm) : formatMtime(file.stat && file.stat.mtime, settings.uiLang)) : "—");
       rec.dateEl.title = ok && task ? T("pinTaskTitle") : T("pinModified");
       var iconUri = ok ? (task ? (taskIconUri(plugin, settings, taskInfo.task) || cardIconUri(file)) : cardIconUri(file)) : null;
       if (iconUri) {
@@ -1353,6 +1623,11 @@
       el.style.transform = "translate(" + e.x + "px," + e.y + "px)";
       el.style.zIndex = e.z;
       var dateEl = el.createDiv({ cls: "blg-pin-card-date" });
+      /* Check de tarea (solo tarjetas TaskNotes): pendiente = casilla vacía;
+         completada = ✅. Va junto al título, en la fila superior. */
+      var checkEl = dateEl.createEl("button", { cls: "blg-pin-card-btn blg-pin-card-check" });
+      checkEl.type = "button"; checkEl.hidden = true;
+      checkEl.setAttribute("aria-pressed", "false");
       var dateIconEl = dateEl.createSpan({ cls: "blg-pin-card-date-icon" });
       dateIconEl.hidden = true;
       var dateTextEl = dateEl.createSpan({ cls: "blg-pin-card-date-text" });
@@ -1371,7 +1646,7 @@
       var previewEl = el.createDiv({ cls: "blg-pin-card-preview" });
       var rec = { path: path, el: el, head: head, dot: dot, titleEl: titleEl, folderEl: folderEl,
         previewEl: previewEl, dateEl: dateEl, dateIconEl: dateIconEl, dateTextEl: dateTextEl,
-        openBtn: openBtn, rev: 0 };
+        checkEl: checkEl, openBtn: openBtn, rev: 0 };
       st.dom.set(path, rec);
       if (st.selected.indexOf(path) >= 0) el.classList.add("is-selected");
       fillCard(rec, file);
@@ -1383,6 +1658,12 @@
       el.addEventListener("contextmenu", function (e2) { cardMenu(e2, rec); });
       openBtn.addEventListener("click", function (e2) { e2.stopPropagation(); openNote(rec.path); });
       unpinBtn.addEventListener("click", function (e2) { e2.stopPropagation(); unpinPath(plugin, rec.path); });
+      /* El check no abre ni arrastra la tarjeta: alterna el estado de la
+         tarea escribiendo como TaskNotes (bidireccional). */
+      checkEl.addEventListener("click", function (e2) {
+        e2.preventDefault(); e2.stopPropagation();
+        toggleCardTask(rec);
+      });
       el.addEventListener("dblclick", function (e2) {
         if (e2.target.closest(".blg-pin-card-btn") || e2.ctrlKey || e2.metaKey) return;
         openNote(rec.path);
@@ -1652,6 +1933,26 @@
         handle.destroy(); plugin._blgPin.attached = null;
       }
     });
+    /* Bidireccional: cuando TaskNotes cambia una tarea (su UI, su API o su
+       propio MCP) su emisor avisa y se repinta SOLO esa tarjeta. El
+       frontmatter escrito también dispara metadataCache "changed" (onload),
+       que cubre las ediciones manuales de la nota. */
+    try {
+      var tn0 = taskNotesPlugin(plugin);
+      if (tn0 && tn0.emitter && typeof tn0.emitter.on === "function") {
+        var tnOff = tn0.emitter.on("task-updated", function (ev) {
+          try {
+            if (st.destroying || !st.active) return;
+            var p = ev && (ev.path || (ev.updatedTask && ev.updatedTask.path) ||
+              (ev.task && ev.task.path) || (ev.originalTask && ev.originalTask.path));
+            if (!p) return;
+            var rec = st.dom.get(p);
+            if (rec) fillCard(rec, plugin.app.vault.getAbstractFileByPath(p));
+          } catch (_) {}
+        });
+        if (typeof tnOff === "function") rememberDestroyer(tnOff);
+      }
+    } catch (_) {}
     syncButton();
     return handle;
   }
@@ -1689,11 +1990,14 @@
           }
         } catch (e) { warn(e); }
       }));
+      /* Borrar una nota la quita de la pizarra: conservar el pin como
+         "no disponible" era más confuso que útil. Funciona también con la
+         pizarra cerrada (unpinPath notifica al handle si existe). */
       plugin.registerEvent(plugin.app.vault.on("delete", function (file) {
         try {
           if (!(file instanceof Oe.TFile)) return;
           if (!isPinned(plugin, file.path)) return;
-          var hh = h(); if (hh) hh.availability(file.path, false);
+          unpinPath(plugin, file.path);
         } catch (e) { warn(e); }
       }));
       plugin.registerEvent(plugin.app.vault.on("create", function (file) {
