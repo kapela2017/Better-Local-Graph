@@ -571,6 +571,8 @@
   function loadMarkmap(plugin) {
     if (_mm) return _mm;
     if (_mmFailed) return null;
+    var inline = (typeof globalThis !== "undefined") && globalThis.__BLG_MARKMAP_VENDOR;
+    if (inline && inline.Markmap) { _mm = inline; return _mm; }
     try {
       var base = plugin.app.vault.adapter.getBasePath();
       var p = pathMod.join(base, plugin.manifest.dir, "blg-vendor-markmap.js");
