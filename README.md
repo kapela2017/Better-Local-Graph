@@ -24,6 +24,10 @@ No more generic graphs. Your agent knows your current project structure because 
 
 **Tag Overview** — Switch to tag mode and filter the whole vault by a tag or subtag. The fcose layout arranges nodes in a clustered, readable graph. Age-based coloring and pulse make old vs new content instantly visible. Select nodes and sew them across tags for cross-domain relationships.
 
+**Tag mindmap** — Run the **Tag mindmap** command to open a markmap of any tag and its subtags in a modal. Branches fold, clicking a node opens the note at the exact tag line, and right-clicking a branch renames that tag across every note under it.
+
+**Animated backgrounds** — Programmable canvas backgrounds: the plugin loads small JS snippets from the `backgrounds/` folder inside its own directory, with a picker and live preview in settings.
+
 **AI Tooltips** — Hover over any node to see an AI-generated summary of that note. Bring Your Own Key (BYOK) — works with any OpenAI-compatible provider.
 
 **MCP Server** — Embedded Streamable HTTP server on `localhost` so external AI agents can query and manipulate your graph in real time.
@@ -42,18 +46,21 @@ No more generic graphs. Your agent knows your current project structure because 
 
 ### From GitHub Release
 
-1. Go to [Releases](https://github.com/kapela2017/Better-Local-Graph/releases)
-2. Download `better-local-graph-x.x.x.zip` from the latest release
-3. Extract to your vault's `.obsidian/plugins/better-local-graph/` folder
-4. Enable the plugin in Obsidian settings
+1. Go to [Releases](https://github.com/kapela2017/Better-Local-Graph/releases) and open the release for the version you want.
+2. Download these three files from the release assets: `main.js`, `manifest.json` and `styles.css`.
+3. Create the folder `.obsidian/plugins/better-local-graph/` inside your vault and put the three files there.
+4. Enable the plugin in **Settings → Community plugins**.
+
+There is no zip: the release ships the three files separately, exactly as Obsidian expects them.
 
 ### From Source (development)
+
+This repository distributes the assembled bundle, not a TypeScript project. See [Build](#build) for how `main.js` is produced from the sources.
 
 ```bash
 git clone git@github.com:kapela2017/Better-Local-Graph.git
 cd Better-Local-Graph
-# Ensure the build outputs (main.js, styles.css, manifest.json) are present
-# No npm/build step required — this is a distribution bundle
+node scripts/build.mjs
 ```
 
 ## Configuration
@@ -89,7 +96,7 @@ If you prefer direct config for your coding agent (Claude Code, OpenCode, Cursor
 }
 ```
 
-Available tools: `blg_get_current_view`, `blg_get_active_note_relations`, `blg_get_tag_graph`, `blg_get_note`, `blg_search_notes`, `blg_list_tags`, `blg_sew`, `blg_open_tag_view`, `blg_exit_tag_view`.
+Available tools: `blg_exit_tag_view`, `blg_get_active_note_relations`, `blg_get_current_base`, `blg_get_current_view`, `blg_get_note`, `blg_get_tag_graph`, `blg_list_tags`, `blg_open_tag_view`, `blg_pin_board`, `blg_search_content`, `blg_search_notes`, `blg_sew`, `blg_update_base_cards`.
 
 ## Network use and privacy
 
