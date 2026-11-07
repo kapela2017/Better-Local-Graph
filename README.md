@@ -1,8 +1,8 @@
 # Better Local Graph
 
-![GitHub stars](https://img.shields.io/github/stars/pablozambrano/better-local-graph?style=social)
-![GitHub release](https://img.shields.io/github/v/release/pablozambrano/better-local-graph)
-![License](https://img.shields.io/github/license/pablozambrano/better-local-graph)
+![GitHub stars](https://img.shields.io/github/stars/kapela2017/Better-Local-Graph?style=social)
+![GitHub release](https://img.shields.io/github/v/release/kapela2017/Better-Local-Graph)
+![License](https://img.shields.io/github/license/kapela2017/Better-Local-Graph)
 
 [![Click to watch demo — Better Local Graph in action](assets/Preview.png)](assets/0805.mp4)
 
@@ -34,17 +34,11 @@ No more generic graphs. Your agent knows your current project structure because 
 
 ## Requirements
 
-- Obsidian v1.4.0+
+- Obsidian v1.4.11+
 - Desktop only (uses canvas/graph rendering)
 - Optional: OpenAI-compatible API key for AI tooltips
 
 ## Installation
-
-### From Obsidian Community Plugins (recommended)
-
-1. Open Obsidian → Settings → Community plugins → Browse
-2. Search for "Better Local Graph" and click Install
-3. Enable the plugin
 
 ### From GitHub Release
 
@@ -96,6 +90,38 @@ If you prefer direct config for your coding agent (Claude Code, OpenCode, Cursor
 ```
 
 Available tools: `blg_get_current_view`, `blg_get_active_note_relations`, `blg_get_tag_graph`, `blg_get_note`, `blg_search_notes`, `blg_list_tags`, `blg_sew`, `blg_open_tag_view`, `blg_exit_tag_view`.
+
+## Network use and privacy
+
+- **Local MCP server:** the server binds to `127.0.0.1` only, uses a configurable port and requires a Bearer token. It is not exposed to the network.
+- **AI tooltips:** the note content is sent to the OpenAI-compatible endpoint configured by the user, using the user's own API key (BYOK).
+- No telemetry, no background calls and no auto-update.
+
+## Build
+
+This repository distributes the runnable bundle. There is no TypeScript source or sourcemap for the minified core: `src/core.bundle.js` is that core, preserved byte for byte as a build artifact, and its original source is unavailable.
+
+The build uses Node.js only, with no npm dependencies. It assembles `main.js` in this order:
+
+1. `src/core.bundle.js`
+2. `src/vendor-markmap.inline.js`
+3. `blg-mcp-server.js`
+4. `blg-backgrounds.js`
+5. `blg-tag-mindmap.js`
+6. `blg-pin-board.js`
+7. `blg-folder-drops.js`
+
+Module line endings are normalized in memory; source files are not rewritten. No separators are added except the explicit newline between the pin-board and folder-drops modules. The markmap vendor is embedded in `main.js`; the original `blg-vendor-markmap.js` remains in the repository for traceability.
+
+```bash
+# Assemble main.js
+node scripts/build.mjs
+
+# Validate the sources and compare without writing
+node scripts/build.mjs --check
+```
+
+A release distributes only `main.js`, `manifest.json` and `styles.css`.
 
 ## License
 

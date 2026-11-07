@@ -2,9 +2,8 @@
   "id": "better-local-graph",
   "name": "Better Local Graph",
   "version": "3.2.2",
-  "minAppVersion": "1.4.0",
-  "description": "Live project context for you and your AI agents. Sew parent-child relationships between notes via the `sewing` property, bookmark nodes for quick access, cross-reference tags from the tag panel, and use the Coser A command to relate any note to your bookmarks. The embedded MCP server exposes your graph to AI agents so they know your project structure without scanning the whole vault. Lucide icons, link arrows, age-based coloring, AI tooltips (BYOK), bilingual EN/ES.",
+  "minAppVersion": "1.4.11",
+  "description": "Turn the local graph into live project context: sew parent-child notes with the sewing property, bookmark nodes, cross-reference tags, and expose your graph to AI agents through the built-in MCP server. Lucide icons, arrows, age colors, EN/ES.",
   "author": "Pablo Zambrano",
-  "authorUrl": "",
-  "isDesktopOnly": false
+  "isDesktopOnly": true
 }
